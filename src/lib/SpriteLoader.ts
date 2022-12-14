@@ -1,5 +1,5 @@
 import type { BaseCards, FaceCards } from "./CardEnums";
-import { CARD_WIDTH, SPRITE_STRIP_WIDTH } from "./SpriteLUT";
+import { CARD_WIDTH, ANIM_SPRITE_STRIP_WIDTH, BASE_CARD_LUT, CARD_BACK_OFFSET, ABOUT_CARD_OFFSET } from "./SpriteLUT";
 import type { JokerTypes, Suits } from "./Suits";
 
 /**
@@ -20,7 +20,7 @@ export class SpriteLoader {
     return {
       "url": this.assembleFacePath(card, suit),
       "offset": {
-        "x": SPRITE_STRIP_WIDTH - CARD_WIDTH,
+        "x": ANIM_SPRITE_STRIP_WIDTH - CARD_WIDTH,
         "y": 0
       }
     }
@@ -29,10 +29,21 @@ export class SpriteLoader {
   loadBaseCard(card:BaseCards, suit:Suits): SpriteInfo {
     return {
       "url": this.baseCardSpriteSheet,
-      "offset": {
-        "x": 0,
-        "y": 0
-      }
+      "offset": BASE_CARD_LUT[suit][card]
+    }
+  }
+
+  loadCardBack(): SpriteInfo {
+    return {
+      "url": this.baseCardSpriteSheet,
+      "offset": CARD_BACK_OFFSET
+    }
+  }
+
+  loadAboutCard(): SpriteInfo {
+    return {
+      "url": this.baseCardSpriteSheet,
+      "offset": ABOUT_CARD_OFFSET
     }
   }
 }

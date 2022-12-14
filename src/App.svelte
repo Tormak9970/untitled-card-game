@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Controller } from "./Controller";
-  import { FaceCards } from "./lib/CardEnums";
+  import { BaseCards, FaceCards } from "./lib/CardEnums";
   import { Suits } from "./lib/Suits";
   
-  import FaceCard from "./components/FaceCard.svelte";
+  import Card from "./components/cards/Card.svelte";
   
   onMount(() => {
     Controller.init();
@@ -12,7 +12,7 @@
 </script>
 
 <main>
-  <FaceCard card={FaceCards.KING} suit={Suits.SPADE} />
+  <Card card={BaseCards.SEVEN} suit={Suits.SPADE} faceDown />
 </main>
 
 <style>

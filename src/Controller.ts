@@ -21,4 +21,12 @@ export class Controller {
       return Controller.spriteLoader.loadBaseCard(card as BaseCards, suit as Suits);
     }
   }
+
+  static getCardBackSprite(): SpriteInfo {
+    return Controller.spriteLoader.loadCardBack();
+  }
+
+  static getAboutCardSprite(): SpriteInfo {
+    return Controller.spriteLoader.loadAboutCard();
+  }
 }
