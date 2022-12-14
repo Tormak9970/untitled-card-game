@@ -1,14 +1,19 @@
-import { BaseCards, FaceCards, type Cards } from "./lib/CardEnums";
-import { SpriteLoader } from "./lib/SpriteLoader";
-import type { JokerTypes, Suits } from "./lib/Suits";
+import { BaseCards, FaceCards, type Cards } from "./lib/models/CardEnums";
+import { SpriteLoader } from "./lib/controllers/SpriteLoader";
+import type { JokerTypes, Suits } from "./lib/models/Suits";
+import { GameController } from "./lib/controllers/GameController";
+import { ToastController } from "./lib/controllers/ToastController";
 
 /**
  * The main controller for the game.
  */
 export class Controller {
-  private static spriteLoader = new SpriteLoader();
   static ANIM_SPEED = 150;
   static ANIM_PAUSE_LENGTH = 0;
+
+  private static spriteLoader = new SpriteLoader();
+  private static gameController = new GameController();
+  private static toastController = new ToastController();
 
   static init() {
     

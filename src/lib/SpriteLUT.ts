@@ -1,5 +1,5 @@
-import type { BaseCards } from "./CardEnums";
-import type { Suits } from "./Suits";
+import type { BaseCards } from "./models/CardEnums";
+import type { Suits } from "./models/Suits";
 
 type BaseCardLUT = {
   [key in Suits]: {

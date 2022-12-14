@@ -1,6 +1,6 @@
-import type { BaseCards, FaceCards } from "./CardEnums";
-import { CARD_WIDTH, ANIM_SPRITE_STRIP_WIDTH, BASE_CARD_LUT, CARD_BACK_OFFSET, ABOUT_CARD_OFFSET } from "./SpriteLUT";
-import type { JokerTypes, Suits } from "./Suits";
+import type { BaseCards, FaceCards } from "../models/CardEnums";
+import { CARD_WIDTH, ANIM_SPRITE_STRIP_WIDTH, BASE_CARD_LUT, CARD_BACK_OFFSET, ABOUT_CARD_OFFSET } from "../SpriteLUT";
+import type { JokerTypes, Suits } from "../models/Suits";
 
 /**
  * Class to handle loading the game sprites.

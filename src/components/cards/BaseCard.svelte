@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Controller } from "../../Controller";
-  import type { BaseCards } from "../../lib/CardEnums";
+  import type { BaseCards } from "../../lib/models/CardEnums";
   import { BASE_SPRITE_SHEET_HEIGHT, BASE_SPRITE_SHEET_WIDTH } from "../../lib/SpriteLUT";
-  import type { Suits } from "../../lib/Suits";
+  import type { Suits } from "../../lib/models/Suits";
 
   export let card:BaseCards;
   export let suit:Suits;

@@ -1,21 +1,15 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import { Controller } from "./Controller";
-  import GameBoard from "./components/board/GameBoard.svelte";
-  
-  onMount(() => {
-    Controller.init();
-  });
+  import Board from "../board/Board.svelte";
 </script>
 
-<main>
-  <GameBoard />
-</main>
+<div class="game-board">
+  <Board />
+</div>
 
 <style>
   @import "/theme.css";
 
-  main {
+  .game-board {
     width: 100%;
     height: 100%;
 

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Controller } from "../../Controller";
-  import type { FaceCards } from "../../lib/CardEnums";
+  import type { FaceCards } from "../../lib/models/CardEnums";
   import { CARD_HEIGHT, CARD_WIDTH, ANIM_SPRITE_STRIP_WIDTH } from "../../lib/SpriteLUT";
-  import type { JokerTypes, Suits } from "../../lib/Suits";
+  import type { JokerTypes, Suits } from "../../lib/models/Suits";
 
   export let card:FaceCards;
   export let suit:Suits|JokerTypes;
