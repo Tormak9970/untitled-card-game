@@ -1,4 +1,5 @@
 import type { BaseCards, FaceCards } from "./CardEnums";
+import { CARD_WIDTH, SPRITE_STRIP_WIDTH } from "./SpriteLUT";
 import type { JokerTypes, Suits } from "./Suits";
 
 /**
@@ -19,7 +20,7 @@ export class SpriteLoader {
     return {
       "url": this.assembleFacePath(card, suit),
       "offset": {
-        "x": 0,
+        "x": SPRITE_STRIP_WIDTH - CARD_WIDTH,
         "y": 0
       }
     }

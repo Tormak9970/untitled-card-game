@@ -7,9 +7,11 @@ import type { JokerTypes, Suits } from "./lib/Suits";
  */
 export class Controller {
   private static spriteLoader = new SpriteLoader();
+  static ANIM_SPEED = 150;
+  static ANIM_PAUSE_LENGTH = 0;
 
   static init() {
-    // Controller.spriteLoader = new SpriteLoader();
+    
   }
 
   static getSprite(card:Cards, suit:Suits|JokerTypes): SpriteInfo {

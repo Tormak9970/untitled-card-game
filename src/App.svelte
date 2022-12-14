@@ -12,7 +12,7 @@
 </script>
 
 <main>
-  <FaceCard card={FaceCards.ACE} suit={Suits.SPADE} />
+  <FaceCard card={FaceCards.KING} suit={Suits.SPADE} />
 </main>
 
 <style>
