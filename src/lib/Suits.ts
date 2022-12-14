@@ -1,6 +1,11 @@
 export enum Suits {
-  SPADES = "Spades",
-  HEARTS = "Hearts",
-  CLUBS = "Clubs",
-  DIAMONDS = "Diamonds"
+  SPADE = "Spade",
+  HEART = "Heart",
+  CLUB = "Club",
+  DIAMOND = "Diamond"
+}
+
+export enum JokerTypes {
+  TRUTH = "Truth",
+  LIES = "Lies"
 }
