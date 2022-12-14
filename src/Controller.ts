@@ -16,7 +16,7 @@ export class Controller {
   private static toastController = new ToastController();
 
   static init() {
-    
+    Controller.gameController.deal();
   }
 
   static getSprite(card:Cards, suit:Suits|JokerTypes): SpriteInfo {

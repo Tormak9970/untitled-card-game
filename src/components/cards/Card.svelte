@@ -1,19 +1,21 @@
 <script lang="ts">
   import { FaceCards, BaseCards, type Cards } from "../../lib/models/CardEnums";
   import type { JokerTypes, Suits } from "../../lib/models/Suits";
+  import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
   import BaseCard from "./BaseCard.svelte";
-    import CardBack from "./CardBack.svelte";
+  import CardBack from "./CardBack.svelte";
   import FaceCard from "./FaceCard.svelte";
 
   export let card:Cards;
   export let suit:Suits|JokerTypes;
   export let faceDown:boolean = false;
+  export let scale:number;
 
   let cardVal = null;
   let suitVal = null;
 
   let isFaceCard = Object.values(FaceCards).includes(card as FaceCards);
-  console.log(isFaceCard);
+  
   if (isFaceCard) {
     cardVal = card as FaceCards;
   } else if (Object.values(BaseCards).includes(card as BaseCards)) {
@@ -29,17 +31,17 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="card" class:face-down={faceDown} on:click={handleClick}>
+<div class="card" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px;" class:face-down={faceDown} on:click={handleClick}>
   <div class="card-inner">
     <div class="card-front">
       {#if isFaceCard}
-        <FaceCard card={cardVal} suit={suit} />
+        <FaceCard card={cardVal} suit={suit} scale={scale} />
       {:else}
-        <BaseCard card={cardVal} suit={suitVal} />
+        <BaseCard card={cardVal} suit={suitVal} scale={scale} />
       {/if}
     </div>
-    <div class="card-back">
-      <CardBack />
+    <div class="card-back" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px;">
+      <CardBack scale={scale} />
     </div>
   </div>
 </div>
@@ -49,9 +51,10 @@
 
   .card {
     background-color: transparent;
-    width: 360px;
-    height: 504px;
     perspective: 1000px;
+    box-shadow: 1px -12px 30px -16px rgba(0,0,0,0.96);
+    -webkit-box-shadow: 1px -12px 30px -16px rgba(0,0,0,0.96);
+    -moz-box-shadow: 1px -12px 30px -16px rgba(0,0,0,0.96);
   }
 
   .card-inner {

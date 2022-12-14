@@ -1,7 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Controller } from "../../Controller";
-  import { BASE_SPRITE_SHEET_HEIGHT, BASE_SPRITE_SHEET_WIDTH } from "../../lib/SpriteLUT";
+  import { BASE_SPRITE_SHEET_HEIGHT, BASE_SPRITE_SHEET_WIDTH, CARD_WIDTH, CARD_HEIGHT } from "../../lib/SpriteLUT";
+
+  export let scale:number;
 
   let sprite:string = "";
   let offset:SpriteOffset = {
@@ -17,7 +19,7 @@
   });
 </script>
 
-<div class="card-back" style="background-image: url({sprite}); background-position: left {-1 * offset.x}px top {offset.y}px; background-size: {BASE_SPRITE_SHEET_WIDTH}px {BASE_SPRITE_SHEET_HEIGHT}px;">
+<div style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; background-image: url({sprite}); background-position: left {-1 * offset.x * scale}px top {offset.y * scale}px; background-size: {BASE_SPRITE_SHEET_WIDTH * scale}px {BASE_SPRITE_SHEET_HEIGHT * scale}px;">
 
 </div>
 

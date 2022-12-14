@@ -7,6 +7,7 @@
 
   export let card:FaceCards;
   export let suit:Suits|JokerTypes;
+  export let scale:number;
 
   let shouldAnimate = true;
 
@@ -38,15 +39,8 @@
   });
 </script>
 
-<div class="face-card" style="background-image: url({sprite}); background-position: left {offset.x}px top {offset.y}px; background-size: {ANIM_SPRITE_STRIP_WIDTH}px {CARD_HEIGHT}px;">
-
-</div>
+<div class="face-card" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; background-image: url({sprite}); background-position: left {offset.x * scale}px top {offset.y * scale}px; background-size: {ANIM_SPRITE_STRIP_WIDTH * scale}px {CARD_HEIGHT * scale}px;" />
 
 <style>
   @import "/theme.css";
-
-  .face-card {
-    width: 360px;
-    height: 504px;
-  }
 </style>

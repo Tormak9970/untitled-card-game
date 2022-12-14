@@ -18,7 +18,12 @@ export class Deck {
    * Deals the nessesary cards.
    */
   dealCards(gameBoard:GameBoard) {
+    this.shuffleDeck();
+    const cards = this._drawPile.toArray();
+    const topCards = cards.slice(0, 28);
+    this._drawPile = new Stack<PlayingCard>(cards.slice(28));
     
+    gameBoard.setBoard(topCards);
   }
 
   /**
@@ -51,6 +56,15 @@ export class Deck {
    * Shuffles the draw pile.
    */
   shuffleDeck() {
+    const cards = this._drawPile.toArray();
 
+    for (let i = cards.length-1; i >= 0; i--) {
+      const j = Math.floor(Math.random() * i);
+      const tmp = cards[j];
+      cards[j] = cards[i];
+      cards[i] = tmp;
+    }
+
+    this._drawPile = new Stack<PlayingCard>(cards);
   }
 }
