@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { cardColumns } from "../../Stores";
-  import CardColumn from "./CardColumn.svelte";
+  import CardColumn from "./dllist/CardColumn.svelte";
 
-  let board:HTMLDivElement
+  let board:HTMLDivElement;
 
 </script>
 

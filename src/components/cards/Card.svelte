@@ -34,7 +34,7 @@
 
   //! remove this once done testing
   function reveal() {
-    revealed = false;
+    revealed = true;
   }
 </script>
 

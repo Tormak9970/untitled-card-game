@@ -1,4 +1,5 @@
 import { cardColumns } from "../../Stores";
+import { DLList } from "../data-structs/DLList";
 import type { PlayingCard } from "./PlayingCard";
 
 /**
@@ -11,17 +12,18 @@ export class GameBoard {
   }
 
   setBoard(cards:PlayingCard[]) {
-    const board:PlayingCard[][] = [];
+    const board:DLList<PlayingCard>[] = [];
 
     let cardIdx = 0;
     for (let i = 0; i < 7; i++) {
-      board[i] = [];
+      board[i] = new DLList<PlayingCard>();
+
       for (let j = 0; j < i+1; j++) {
         const card = cards[cardIdx];
 
         if (i == j) card.revealed = true;
 
-        board[i][j] = card;
+        board[i].add(card);
         cardIdx++;
       }
     }
