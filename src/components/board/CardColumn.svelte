@@ -4,22 +4,24 @@
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
   import Card from "../cards/Card.svelte";
+  import DropArea from "./DropArea.svelte";
 
   export let playingCards:PlayingCard[];
-  console.log(playingCards)
+  export let column:number;
 
   const CARD_SCALE = 0.4;
   const UNCOVERED_PERCENT = 0.3;
 </script>
 
-<div class="card-column" style="width: {CARD_WIDTH * CARD_SCALE}px; height: {(playingCards.length - 1) * (CARD_HEIGHT * CARD_SCALE) * UNCOVERED_PERCENT + (CARD_HEIGHT * CARD_SCALE)}px;">
+<div class="card-column" style="width: {CARD_WIDTH * CARD_SCALE}px; height: {(playingCards.length) * (CARD_HEIGHT * CARD_SCALE) * UNCOVERED_PERCENT + (CARD_HEIGHT * CARD_SCALE)}px;">
   {#if playingCards.length > 0}
     {#each playingCards as playingCard, idx (`${playingCard.card} of ${playingCard.suit}`)}
-      <div class="card-wrapper" style="top: {(idx) * (CARD_HEIGHT * CARD_SCALE) * UNCOVERED_PERCENT}px;" animate:flip>
-        <Card card={playingCard.card} suit={playingCard.suit} faceDown={!playingCard.revealed} scale={CARD_SCALE} />
-      </div>
+      <Card card={playingCard.card} suit={playingCard.suit} revealed={playingCard.revealed} scale={CARD_SCALE} uncoveredPercent={UNCOVERED_PERCENT} column={column} row={idx} />
     {/each}
   {/if}
+  <div class="card-wrapper" style="top: {(playingCards.length) * (CARD_HEIGHT * CARD_SCALE) * UNCOVERED_PERCENT}px;">
+    <DropArea numCards={playingCards.length} scale={CARD_SCALE} />
+  </div>
 </div>
 
 <style>
