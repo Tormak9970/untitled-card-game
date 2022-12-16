@@ -19,6 +19,7 @@
     "vite": "^4.0.0"
   },
   "dependencies": {
-    "@shopify/draggable": "^1.0.0-beta.11"
+    "@shopify/draggable": "^1.0.0-beta.11",
+    "svelte-dnd-action": "^0.9.22"
   }
 }

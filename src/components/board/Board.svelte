@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { cardColumns } from "../../Stores";
-  import CardColumn from "./dllist/CardColumn.svelte";
+  import CardColumn from "./linkedList/CardColumn.svelte";
 
   let board:HTMLDivElement;
 
+  $: columns = [...$cardColumns];
 </script>
 
 <div class="board" bind:this={board}>
   <div class="column-container">
-    {#each $cardColumns as cards, idx}
+    {#each columns as cards, idx (cards.size)}
       <CardColumn playingCards={cards} column={idx} />
     {/each}
   </div>

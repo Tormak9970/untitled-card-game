@@ -31,11 +31,6 @@
   } else {
     throw new Error(`Expected value of card to be in Cards but was ${card}`);
   }
-
-  //! remove this once done testing
-  function reveal() {
-    revealed = true;
-  }
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -44,7 +39,6 @@
   class:draggable-source="{revealed}"
   style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; top: {(row) * (CARD_HEIGHT * scale) * uncoveredPercent}px;"
   class:face-down={!revealed}
-  on:click={reveal}
   bind:this={cardElem}
   >
   <div class="card-inner">
@@ -65,7 +59,7 @@
   @import "/theme.css";
 
   .card {
-    position: absolute;
+    /* position: absolute; */
     background-color: transparent;
     perspective: 1000px;
     box-shadow: 1px -12px 30px -16px rgba(0,0,0,0.96);
