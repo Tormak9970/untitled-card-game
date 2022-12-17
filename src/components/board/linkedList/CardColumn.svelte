@@ -6,7 +6,7 @@
   import type { LinkedList, LinkedNode } from "../../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
   import {dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME, SHADOW_PLACEHOLDER_ITEM_ID} from "svelte-dnd-action";
-    import { cardColumns } from "../../../Stores";
+  import { cardColumns } from "../../../Stores";
 
   export let playingCards:LinkedList<PlayingCard>;
   export let column:number;
@@ -16,7 +16,10 @@
   const CARD_SCALE = 0.4;
   const UNCOVERED_PERCENT = 0.3;
 
-  $: items = [];
+  let items = [];
+  $: dragDisabled = false;//!playingCards.first.data.revealed;
+  $: dropFromOthersDisabled = false;
+  $: console.log(dropFromOthersDisabled);
 
   $: if (playingCards.first && notAdded) {
     notAdded = false;
@@ -26,33 +29,36 @@
       "column": column,
       "row": 0
     });
+    dropFromOthersDisabled = playingCards.first != null && items.length > 0;
   }
 
   const flipDurationMs = 300;
   function handleDndConsider(e:any) {
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
-    console.log("Card Column Considered:", JSON.parse(JSON.stringify(items)));
+    dropFromOthersDisabled = false;
   }
+
   function handleDndFinalize(e:any) {
     const tarElem = e.detail.items[0];
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
     console.log("Card Column Finalized", JSON.parse(JSON.stringify(items)));
-    // if (tarElem) {
-    //   const tmp = [...$cardColumns];
+    if (tarElem) {
+      const tmp = [...$cardColumns];
 
-    //   const tarColumn = tmp[tarElem.column];
-    //   const nodes = tarColumn.removeAllAfter(tarElem.row);
+      // const tarColumn = tmp[tarElem.column];
+      // const nodes = tarColumn.removeAllAfter(tarElem.row);
 
-    //   tmp[column].add(nodes);
+      // tmp[column].add(nodes);
 
-    //   tmp[tarElem.column] = tarColumn;
-    //   $cardColumns = tmp;
-    // }
+      // tmp[tarElem.column] = tarColumn;
+      $cardColumns = tmp;
+      dropFromOthersDisabled = true;
+    }
   }
 </script>
 
 <div class="card-column" style="width: {CARD_WIDTH * CARD_SCALE}px; height: {(playingCards.size) * (CARD_HEIGHT * CARD_SCALE) * UNCOVERED_PERCENT + (CARD_HEIGHT * CARD_SCALE)}px;">
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled:items.length==1, dragDisabled:!playingCards.first.data.revealed}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * CARD_SCALE}px;">
+  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * CARD_SCALE}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
       <div animate:flip="{{duration: flipDurationMs}}">
         <CardNode card={playingCard.data} column={column} row={0} scale={CARD_SCALE} uncoveredPercenet={UNCOVERED_PERCENT} />
