@@ -43,16 +43,21 @@
   function handleDndFinalize(e:any) {
     const tarElem = e.detail.items[0];
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
-    console.log("Card Node Finalized:", JSON.parse(JSON.stringify(items)));
+    
     if (tarElem) {
       const tmp = [...$cardColumns];
+      const tarColumn = tmp[tarElem.column];
 
-      // const tarColumn = tmp[tarElem.column];
+      /* Starts here */
       // const nodes = tarColumn.removeAllAfter(tarElem.row);
+      // console.log(nodes);
 
       // tmp[column].add(nodes);
+      /* Ends here */
 
-      // tmp[tarElem.column] = tarColumn;
+      tmp[tarElem.column] = tarColumn;
+      console.log(tarColumn);
+
       $cardColumns = tmp;
       dropFromOthersDisabled = true;
     }
@@ -62,7 +67,7 @@
 <div class="card-node" style="width: {CARD_WIDTH * scale}px; height: {(CARD_HEIGHT * scale) * uncoveredPercenet + (CARD_HEIGHT * scale)}px;">
   <Card card={card.data.card} suit={card.data.suit} revealed={card.data.revealed} scale={scale} uncoveredPercent={uncoveredPercenet} column={column} row={row} />
 
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px;">
+  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {uncoveredPercenet * CARD_HEIGHT * scale}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
       <div animate:flip="{{duration: flipDurationMs}}">
         <svelte:self {...{card:playingCard.data, column, row:row+1, scale, uncoveredPercenet}} />

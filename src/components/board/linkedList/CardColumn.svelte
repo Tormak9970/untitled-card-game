@@ -19,7 +19,6 @@
   let items = [];
   $: dragDisabled = false;
   $: dropFromOthersDisabled = false;
-  $: console.log(dropFromOthersDisabled);
 
   $: if (playingCards.first && notAdded) {
     notAdded = false;
@@ -45,13 +44,18 @@
     console.log("Card Column Finalized", JSON.parse(JSON.stringify(items)));
     if (tarElem) {
       const tmp = [...$cardColumns];
+      const tarColumn = tmp[tarElem.column];
 
-      // const tarColumn = tmp[tarElem.column];
+      /* Starts here */
       // const nodes = tarColumn.removeAllAfter(tarElem.row);
+      // console.log(nodes);
 
       // tmp[column].add(nodes);
+      /* Ends here */
 
-      // tmp[tarElem.column] = tarColumn;
+      tmp[tarElem.column] = tarColumn;
+      console.log(tarColumn);
+
       $cardColumns = tmp;
       dropFromOthersDisabled = true;
     }
