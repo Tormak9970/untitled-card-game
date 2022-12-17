@@ -29,6 +29,7 @@
       "column": column,
       "row": 0
     });
+    dragDisabled = !playingCards.first.data.revealed;
     dropFromOthersDisabled = playingCards.first != null && items.length > 0;
   }
 

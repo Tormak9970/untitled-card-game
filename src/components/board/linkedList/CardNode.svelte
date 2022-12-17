@@ -30,6 +30,7 @@
       "column": column,
       "row": row+1
     });
+    dragDisabled = !card?.next?.data.revealed;
     dropFromOthersDisabled = card?.next != null && items.length > 0;
   }
 
