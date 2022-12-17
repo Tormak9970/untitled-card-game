@@ -6,7 +6,7 @@
   import type { LinkedList, LinkedNode } from "../../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
   import {dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME, SHADOW_PLACEHOLDER_ITEM_ID} from "svelte-dnd-action";
-  import { cardColumns } from "../../../Stores";
+  import { cardColumns, dropZoneStyle } from "../../../Stores";
 
   export let playingCards:LinkedList<PlayingCard>;
   export let column:number;
@@ -17,7 +17,7 @@
   const UNCOVERED_PERCENT = 0.3;
 
   let items = [];
-  $: dragDisabled = false;//!playingCards.first.data.revealed;
+  $: dragDisabled = false;
   $: dropFromOthersDisabled = false;
   $: console.log(dropFromOthersDisabled);
 
@@ -59,7 +59,7 @@
 </script>
 
 <div class="card-column" style="width: {CARD_WIDTH * CARD_SCALE}px; height: {(playingCards.size) * (CARD_HEIGHT * CARD_SCALE) * UNCOVERED_PERCENT + (CARD_HEIGHT * CARD_SCALE)}px;">
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * CARD_SCALE}px;">
+  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * CARD_SCALE}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
       <div animate:flip="{{duration: flipDurationMs}}">
         <CardNode card={playingCard.data} column={column} row={0} scale={CARD_SCALE} uncoveredPercenet={UNCOVERED_PERCENT} />

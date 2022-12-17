@@ -7,7 +7,7 @@
   import type { LinkedNode } from "../../../lib/data-structs/LinkedList";
 
   import {dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME, SHADOW_PLACEHOLDER_ITEM_ID} from "svelte-dnd-action";
-  import { cardColumns } from "../../../Stores";
+  import { cardColumns, dropZoneStyle } from "../../../Stores";
 
   export let card:LinkedNode<PlayingCard>;
   export let column:number;
@@ -19,7 +19,7 @@
 
   let old = null;
   let items = [];
-  $: dragDisabled = false;//!card?.next?.data.revealed;
+  $: dragDisabled = false;
   $: dropFromOthersDisabled = false;
 
   $: if (card?.next && notAdded) {
@@ -62,7 +62,7 @@
 <div class="card-node" style="width: {CARD_WIDTH * scale}px; height: {(CARD_HEIGHT * scale) * uncoveredPercenet + (CARD_HEIGHT * scale)}px;">
   <Card card={card.data.card} suit={card.data.suit} revealed={card.data.revealed} scale={scale} uncoveredPercent={uncoveredPercenet} column={column} row={row} />
 
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px;">
+  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
       <div animate:flip="{{duration: flipDurationMs}}">
         <svelte:self {...{card:playingCard.data, column, row:row+1, scale, uncoveredPercenet}} />

@@ -26,6 +26,7 @@
 
     width: 100%;
     height: 100%;
+    /* transition: transform 0.8s; */
     transform: rotateX(3deg) rotateY(0deg) rotateZ(0deg);
   }
 </style>
