@@ -40,17 +40,18 @@
 
   function handleDndFinalize(e:any) {
     const tarElem = e.detail.items[0];
-    items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
-    console.log("Card Column Finalized", JSON.parse(JSON.stringify(items)));
+
     if (tarElem) {
       const tmp = [...$cardColumns];
       const tarColumn = tmp[tarElem.column];
+      
+      const nodes = tarColumn.removeAllAfter(tarElem.row);
+      console.log(nodes);
 
       /* Starts here */
-      // const nodes = tarColumn.removeAllAfter(tarElem.row);
-      // console.log(nodes);
 
       // tmp[column].add(nodes);
+      
       /* Ends here */
 
       tmp[tarElem.column] = tarColumn;
@@ -59,6 +60,9 @@
       $cardColumns = tmp;
       dropFromOthersDisabled = true;
     }
+    
+    items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
+    console.log("Card Column Finalized", JSON.parse(JSON.stringify(items)));
   }
 </script>
 

@@ -79,7 +79,7 @@ export class LinkedList<T> {
 
       target.next = null;
     }
-    this.size--;
+    this.size = idx;
 
     return ret;
   }

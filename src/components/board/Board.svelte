@@ -9,7 +9,7 @@
 
 <div class="board" bind:this={board}>
   <div class="column-container">
-    {#each columns as cards, idx (cards.size)}
+    {#each columns as cards, idx (`${cards.size}|${idx}`)}
       <CardColumn playingCards={cards} column={idx} />
     {/each}
   </div>
