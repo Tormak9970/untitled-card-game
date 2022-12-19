@@ -7,6 +7,7 @@ export const cardColumns:Writable<LinkedList<PlayingCard>[]> = writable([]);
 
 
 export const dropZoneStyle = {
-  border: '2px dashed #d87e08',
-  borderRadius: "4px"
+  border: '1px solid #d87e08',
+  borderRadius: "4px",
+  backgroundColor: "rgba(216, 126, 8, 0.2)"
 };

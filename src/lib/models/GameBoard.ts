@@ -28,7 +28,6 @@ export class GameBoard {
       }
     }
 
-    console.log(board);
     cardColumns.set(board);
   }
 

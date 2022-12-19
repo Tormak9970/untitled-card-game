@@ -3,9 +3,9 @@
   import { flip } from "svelte/animate";
   import type { PlayingCard } from "../../../lib/models/PlayingCard";
   import { CARD_HEIGHT, CARD_WIDTH } from "../../../lib/SpriteLUT";
-  import type { LinkedList, LinkedNode } from "../../../lib/data-structs/LinkedList";
+  import type { LinkedList } from "../../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
-  import {dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME, SHADOW_PLACEHOLDER_ITEM_ID} from "svelte-dnd-action";
+  import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID} from "svelte-dnd-action";
   import { cardColumns, dropZoneStyle } from "../../../Stores";
 
   export let playingCards:LinkedList<PlayingCard>;
@@ -46,23 +46,14 @@
       const tarColumn = tmp[tarElem.column];
       
       const nodes = tarColumn.removeAllAfter(tarElem.row);
-      console.log(nodes);
-
-      /* Starts here */
-
-      // tmp[column].add(nodes);
-      
-      /* Ends here */
-
+      tmp[column].add(nodes);
       tmp[tarElem.column] = tarColumn;
-      console.log(tarColumn);
 
       $cardColumns = tmp;
       dropFromOthersDisabled = true;
     }
     
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
-    console.log("Card Column Finalized", JSON.parse(JSON.stringify(items)));
   }
 </script>
 

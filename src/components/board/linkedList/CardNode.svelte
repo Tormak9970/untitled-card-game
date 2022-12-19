@@ -6,7 +6,7 @@
   import Card from "../../cards/Card.svelte";
   import type { LinkedNode } from "../../../lib/data-structs/LinkedList";
 
-  import {dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME, SHADOW_PLACEHOLDER_ITEM_ID} from "svelte-dnd-action";
+  import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID} from "svelte-dnd-action";
   import { cardColumns, dropZoneStyle } from "../../../Stores";
 
   export let card:LinkedNode<PlayingCard>;
@@ -17,7 +17,6 @@
 
   let notAdded = true;
 
-  let old = null;
   let items = [];
   $: dragDisabled = false;
   $: dropFromOthersDisabled = false;
@@ -48,16 +47,8 @@
       const tarColumn = tmp[tarElem.column];
       
       const nodes = tarColumn.removeAllAfter(tarElem.row);
-      console.log(nodes);
-
-      /* Starts here */
-
-      tmp[column].add(tarElem);
-
-      /* Ends here */
-
+      tmp[column].add(nodes);
       tmp[tarElem.column] = tarColumn;
-      console.log(tarColumn);
 
       $cardColumns = tmp;
       dropFromOthersDisabled = true;
