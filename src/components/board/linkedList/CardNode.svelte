@@ -7,7 +7,7 @@
   import type { LinkedNode } from "../../../lib/data-structs/LinkedList";
 
   import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID} from "svelte-dnd-action";
-  import { cardColumns, dropZoneStyle } from "../../../Stores";
+  import { cardColumns, dropZoneStyle, renderedList } from "../../../Stores";
 
   export let card:LinkedNode<PlayingCard>;
   export let column:number;
@@ -20,6 +20,7 @@
   let items = [];
   $: dragDisabled = false;
   $: dropFromOthersDisabled = false;
+  $: revealed = $renderedList[`${card.data.card}|${card.data.suit}`] ? $renderedList[`${card.data.card}|${card.data.suit}`] : false;
 
   $: if (card?.next && notAdded) {
     notAdded = false;
@@ -31,6 +32,13 @@
     });
     dragDisabled = !card?.next?.data.revealed;
     dropFromOthersDisabled = card?.next != null && items.length > 0;
+  }
+
+  $: if (!revealed && !$renderedList[`${card.data.card}|${card.data.suit}`] && card.data.revealed) {
+    setTimeout(() => {
+      $renderedList[`${card.data.card}|${card.data.suit}`] = true;
+      revealed = card.data.revealed;
+    }, 100);
   }
 
   const flipDurationMs = 300;
@@ -50,6 +58,11 @@
       tmp[column].add(nodes);
       tmp[tarElem.column] = tarColumn;
 
+      if (tarElem.row > 0) {
+        const prevNode = tarColumn.get(tarElem.row-1);
+        prevNode.data.revealed = true;
+      }
+
       $cardColumns = tmp;
       dropFromOthersDisabled = true;
     }
@@ -59,7 +72,7 @@
 </script>
 
 <div class="card-node" style="width: {CARD_WIDTH * scale}px; height: {(CARD_HEIGHT * scale) * uncoveredPercenet + (CARD_HEIGHT * scale)}px;">
-  <Card card={card.data.card} suit={card.data.suit} revealed={card.data.revealed} scale={scale} uncoveredPercent={uncoveredPercenet} column={column} row={row} />
+  <Card card={card.data.card} suit={card.data.suit} revealed={revealed} scale={scale} uncoveredPercent={uncoveredPercenet} column={column} row={row} />
 
   <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {uncoveredPercenet * CARD_HEIGHT * scale}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
