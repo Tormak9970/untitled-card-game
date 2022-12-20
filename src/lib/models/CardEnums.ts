@@ -19,3 +19,30 @@ export enum FaceCards {
 }
 
 export type Cards = BaseCards | FaceCards;
+
+type CardOrder = {
+  [key in Cards]: number;
+}
+
+const CARD_ORDER: CardOrder = {
+  "Joker": -1,
+  "Ace": 0,
+  "Two": 1,
+  "Three": 2,
+  "Four": 3,
+  "Five": 4,
+  "Six": 5,
+  "Seven": 6,
+  "Eight": 7,
+  "Nine": 8,
+  "Ten": 9,
+  "Jack": 10,
+  "Queen": 11,
+  "King": 12
+};
+
+export function getNextCard(card:Cards): string {
+  return card == FaceCards.ACE ? "None" : Object.keys(CARD_ORDER)[CARD_ORDER[card]];
+}
+
+export { CARD_ORDER };

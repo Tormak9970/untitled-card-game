@@ -7,6 +7,7 @@
   import CardNode from "./CardNode.svelte";
   import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID} from "svelte-dnd-action";
   import { cardColumns, dropZoneStyle } from "../../../Stores";
+  import { getCurrentCardZoneType, getKingZoneType } from "../../../UiLogic";
 
   export let playingCards:LinkedList<PlayingCard>;
   export let column:number;
@@ -19,6 +20,7 @@
   let items = [];
   $: dragDisabled = false;
   $: dropFromOthersDisabled = false;
+  $: type = playingCards.first ? getCurrentCardZoneType(playingCards.first) : getKingZoneType();
 
   $: if (playingCards.first && notAdded) {
     notAdded = false;
@@ -41,7 +43,7 @@
   function handleDndFinalize(e:any) {
     const tarElem = e.detail.items[0];
 
-    if (tarElem) {
+    if (tarElem && tarElem.id != `${playingCards.first?.data.card}|${playingCards.first?.data.suit}`) {
       const tmp = [...$cardColumns];
       const tarColumn = tmp[tarElem.column];
       
@@ -58,7 +60,7 @@
 </script>
 
 <div class="card-column" style="width: {CARD_WIDTH * CARD_SCALE}px; height: {(playingCards.size) * (CARD_HEIGHT * CARD_SCALE) * UNCOVERED_PERCENT + (CARD_HEIGHT * CARD_SCALE)}px;">
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * CARD_SCALE}px;">
+  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, type}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * CARD_SCALE}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
       <div animate:flip="{{duration: flipDurationMs}}">
         <CardNode card={playingCard.data} column={column} row={0} scale={CARD_SCALE} uncoveredPercenet={UNCOVERED_PERCENT} />
