@@ -6,7 +6,7 @@
   import type { LinkedList } from "../../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
   import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID} from "svelte-dnd-action";
-  import { cardColumns, dropZoneStyle } from "../../../Stores";
+  import { cardColumns, dropZoneStyle, moves } from "../../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../../UiLogic";
 
   export let playingCards:LinkedList<PlayingCard>;
@@ -44,6 +44,9 @@
     const tarElem = e.detail.items[0];
 
     if (tarElem && tarElem.id != `${playingCards.first?.data.card}|${playingCards.first?.data.suit}`) {
+      $moves.push(`boardState:${JSON.stringify($cardColumns)}`);
+      $moves = $moves;
+
       const tmp = [...$cardColumns];
       const tarColumn = tmp[tarElem.column];
       

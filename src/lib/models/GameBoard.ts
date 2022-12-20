@@ -30,12 +30,4 @@ export class GameBoard {
 
     cardColumns.set(board);
   }
-
-  movePile() {
-
-  }
-
-  validateMove() {
-    
-  }
 }

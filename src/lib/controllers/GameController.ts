@@ -37,10 +37,6 @@ export class GameController {
     return new Stack<PlayingCard>(cards);;
   }
 
-  movePile(column:number, row:number) {
-
-  }
-
   undo() {
 
   }

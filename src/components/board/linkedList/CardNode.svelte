@@ -9,7 +9,7 @@
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID } from "svelte-dnd-action";
 
   import { CARD_HEIGHT, CARD_WIDTH } from "../../../lib/SpriteLUT";
-  import { cardColumns, dropZoneStyle, renderedList } from "../../../Stores";
+  import { cardColumns, dropZoneStyle, moves, renderedList } from "../../../Stores";
   import { getHiddenZoneType, getZoneType } from "../../../UiLogic";
 
   export let card:LinkedNode<PlayingCard>;
@@ -55,6 +55,9 @@
     const tarElem = e.detail.items[0];
     
     if (tarElem && tarElem.id != `${card?.next?.data.card}|${card?.next?.data.suit}`) {
+      $moves.push(`boardState:${JSON.stringify($cardColumns)}`);
+      $moves = $moves;
+      
       const tmp = [...$cardColumns];
       const tarColumn = tmp[tarElem.column];
       
