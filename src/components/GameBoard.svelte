@@ -1,14 +1,17 @@
 <script lang="ts">
   import Board from "./board/Board.svelte";
   import Deck from "./deck/Deck.svelte";
+  import { CARD_HEIGHT, CARD_WIDTH } from "../lib/SpriteLUT";
+
+  const CARD_SCALE = 0.4;
 </script>
 
 <div class="game-board">
-  <div class="deck-cont">
-    <Deck />
+  <div class="deck-cont" style="margin-right: {CARD_SCALE * CARD_WIDTH * 3}px;">
+    <Deck scale={CARD_SCALE} />
   </div>
   <div class="board-cont">
-    <Board />
+    <Board scale={CARD_SCALE} />
   </div>
 </div>
 

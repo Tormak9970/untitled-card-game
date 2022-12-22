@@ -1,6 +1,7 @@
 import type { PlayingCard } from "./PlayingCard";
 import { Stack } from "../data-structs/Stack";
 import type { GameBoard } from "./GameBoard";
+import { discardStack, drawStack } from "../../Stores";
 
 /**
  * Class representing a deck of cards.
@@ -12,6 +13,8 @@ export class Deck {
   constructor(cards:Stack<PlayingCard>) {
     this._drawPile = cards;
     this._discardPile = new Stack<PlayingCard>();
+    
+    this.updateStores();
   }
 
   /**
@@ -24,13 +27,18 @@ export class Deck {
     this._drawPile = new Stack<PlayingCard>(cards.slice(28));
     
     gameBoard.setBoard(topCards);
+    
+    this.updateStores();
   }
 
   /**
    * Draws the top card of the draw pile.
    */
   drawCard() {
-
+    const card = this._drawPile.pop();
+    this._discardPile.push(card);
+    
+    this.updateStores();
   }
 
   /**
@@ -42,14 +50,15 @@ export class Deck {
       this._drawPile.push(card);
     }
     this._discardPile = new Stack<PlayingCard>();
+    
+    this.updateStores();
   }
 
   /**
    * Plays the current card.
    */
   playCurrentCard() {
-    const card = this._drawPile.pop();
-    this._discardPile.push(card);
+    
   }
 
   /**
@@ -66,5 +75,15 @@ export class Deck {
     }
 
     this._drawPile = new Stack<PlayingCard>(cards);
+
+    this.updateStores();
+  }
+
+  /**
+   * Updates the stores associated with the draw pile.
+   */
+  private updateStores(): void {
+    drawStack.set(this._drawPile);
+    discardStack.set(this._discardPile);
   }
 }

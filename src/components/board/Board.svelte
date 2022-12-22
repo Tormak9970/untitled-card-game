@@ -2,13 +2,15 @@
   import { cardColumns } from "../../Stores";
   import CardColumn from "./CardColumn.svelte";
 
+  export let scale:number;
+
   $: columns = [...$cardColumns];
 </script>
 
 <div class="board">
   <div class="column-container">
     {#each columns as cards, idx (`${cards.size}|${idx}`)}
-      <CardColumn playingCards={cards} column={idx} />
+      <CardColumn playingCards={cards} column={idx} scale={scale} />
     {/each}
   </div>
 </div>

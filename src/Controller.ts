@@ -27,11 +27,8 @@ export class Controller {
     }
   }
 
-  static getCardBackSprite(): SpriteInfo {
-    return Controller.spriteLoader.loadCardBack();
-  }
+  static getCardBackSprite(): SpriteInfo { return Controller.spriteLoader.loadCardBack(); }
+  static getAboutCardSprite(): SpriteInfo { return Controller.spriteLoader.loadAboutCard(); }
 
-  static getAboutCardSprite(): SpriteInfo {
-    return Controller.spriteLoader.loadAboutCard();
-  }
+  static drawCard(): void { Controller.gameController.drawCard(); }
 }
