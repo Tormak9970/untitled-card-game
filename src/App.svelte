@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Controller } from "./Controller";
-  import GameBoard from "./components/board/GameBoard.svelte";
+  import GameBoard from "./components/GameBoard.svelte";
   
   onMount(() => {
     Controller.init();

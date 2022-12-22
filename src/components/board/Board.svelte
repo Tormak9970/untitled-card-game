@@ -1,13 +1,11 @@
 <script lang="ts">
   import { cardColumns } from "../../Stores";
-  import CardColumn from "./linkedList/CardColumn.svelte";
-
-  let board:HTMLDivElement;
+  import CardColumn from "./CardColumn.svelte";
 
   $: columns = [...$cardColumns];
 </script>
 
-<div class="board" bind:this={board}>
+<div class="board">
   <div class="column-container">
     {#each columns as cards, idx (`${cards.size}|${idx}`)}
       <CardColumn playingCards={cards} column={idx} />
@@ -27,6 +25,6 @@
     width: 100%;
     height: 100%;
     /* transition: transform 0.8s; */
-    transform: rotateX(3deg) rotateY(0deg) rotateZ(0deg);
+    /* transform: rotateX(3deg) rotateY(0deg) rotateZ(0deg); */
   }
 </style>

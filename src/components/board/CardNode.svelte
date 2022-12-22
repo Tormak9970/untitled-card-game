@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { LinkedNode } from "../../../lib/data-structs/LinkedList";
-  import type { PlayingCard } from "../../../lib/models/PlayingCard";
+  import type { LinkedNode } from "../../lib/data-structs/LinkedList";
+  import type { PlayingCard } from "../../lib/models/PlayingCard";
   
-  import Card from "../../cards/Card.svelte";
+  import Card from "../cards/Card.svelte";
 
   import { fade, slide } from "svelte/transition";
   import { flip } from "svelte/animate";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID } from "svelte-dnd-action";
 
-  import { CARD_HEIGHT, CARD_WIDTH } from "../../../lib/SpriteLUT";
-  import { cardColumns, dropZoneStyle, moves, renderedList } from "../../../Stores";
-  import { getHiddenZoneType, getZoneType } from "../../../UiLogic";
+  import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
+  import { cardColumns, dropZoneStyle, moves, renderedList } from "../../Stores";
+  import { getHiddenZoneType, getZoneType } from "../../UiLogic";
 
   export let card:LinkedNode<PlayingCard>;
   export let column:number;
