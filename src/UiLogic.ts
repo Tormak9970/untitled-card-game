@@ -1,5 +1,5 @@
 import type { LinkedNode } from "./lib/data-structs/LinkedList"
-import { CARD_ORDER, FaceCards, getNextCard } from "./lib/models/CardEnums"
+import { CARD_ORDER, FaceCards, getNextCard, type Cards } from "./lib/models/CardEnums"
 import type { PlayingCard } from "./lib/models/PlayingCard"
 import { isBlackSuit, isRedSuit, Suits } from "./lib/models/Suits"
 
@@ -27,9 +27,21 @@ export function getHiddenZoneType(card:LinkedNode<PlayingCard>): string {
   }
 }
 
-export function getCurrentCardZoneType(card:LinkedNode<PlayingCard>): string {
-  const currColor = isRedSuit(card.data.suit as Suits) ? "Red" : "Black";
-  const currCard = card.data.card;
+function isLinkedNode(card:LinkedNode<PlayingCard>|PlayingCard): card is LinkedNode<PlayingCard> {
+  return (card as LinkedNode<PlayingCard>).next !== undefined;
+}
+
+export function getCurrentCardZoneType(card:LinkedNode<PlayingCard>|PlayingCard): string {
+  let currCard:Cards;
+  let suit:Suits;
+  if (isLinkedNode(card)) {
+    currCard = card.data.card;
+    suit = card.data.suit as Suits;
+  } else {
+    suit = card.suit as Suits
+    currCard = card.card;
+  }
+  const currColor = isRedSuit(suit) ? "Red" : "Black";
   return currCard == FaceCards.KING ? getKingZoneType() : `${currColor}|${currCard}`;
 }
 

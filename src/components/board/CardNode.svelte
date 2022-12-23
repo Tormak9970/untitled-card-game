@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { LinkedNode } from "../../lib/data-structs/LinkedList";
+  import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   
   import Card from "../cards/Card.svelte";
@@ -9,8 +9,10 @@
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID } from "svelte-dnd-action";
 
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { cardColumns, dropZoneStyle, moves, renderedList } from "../../Stores";
+  import { cardColumns, discardStack, drawStack, dropZoneStyle, moves, renderedList } from "../../Stores";
   import { getHiddenZoneType, getZoneType } from "../../UiLogic";
+  import { Stack } from "../../lib/data-structs/Stack";
+  import { Controller } from "../../Controller";
 
   export let card:LinkedNode<PlayingCard>;
   export let column:number;
@@ -55,19 +57,34 @@
     const tarElem = e.detail.items[0];
     
     if (tarElem && tarElem.id != `${card?.next?.data.card}|${card?.next?.data.suit}`) {
-      $moves.push(`boardState:${JSON.stringify($cardColumns)}`);
-      $moves = $moves;
-      
       const tmp = [...$cardColumns];
-      const tarColumn = tmp[tarElem.column];
       
-      const nodes = tarColumn.removeAllAfter(tarElem.row);
-      tmp[column].add(nodes);
-      tmp[tarElem.column] = tarColumn;
-
-      if (tarElem.row > 0) {
-        const prevNode = tarColumn.get(tarElem.row-1);
-        prevNode.data.revealed = true;
+      if (typeof tarElem.column == "number") {
+        $moves.push(`boardState:${JSON.stringify($cardColumns)}`);
+        $moves = $moves;
+        const tarColumn = tmp[tarElem.column];
+      
+        const nodes = tarColumn.removeAllAfter(tarElem.row);
+        tmp[column].add(nodes);
+        tmp[tarElem.column] = tarColumn;
+      } else {
+        $moves.push(`multiState:${JSON.stringify({
+          "boardState": $cardColumns,
+          "drawState": $drawStack.toArray(),
+          "discardState": $discardStack.toArray()
+        })}`);
+        $moves = $moves;
+        const card = new LinkedNode<PlayingCard>($discardStack.pop());
+        Controller.playCurrentCard();
+        $renderedList[`${card.data.card}|${card.data.suit}`] = true;
+        e.detail.items[0] = {
+          "id": `${card.data.card}|${card.data.suit}`,
+          "data": card,
+          "column": column,
+          "row": 0
+        };
+        tmp[column].add(card);
+        $discardStack = new Stack<PlayingCard>($discardStack.toArray());
       }
 
       $cardColumns = tmp;

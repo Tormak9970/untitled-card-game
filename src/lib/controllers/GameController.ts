@@ -19,6 +19,8 @@ export class GameController {
 
   deal(): void { this.deck.dealCards(this.gameBoard); }
   drawCard(): void { this.deck.drawCard(); }
+  recycleDeck(): void { this.deck.recycleDeck(); }
+  playCurrentCard(): void { this.deck.playCurrentCard(); }
 
   private generateCardStack():Stack<PlayingCard> {
     const cards:PlayingCard[] = [];

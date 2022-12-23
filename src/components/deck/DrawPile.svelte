@@ -9,15 +9,34 @@
 
   export let scale:number;
 
+  import { quintOut } from 'svelte/easing';
+	import { crossfade } from 'svelte/transition';
+
+  // TODO: implement this: https://svelte.dev/tutorial/deferred-transitions
+  // and this: https://svelte.dev/tutorial/animate
+  
+	const [send, receive] = crossfade({
+		duration: d => Math.sqrt(d * 200),
+
+		fallback(node, params) {
+			const style = getComputedStyle(node);
+			const transform = style.transform === 'none' ? '' : style.transform;
+
+			return {
+				duration: 600,
+				easing: quintOut,
+				css: t => `
+					transform: ${transform} scale(${t});
+					opacity: ${t}
+				`
+			};
+		}
+	});
+
   $: topCard = $drawStack.size() > 0 ? $drawStack.peek() : null;
 
-  function drawCard(e:MouseEvent): void {
-    Controller.drawCard();
-  }
-
-  function recycleDiscard(e:MouseEvent): void {
-
-  }
+  function drawCard(): void { Controller.drawCard(); }
+  function recycleDiscard(): void { Controller.recycleDeck(); }
 </script>
 
 <div class="draw-pile">
@@ -28,7 +47,7 @@
     </div>
   {:else}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div class="empty-pile" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px;" on:click={recycleDiscard}>
+    <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;" on:click={recycleDiscard}>
       <div class="empty-inner">
         <!-- Same size as card but suggest drawing a card -->
         <Icon data={refresh} scale={4} class="icon"/>

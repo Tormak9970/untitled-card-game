@@ -36,6 +36,7 @@ export class Deck {
    */
   drawCard() {
     const card = this._drawPile.pop();
+    card.revealed = true;
     this._discardPile.push(card);
     
     this.updateStores();
@@ -47,6 +48,7 @@ export class Deck {
   recycleDeck() {
     for (let i = 0; i < this._discardPile.size(); i++) {
       const card = this._discardPile.pop();
+      card.revealed = false;
       this._drawPile.push(card);
     }
     this._discardPile = new Stack<PlayingCard>();
@@ -58,7 +60,7 @@ export class Deck {
    * Plays the current card.
    */
   playCurrentCard() {
-    
+    this._discardPile.pop();
   }
 
   /**

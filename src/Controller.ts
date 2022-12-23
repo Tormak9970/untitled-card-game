@@ -31,4 +31,6 @@ export class Controller {
   static getAboutCardSprite(): SpriteInfo { return Controller.spriteLoader.loadAboutCard(); }
 
   static drawCard(): void { Controller.gameController.drawCard(); }
+  static recycleDeck(): void { Controller.gameController.recycleDeck(); }
+  static playCurrentCard(): void { Controller.gameController.playCurrentCard(); }
 }
