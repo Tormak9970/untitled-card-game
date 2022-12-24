@@ -11,6 +11,9 @@
 
   import { quintOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
+  import { onMount } from "svelte";
+
+  $: topCard = $drawStack.size() > 0 ? $drawStack.peek() : null;
 
   // TODO: implement this: https://svelte.dev/tutorial/deferred-transitions
   // and this: https://svelte.dev/tutorial/animate
@@ -33,39 +36,39 @@
 		}
 	});
 
-  $: topCard = $drawStack.size() > 0 ? $drawStack.peek() : null;
-
   function drawCard(): void { Controller.drawCard(); }
-  function recycleDiscard(): void { Controller.recycleDeck(); }
+  function recycleDiscard(): void {
+    if (!topCard) {
+      Controller.recycleDeck();
+    }
+  }
+
+  onMount(() => {
+    drawStack.subscribe((value) => {
+      console.log("drawpile updated");
+      topCard = value.size() > 0 ? value.peek() : null;
+    });
+  });
 </script>
 
 <div class="draw-pile">
-  {#if topCard}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div class="card-wrapper" on:click={drawCard}>
-      <Card card={topCard.card} suit={topCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
-    </div>
-  {:else}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;" on:click={recycleDiscard}>
-      <div class="empty-inner">
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;">
+    <div class="empty-inner" on:click|stopPropagation={recycleDiscard}>
+      {#if topCard}
+        <div class="card-wrapper" on:click|stopPropagation={drawCard} in:receive="{{key: `${topCard.card}|${topCard.suit}`}}" out:send="{{key: `${topCard.card}|${topCard.suit}`}}">
+          <Card card={topCard.card} suit={topCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
+        </div>
+      {:else}
         <!-- Same size as card but suggest drawing a card -->
         <Icon data={refresh} scale={4} class="icon"/>
-      </div>
+      {/if}
     </div>
-  {/if}
+  </div>
 </div>
 
 <style>
   @import "/theme.css";
-
-  .draw-pile {
-    
-  }
-
-  .card-wrapper {
-
-  }
 
   .empty-pile {
     background-color: var(--highlight);

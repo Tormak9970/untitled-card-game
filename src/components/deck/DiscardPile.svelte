@@ -14,6 +14,9 @@
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   import { onMount } from "svelte";
 
+  import { quintOut } from 'svelte/easing';
+  import { crossfade } from 'svelte/transition';
+
   export let scale:number;
 
   let notAdded = true;
@@ -34,6 +37,27 @@
       "row": 0
     });
   }
+  
+  // TODO: implement this: https://svelte.dev/tutorial/deferred-transitions
+  // and this: https://svelte.dev/tutorial/animate
+  
+	const [send, receive] = crossfade({
+		duration: d => Math.sqrt(d * 200),
+
+		fallback(node, params) {
+			const style = getComputedStyle(node);
+			const transform = style.transform === 'none' ? '' : style.transform;
+
+			return {
+				duration: 600,
+				easing: quintOut,
+				css: t => `
+					transform: ${transform} scale(${t});
+					opacity: ${t}
+				`
+			};
+		}
+	});
 
   const flipDurationMs = 300;
   function handleDndConsider(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID); }
