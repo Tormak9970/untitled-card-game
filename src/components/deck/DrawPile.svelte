@@ -56,9 +56,11 @@
   <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;">
     <div class="empty-inner" on:click|stopPropagation={recycleDiscard}>
       {#if topCard}
-        <div class="card-wrapper" on:click|stopPropagation={drawCard} in:receive="{{key: `${topCard.card}|${topCard.suit}`}}" out:send="{{key: `${topCard.card}|${topCard.suit}`}}">
-          <Card card={topCard.card} suit={topCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
-        </div>
+        {#key `${topCard.card}|${topCard.suit}`}
+          <div class="card-wrapper" on:click|stopPropagation={drawCard}>
+            <Card card={topCard.card} suit={topCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
+          </div>
+        {/key}
       {:else}
         <!-- Same size as card but suggest drawing a card -->
         <Icon data={refresh} scale={4} class="icon"/>

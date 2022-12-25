@@ -1,4 +1,4 @@
-import type { PlayingCard } from "./PlayingCard";
+import { PlayingCard } from "./PlayingCard";
 import { Stack } from "../data-structs/Stack";
 import type { GameBoard } from "./GameBoard";
 import { discardStack, drawStack } from "../../Stores";
@@ -61,6 +61,8 @@ export class Deck {
    */
   playCurrentCard() {
     this._discardPile.pop();
+    this._discardPile = new Stack<PlayingCard>(this._discardPile.toArray());
+    this.updateStores();
   }
 
   /**

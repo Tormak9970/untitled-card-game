@@ -19,24 +19,12 @@
 
   export let scale:number;
 
-  let notAdded = true;
-
   let items = [];
   let dropFromOthersDisabled = true;
   let dragDisabled = false;
 
-  $: topCard = $discardStack.size() > 0 ? $discardStack.peek() : null;
+  let topCard:PlayingCard;
   $: type = topCard ? getCurrentCardZoneType(topCard) : getKingZoneType();
-
-  $: if (topCard && notAdded) {
-    notAdded = false;
-    items.push({
-      "id": `${topCard.card}|${topCard.suit}`,
-      "data": new LinkedNode<PlayingCard>(topCard),
-      "column": "none",
-      "row": 0
-    });
-  }
   
   // TODO: implement this: https://svelte.dev/tutorial/deferred-transitions
   // and this: https://svelte.dev/tutorial/animate
@@ -59,7 +47,6 @@
 		}
 	});
 
-  const flipDurationMs = 300;
   function handleDndConsider(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID); }
   function handleDndFinalize(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID); }
 
@@ -74,7 +61,9 @@
           "column": "none",
           "row": 0
         };
+        items = [...items];
       }
+      console.log(items);
     });
   });
 </script>
@@ -82,11 +71,11 @@
 <div class="discard-pile">
   <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;">
     <div class="empty-inner">
-      <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, type}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
-        {#each items.slice(0, 1) as playingCard (playingCard.id)}
-          <div animate:flip="{{duration: flipDurationMs}}">
+      <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, type, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
+        {#each items as playingCard (playingCard.id)}
+          <div>
             <div class="card-wrapper">
-              <Card card={topCard.card} suit={topCard.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
+              <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
             </div>
           </div>
         {/each}
