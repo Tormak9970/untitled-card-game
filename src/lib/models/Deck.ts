@@ -1,7 +1,7 @@
-import { PlayingCard } from "./PlayingCard";
+import type { PlayingCard } from "./PlayingCard";
 import { Stack } from "../data-structs/Stack";
 import type { GameBoard } from "./GameBoard";
-import { discardStack, drawStack } from "../../Stores";
+import { discardCard, drawCard } from "../../Stores";
 
 /**
  * Class representing a deck of cards.
@@ -61,7 +61,6 @@ export class Deck {
    */
   playCurrentCard() {
     this._discardPile.pop();
-    this._discardPile = new Stack<PlayingCard>(this._discardPile.toArray());
     this.updateStores();
   }
 
@@ -87,7 +86,7 @@ export class Deck {
    * Updates the stores associated with the draw pile.
    */
   private updateStores(): void {
-    drawStack.set(this._drawPile);
-    discardStack.set(this._discardPile);
+    drawCard.set(this._drawPile.peek());
+    discardCard.set(this._discardPile.peek());
   }
 }

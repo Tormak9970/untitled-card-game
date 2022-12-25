@@ -6,7 +6,7 @@
   import { LinkedNode, type LinkedList } from "../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
   import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID} from "svelte-dnd-action";
-  import { cardColumns, discardStack, drawStack, dropZoneStyle, moves, renderedList } from "../../Stores";
+  import { cardColumns, discardCard, drawCard, dropZoneStyle, moves, renderedList } from "../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { Stack } from "../../lib/data-structs/Stack";
   import { Controller } from "../../Controller";
@@ -59,11 +59,11 @@
       } else {
         $moves.push(`multiState:${JSON.stringify({
           "boardState": $cardColumns,
-          "drawState": $drawStack.toArray(),
-          "discardState": $discardStack.toArray()
+          "drawState": $drawCard,
+          "discardState": $discardCard
         })}`);
         $moves = $moves;
-        const card = new LinkedNode<PlayingCard>($discardStack.pop());
+        const card = new LinkedNode<PlayingCard>($discardCard);
         $renderedList[`${card.data.card}|${card.data.suit}`] = true;
         Controller.playCurrentCard();
         e.detail.items[0] = {
@@ -73,7 +73,7 @@
           "row": 0
         };
         tmp[column].add(card);
-        $discardStack = new Stack<PlayingCard>($discardStack.toArray());
+        $discardCard = $discardCard;
       }
 
       $cardColumns = tmp;

@@ -13,8 +13,8 @@ export const highScore = writable(0);
 export const moves:Writable<string[]> = writable([]);
 
 export const cardColumns:Writable<CardColumn> = writable([]);
-export const drawStack:Writable<Stack<PlayingCard>> = writable(new Stack<PlayingCard>());
-export const discardStack:Writable<Stack<PlayingCard>> = writable(new Stack<PlayingCard>());
+export const drawCard:Writable<PlayingCard> = writable(null);
+export const discardCard:Writable<PlayingCard> = writable(null);
 
 
 export const dropZoneStyle = {

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { discardStack, discardZoneStyle } from "../../Stores";
+  import { discardCard, discardZoneStyle } from "../../Stores";
   import Card from "../cards/Card.svelte";
 
   import { flip } from "svelte/animate";
@@ -23,8 +23,7 @@
   let dropFromOthersDisabled = true;
   let dragDisabled = false;
 
-  let topCard:PlayingCard;
-  $: type = topCard ? getCurrentCardZoneType(topCard) : getKingZoneType();
+  let type = $discardCard ? getCurrentCardZoneType($discardCard) : getKingZoneType();
   
   // TODO: implement this: https://svelte.dev/tutorial/deferred-transitions
   // and this: https://svelte.dev/tutorial/animate
@@ -51,18 +50,18 @@
   function handleDndFinalize(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID); }
 
   onMount(() => {
-    discardStack.subscribe((value) => {
+    discardCard.subscribe((value) => {
       console.log("discard updated");
-      topCard = value.size() > 0 ? value.peek() : null;
-      if (topCard) {
+      if (value) {
         items[0] = {
-          "id": `${topCard.card}|${topCard.suit}`,
-          "data": new LinkedNode<PlayingCard>(topCard),
+          "id": `${value.card}|${value.suit}`,
+          "data": new LinkedNode<PlayingCard>(value),
           "column": "none",
           "row": 0
         };
         items = [...items];
       }
+      type = value ? getCurrentCardZoneType(value) : getKingZoneType();
       console.log(items);
     });
   });
@@ -73,10 +72,8 @@
     <div class="empty-inner">
       <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, type, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
         {#each items as playingCard (playingCard.id)}
-          <div>
-            <div class="card-wrapper">
-              <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
-            </div>
+          <div class="card-wrapper">
+            <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
           </div>
         {/each}
       </div>

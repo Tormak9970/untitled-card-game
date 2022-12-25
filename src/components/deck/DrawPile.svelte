@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Controller } from "../../Controller";
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { drawStack } from "../../Stores";
+  import { drawCard } from "../../Stores";
   import Card from "../cards/Card.svelte";
   
   import Icon from 'svelte-awesome';
@@ -12,8 +12,6 @@
   import { quintOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
   import { onMount } from "svelte";
-
-  $: topCard = $drawStack.size() > 0 ? $drawStack.peek() : null;
 
   // TODO: implement this: https://svelte.dev/tutorial/deferred-transitions
   // and this: https://svelte.dev/tutorial/animate
@@ -36,29 +34,22 @@
 		}
 	});
 
-  function drawCard(): void { Controller.drawCard(); }
+  function doDrawCard(): void { Controller.drawCard(); }
   function recycleDiscard(): void {
-    if (!topCard) {
+    if (!$drawCard) {
       Controller.recycleDeck();
     }
   }
-
-  onMount(() => {
-    drawStack.subscribe((value) => {
-      console.log("drawpile updated");
-      topCard = value.size() > 0 ? value.peek() : null;
-    });
-  });
 </script>
 
 <div class="draw-pile">
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;">
     <div class="empty-inner" on:click|stopPropagation={recycleDiscard}>
-      {#if topCard}
-        {#key `${topCard.card}|${topCard.suit}`}
-          <div class="card-wrapper" on:click|stopPropagation={drawCard}>
-            <Card card={topCard.card} suit={topCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
+      {#if $drawCard}
+        {#key `${$drawCard.card}|${$drawCard.suit}`}
+          <div class="card-wrapper" on:click|stopPropagation={doDrawCard}>
+            <Card card={$drawCard.card} suit={$drawCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
           </div>
         {/key}
       {:else}
