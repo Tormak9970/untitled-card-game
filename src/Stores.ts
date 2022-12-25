@@ -16,6 +16,8 @@ export const cardColumns:Writable<CardColumn> = writable([]);
 export const drawCard:Writable<PlayingCard> = writable(null);
 export const discardCard:Writable<PlayingCard> = writable(null);
 
+export const discardId = writable(0);
+
 
 export const dropZoneStyle = {
   "border": '1px solid #d87e08',

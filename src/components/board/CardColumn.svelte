@@ -77,7 +77,6 @@
           "row": 0
         };
         tmp[column].add(card);
-        $discardCard = {...$discardCard};
       }
 
       $cardColumns = tmp;

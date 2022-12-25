@@ -1,9 +1,8 @@
 <script lang="ts">
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { discardCard, discardZoneStyle } from "../../Stores";
+  import { discardCard, discardId, discardZoneStyle } from "../../Stores";
   import Card from "../cards/Card.svelte";
 
-  import { flip } from "svelte/animate";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID } from "svelte-dnd-action";
 
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
@@ -14,9 +13,6 @@
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   import { onMount } from "svelte";
 
-  import { quintOut } from 'svelte/easing';
-  import { crossfade } from 'svelte/transition';
-
   export let scale:number;
 
   let items = [];
@@ -24,45 +20,29 @@
   let dragDisabled = false;
 
   let type = $discardCard ? getCurrentCardZoneType($discardCard) : getKingZoneType();
+  $: console.log("rerendered discard")
   
-  // TODO: implement this: https://svelte.dev/tutorial/deferred-transitions
-  // and this: https://svelte.dev/tutorial/animate
-  
-	const [send, receive] = crossfade({
-		duration: d => Math.sqrt(d * 200),
+  // Look into pure css transition: https://svelte.dev/repl/3f1e68203ef140969a8240eba3475a8d?version=3.55.0
+  // or custom crossfade: https://imfeld.dev/writing/svelte_deferred_transitions
 
-		fallback(node, params) {
-			const style = getComputedStyle(node);
-			const transform = style.transform === 'none' ? '' : style.transform;
-
-			return {
-				duration: 600,
-				easing: quintOut,
-				css: t => `
-					transform: ${transform} scale(${t});
-					opacity: ${t}
-				`
-			};
-		}
-	});
-
-  function handleDndConsider(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID); }
-  function handleDndFinalize(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID); }
+  function sortById(itemA: { id: string; }, itemB: { id: string; }) { return parseInt(itemA.id) - parseInt(itemB.id); }
+  function handleDndConsider(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById); }
+  function handleDndFinalize(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById); }
 
   onMount(() => {
     discardCard.subscribe((value) => {
-      console.log("discard updated", value);
       if (value) {
-        items[0] = {
-          "id": `${value.card}|${value.suit}`,
+        items.push({
+          "id": `${$discardId++}`,
           "data": new LinkedNode<PlayingCard>(value),
           "column": "none",
           "row": 0
-        };
+        });
         items = [...items];
+      } else {
+        items = [];
       }
       type = value ? getCurrentCardZoneType(value) : getKingZoneType();
-      console.log(items);
     });
   });
 </script>
@@ -83,6 +63,11 @@
 
 <style>
   @import "/theme.css";
+
+  .card-wrapper {
+    position: absolute;
+    overflow: hidden;
+  }
 
   .empty-pile {
     background-color: var(--highlight);

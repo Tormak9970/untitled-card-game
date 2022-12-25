@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Controller } from "../../Controller";
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { drawCard } from "../../Stores";
+  import { discardId, drawCard } from "../../Stores";
   import Card from "../cards/Card.svelte";
   
   import Icon from 'svelte-awesome';
@@ -38,6 +38,7 @@
   function recycleDiscard(): void {
     if (!$drawCard) {
       Controller.recycleDeck();
+      $discardId = 0;
     }
   }
 </script>

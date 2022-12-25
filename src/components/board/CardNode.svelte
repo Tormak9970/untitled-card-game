@@ -38,13 +38,13 @@
     });
     dragDisabled = !card.next?.data.revealed;
     dropFromOthersDisabled = card.next != null && items.length > 0;
-    console.log(`${card.data.card}|${card.data.suit}: `, {
+    console.info(`${card.data.card}|${card.data.suit}: `, {
       "next": card.next,
       "type": type
     });
   } else {
     if (!card?.next) {
-      console.log(`${card.data.card}|${card.data.suit}: `, {
+      console.info(`${card.data.card}|${card.data.suit}: `, {
         "cardColumns": $cardColumns,
         "type": type
       });
@@ -99,7 +99,6 @@
           "row": 0
         };
         tmp[column].add(card);
-        $discardCard = {...$discardCard};
       }
 
       $cardColumns = tmp;
