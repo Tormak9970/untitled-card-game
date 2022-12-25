@@ -45,6 +45,12 @@
       $renderedList[`${card.data.card}|${card.data.suit}`] = true;
       revealed = card.data.revealed;
     }, 100);
+  } else {
+    console.log(`${card.data.card}|${card.data.suit}:`, {
+      "revealed": revealed,
+      "renderedListStatus": $renderedList[`${card.data.card}|${card.data.suit}`],
+      "card is revealed": card.data.revealed
+    });
   }
 
   const flipDurationMs = 300;
@@ -65,6 +71,7 @@
         const tarColumn = tmp[tarElem.column];
       
         const nodes = tarColumn.removeAllAfter(tarElem.row);
+        tarColumn.get(tarColumn.size - 1).data.revealed = true;
         tmp[column].add(nodes);
         tmp[tarElem.column] = tarColumn;
       } else {

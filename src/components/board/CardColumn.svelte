@@ -54,6 +54,7 @@
         const tarColumn = tmp[tarElem.column];
       
         const nodes = tarColumn.removeAllAfter(tarElem.row);
+        tarColumn.get(tarColumn.size - 1).data.revealed = true;
         tmp[column].add(nodes);
         tmp[tarElem.column] = tarColumn;
       } else {
