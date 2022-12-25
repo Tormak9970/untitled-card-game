@@ -23,10 +23,10 @@
   let notAdded = true;
 
   let items = [];
-  $: dragDisabled = false;
-  $: dropFromOthersDisabled = false;
+  let dragDisabled = false;
+  let dropFromOthersDisabled = false;
   $: revealed = $renderedList[`${card.data.card}|${card.data.suit}`] ? $renderedList[`${card.data.card}|${card.data.suit}`] : false;
-  $: type = card ? (!(card.next) ? getZoneType(card) : getHiddenZoneType(card)) : "";
+  $: type = card ? ((!card.next || card?.data?.revealed) ? getZoneType(card) : getHiddenZoneType(card)) : "";
 
   $: if (card?.next && notAdded) {
     notAdded = false;
@@ -36,8 +36,19 @@
       "column": column,
       "row": row+1
     });
-    dragDisabled = !card?.next?.data.revealed;
-    dropFromOthersDisabled = card?.next != null && items.length > 0;
+    dragDisabled = !card.next?.data.revealed;
+    dropFromOthersDisabled = card.next != null && items.length > 0;
+    console.log(`${card.data.card}|${card.data.suit}: `, {
+      "next": card.next,
+      "type": type
+    });
+  } else {
+    if (!card?.next) {
+      console.log(`${card.data.card}|${card.data.suit}: `, {
+        "cardColumns": $cardColumns,
+        "type": type
+      });
+    }
   }
 
   $: if (!revealed && !$renderedList[`${card.data.card}|${card.data.suit}`] && card.data.revealed) {
@@ -45,12 +56,6 @@
       $renderedList[`${card.data.card}|${card.data.suit}`] = true;
       revealed = card.data.revealed;
     }, 100);
-  } else {
-    console.log(`${card.data.card}|${card.data.suit}:`, {
-      "revealed": revealed,
-      "renderedListStatus": $renderedList[`${card.data.card}|${card.data.suit}`],
-      "card is revealed": card.data.revealed
-    });
   }
 
   const flipDurationMs = 300;
@@ -71,7 +76,10 @@
         const tarColumn = tmp[tarElem.column];
       
         const nodes = tarColumn.removeAllAfter(tarElem.row);
-        tarColumn.get(tarColumn.size - 1).data.revealed = true;
+        if (tarColumn.size > 0) {
+          tarColumn.get(tarColumn.size - 1).data.revealed = true;
+        }
+
         tmp[column].add(nodes);
         tmp[tarElem.column] = tarColumn;
       } else {
@@ -91,7 +99,7 @@
           "row": 0
         };
         tmp[column].add(card);
-        $discardCard = $discardCard;
+        $discardCard = {...$discardCard};
       }
 
       $cardColumns = tmp;

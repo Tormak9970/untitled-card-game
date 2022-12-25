@@ -86,6 +86,11 @@ export class Deck {
    * Updates the stores associated with the draw pile.
    */
   private updateStores(): void {
+    // const drwCard = this._drawPile.peek();
+    // if (drwCard) drawCard.set(JSON.parse(JSON.stringify(drwCard)));
+
+    // const dscCard = this._discardPile.peek();
+    // if (dscCard) discardCard.set(JSON.parse(JSON.stringify(dscCard)));
     drawCard.set(this._drawPile.peek());
     discardCard.set(this._discardPile.peek());
   }

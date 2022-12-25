@@ -20,8 +20,8 @@
   const UNCOVERED_PERCENT = 0.3;
 
   let items = [];
-  $: dragDisabled = false;
-  $: dropFromOthersDisabled = false;
+  let dragDisabled = false;
+  let dropFromOthersDisabled = false;
   $: type = playingCards.first ? getCurrentCardZoneType(playingCards.first) : getKingZoneType();
 
   $: if (playingCards.first && notAdded) {
@@ -54,7 +54,10 @@
         const tarColumn = tmp[tarElem.column];
       
         const nodes = tarColumn.removeAllAfter(tarElem.row);
-        tarColumn.get(tarColumn.size - 1).data.revealed = true;
+        if (tarColumn.size > 0) {
+          tarColumn.get(tarColumn.size - 1).data.revealed = true;
+        }
+        
         tmp[column].add(nodes);
         tmp[tarElem.column] = tarColumn;
       } else {
@@ -74,7 +77,7 @@
           "row": 0
         };
         tmp[column].add(card);
-        $discardCard = $discardCard;
+        $discardCard = {...$discardCard};
       }
 
       $cardColumns = tmp;

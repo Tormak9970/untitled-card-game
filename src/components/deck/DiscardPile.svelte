@@ -51,7 +51,7 @@
 
   onMount(() => {
     discardCard.subscribe((value) => {
-      console.log("discard updated");
+      console.log("discard updated", value);
       if (value) {
         items[0] = {
           "id": `${value.card}|${value.suit}`,
