@@ -1,26 +1,40 @@
 <script lang="ts">
-  import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { discardCard, discardId, discardZoneStyle } from "../../Stores";
-  import Card from "../cards/Card.svelte";
-
-  import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID } from "svelte-dnd-action";
-
-  import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
-
+  import { onDestroy, onMount, afterUpdate } from "svelte";
+	import { tweened } from 'svelte/motion';
+	import { cubicOut } from 'svelte/easing';
+  import type { Unsubscriber } from "svelte/store";
   import Icon from 'svelte-awesome';
   import { refresh } from 'svelte-awesome/icons';
+  import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID } from "svelte-dnd-action";
+  
+  import { discardCard, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect } from "../../Stores";
+  import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
-  import { onMount } from "svelte";
+  import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
 
+  import Card from "../cards/Card.svelte";
+  
   export let scale:number;
+
+  let discardCardSub: Unsubscriber;
+  let drawPileBoundingRectSub: Unsubscriber;
+  let drawPileInfo:DOMRect;
+
+	// const progress = tweened(0, {
+	// 	duration: 400,
+	// 	easing: cubicOut
+	// });
+
+  let drawPileLeft = 0;
+  let drawPileTop = 0;
+  let cardContainer:HTMLDivElement;
 
   let items = [];
   let dropFromOthersDisabled = true;
   let dragDisabled = false;
 
-  let type = $discardCard ? getCurrentCardZoneType($discardCard) : getKingZoneType();
-  $: console.log("rerendered discard")
+  let type = $discardCard.length > 0 ? getCurrentCardZoneType($discardCard[$discardCard.length - 1]) : getKingZoneType();
   
   // Look into pure css transition: https://svelte.dev/repl/3f1e68203ef140969a8240eba3475a8d?version=3.55.0
   // or custom crossfade: https://imfeld.dev/writing/svelte_deferred_transitions
@@ -29,30 +43,62 @@
   function handleDndConsider(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById); }
   function handleDndFinalize(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById); }
 
+  function setPilePositions() {
+    const cardContBoundingRect = cardContainer.getBoundingClientRect();
+    drawPileLeft = -(cardContBoundingRect.left - drawPileInfo.left);
+    drawPileTop = -(cardContBoundingRect.top - drawPileInfo.top);
+  }
+
+  afterUpdate(() => {
+    setTimeout(() => {
+      const elems = document.getElementsByClassName("transition-out");
+      for (const elem of elems) {
+        elem.classList.remove("transition-out");
+      }
+    }, 0);
+  });
+
   onMount(() => {
-    discardCard.subscribe((value) => {
-      if (value) {
-        items.push({
-          "id": `${$discardId++}`,
-          "data": new LinkedNode<PlayingCard>(value),
-          "column": "none",
-          "row": 0
-        });
+    $discardPileBoundingRect = cardContainer.getBoundingClientRect.bind(cardContainer);
+    discardCardSub = discardCard.subscribe((value) => {
+      if (value.length > 0) {
+        for (const val of value) {
+          if (!items.find((itm) => `${itm.data.card}|${itm.data.suit}` == `${val.card}|${val.suit}`)) {
+            items.push({
+              "id": `${$discardId++}`,
+              "data": new LinkedNode<PlayingCard>(val),
+              "column": "none",
+              "row": 0
+            });
+          }
+        }
+
         items = [...items];
       } else {
         items = [];
       }
-      type = value ? getCurrentCardZoneType(value) : getKingZoneType();
+      type = value.length > 0 ? getCurrentCardZoneType(value[value.length - 1]) : getKingZoneType();
     });
+
+    drawPileBoundingRectSub = drawPileBoundingRect.subscribe((value) => {
+      drawPileInfo = value();
+      
+      setPilePositions();
+    });
+  });
+
+  onDestroy(() => {
+    if (discardCardSub) discardCardSub();
+    if (drawPileBoundingRectSub) drawPileBoundingRectSub();
   });
 </script>
 
 <div class="discard-pile">
   <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;">
-    <div class="empty-inner">
+    <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px;" bind:this={cardContainer}>
       <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, type, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
         {#each items as playingCard (playingCard.id)}
-          <div class="card-wrapper">
+          <div class="card-wrapper transition-out">
             <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
           </div>
         {/each}
@@ -64,9 +110,24 @@
 <style>
   @import "/theme.css";
 
+  :root {
+    --drawPileLeft: 0px;
+    --drawPileTop: 0px;
+  }
+
   .card-wrapper {
     position: absolute;
     overflow: hidden;
+    
+    left: 0px;
+    top: 0px;
+    transition: left 300ms ease-in-out;
+  }
+
+  .transition-out {
+    left: var(--drawPileLeft);
+    top: var(--drawPileTop);
+    transition: left 300ms ease-in-out;
   }
 
   .empty-pile {

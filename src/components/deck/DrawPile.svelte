@@ -1,38 +1,20 @@
 <script lang="ts">
-  import { Controller } from "../../Controller";
-  import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { discardId, drawCard } from "../../Stores";
-  import Card from "../cards/Card.svelte";
-  
   import Icon from 'svelte-awesome';
   import { refresh } from 'svelte-awesome/icons';
+  import { onMount } from "svelte";
+
+  import { Controller } from "../../Controller";
+  import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
+  import { discardId, drawCard, drawPileBoundingRect } from "../../Stores";
+  
+  import Card from "../cards/Card.svelte";
 
   export let scale:number;
-
-  import { quintOut } from 'svelte/easing';
-	import { crossfade } from 'svelte/transition';
-  import { onMount } from "svelte";
 
   // TODO: implement this: https://svelte.dev/tutorial/deferred-transitions
   // and this: https://svelte.dev/tutorial/animate
   
-	const [send, receive] = crossfade({
-		duration: d => Math.sqrt(d * 200),
-
-		fallback(node, params) {
-			const style = getComputedStyle(node);
-			const transform = style.transform === 'none' ? '' : style.transform;
-
-			return {
-				duration: 600,
-				easing: quintOut,
-				css: t => `
-					transform: ${transform} scale(${t});
-					opacity: ${t}
-				`
-			};
-		}
-	});
+  let cardContainer:HTMLDivElement;
 
   function doDrawCard(): void { Controller.drawCard(); }
   function recycleDiscard(): void {
@@ -41,18 +23,22 @@
       $discardId = 0;
     }
   }
+
+  onMount(() => {
+    $drawPileBoundingRect = cardContainer.getBoundingClientRect.bind(cardContainer);
+  });
 </script>
 
 <div class="draw-pile">
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;">
-    <div class="empty-inner" on:click|stopPropagation={recycleDiscard}>
-      {#if $drawCard}
-        {#key `${$drawCard.card}|${$drawCard.suit}`}
-          <div class="card-wrapper" on:click|stopPropagation={doDrawCard}>
-            <Card card={$drawCard.card} suit={$drawCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
-          </div>
-        {/key}
+    <div class="empty-inner" on:click|stopPropagation={recycleDiscard} bind:this={cardContainer}>
+      {#if $drawCard.length > 0}
+      {#each $drawCard as playingCard (`${playingCard.card}|${playingCard.suit}`)}
+        <div class="card-wrapper" on:click|stopPropagation={doDrawCard}>
+          <Card card={playingCard.card} suit={playingCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
+        </div>
+      {/each}
       {:else}
         <!-- Same size as card but suggest drawing a card -->
         <Icon data={refresh} scale={4} class="icon"/>

@@ -91,7 +91,7 @@ export class Deck {
 
     // const dscCard = this._discardPile.peek();
     // if (dscCard) discardCard.set(JSON.parse(JSON.stringify(dscCard)));
-    drawCard.set(this._drawPile.peek());
-    discardCard.set(this._discardPile.peek());
+    drawCard.set(this._drawPile.toArray());
+    discardCard.set(this._discardPile.toArray());
   }
 }

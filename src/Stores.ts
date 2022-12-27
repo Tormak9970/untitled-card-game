@@ -13,10 +13,13 @@ export const highScore = writable(0);
 export const moves:Writable<string[]> = writable([]);
 
 export const cardColumns:Writable<CardColumn> = writable([]);
-export const drawCard:Writable<PlayingCard> = writable(null);
-export const discardCard:Writable<PlayingCard> = writable(null);
+export const drawCard:Writable<PlayingCard[]> = writable([]);
+export const discardCard:Writable<PlayingCard[]> = writable([]);
 
+// Draw/Discard pile stores
 export const discardId = writable(0);
+export const drawPileBoundingRect:Writable<() => DOMRect> = writable(null);
+export const discardPileBoundingRect:Writable<() => DOMRect> = writable(null);
 
 
 export const dropZoneStyle = {

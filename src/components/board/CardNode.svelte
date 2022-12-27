@@ -89,7 +89,8 @@
           "discardState": $discardCard
         })}`);
         $moves = $moves;
-        const card = new LinkedNode<PlayingCard>($discardCard);
+        const card = new LinkedNode<PlayingCard>($discardCard.pop());
+        $discardCard = [...$discardCard];
         Controller.playCurrentCard();
         $renderedList[`${card.data.card}|${card.data.suit}`] = true;
         e.detail.items[0] = {
