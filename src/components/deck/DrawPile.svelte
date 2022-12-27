@@ -5,22 +5,47 @@
 
   import { Controller } from "../../Controller";
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { discardId, drawCard, drawPileBoundingRect } from "../../Stores";
+  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect } from "../../Stores";
   
   import Card from "../cards/Card.svelte";
 
   export let scale:number;
-
-  // TODO: implement this: https://svelte.dev/tutorial/deferred-transitions
-  // and this: https://svelte.dev/tutorial/animate
+  export let shouldAnimate = false
   
+  let discardPileLeft = 0;
+  let discardPileTop = 0;
   let cardContainer:HTMLDivElement;
+  
+  function setPilePositions() {
+    const discardPileInfo = $discardPileBoundingRect();
+    const cardContBoundingRect = cardContainer.getBoundingClientRect();
+    discardPileLeft = discardPileInfo.left - cardContBoundingRect.left;
+    discardPileTop = discardPileInfo.top - cardContBoundingRect.top;
+    console.log({
+      "discardPile": discardPileInfo,
+      "drawPile": cardContBoundingRect
+    });
+  }
+
+  function triggerAnimation() {
+    console.log("triggering animation");
+    setTimeout(() => {
+      // const elems = cardContainer.getElementsByClassName("transition-out");
+      // for (const elem of elems) {
+      //   elem.classList.remove("transition-out");
+      // }
+      // shouldAnimate = false;
+    }, 0);
+  }
 
   function doDrawCard(): void { Controller.drawCard(); }
   function recycleDiscard(): void {
-    if (!$drawCard) {
+    if ($drawPileList.length == 0) {
+      shouldAnimate = true;
+      setPilePositions();
       Controller.recycleDeck();
       $discardId = 0;
+      triggerAnimation();
     }
   }
 
@@ -32,13 +57,13 @@
 <div class="draw-pile">
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;">
-    <div class="empty-inner" on:click|stopPropagation={recycleDiscard} bind:this={cardContainer}>
-      {#if $drawCard.length > 0}
-      {#each $drawCard as playingCard (`${playingCard.card}|${playingCard.suit}`)}
-        <div class="card-wrapper" on:click|stopPropagation={doDrawCard}>
-          <Card card={playingCard.card} suit={playingCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
-        </div>
-      {/each}
+    <div class="empty-inner" on:click|stopPropagation={recycleDiscard} style="--discardPileLeft: {discardPileLeft}px; --discardPileTop: {discardPileTop}px;" bind:this={cardContainer}>
+      {#if $drawPileList.length > 0}
+        {#each $drawPileList as playingCard (`${playingCard.card}|${playingCard.suit}`)}
+          <div class="card-wrapper{shouldAnimate ? " transition-out": ""}" on:click|stopPropagation={doDrawCard}>
+            <Card card={playingCard.card} suit={playingCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
+          </div>
+        {/each}
       {:else}
         <!-- Same size as card but suggest drawing a card -->
         <Icon data={refresh} scale={4} class="icon"/>
@@ -49,6 +74,26 @@
 
 <style>
   @import "/theme.css";
+
+  :root {
+    --discardPileLeft: 0px;
+    --discardPileTop: 0px;
+  }
+
+  .card-wrapper {
+    position: absolute;
+    overflow: hidden;
+    
+    left: 0px;
+    top: 0px;
+    transition: left 300ms ease-in-out, top 300ms ease-in-out;
+  }
+
+  .transition-out {
+    left: var(--discardPileLeft);
+    top: var(--discardPileTop);
+    transition: left 300ms ease-in-out, top 300ms ease-in-out;
+  }
 
   .empty-pile {
     background-color: var(--highlight);
@@ -73,6 +118,8 @@
     align-items: center;
 
     cursor: pointer;
+
+    position: relative;
   }
 
   :global(.empty-inner > .icon) { color: var(--highlight); }

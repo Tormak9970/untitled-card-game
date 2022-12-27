@@ -7,7 +7,7 @@
   import { refresh } from 'svelte-awesome/icons';
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID } from "svelte-dnd-action";
   
-  import { discardCard, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect } from "../../Stores";
+  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect } from "../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
@@ -18,13 +18,6 @@
   export let scale:number;
 
   let discardCardSub: Unsubscriber;
-  let drawPileBoundingRectSub: Unsubscriber;
-  let drawPileInfo:DOMRect;
-
-	// const progress = tweened(0, {
-	// 	duration: 400,
-	// 	easing: cubicOut
-	// });
 
   let drawPileLeft = 0;
   let drawPileTop = 0;
@@ -34,16 +27,16 @@
   let dropFromOthersDisabled = true;
   let dragDisabled = false;
 
-  let type = $discardCard.length > 0 ? getCurrentCardZoneType($discardCard[$discardCard.length - 1]) : getKingZoneType();
+  let type = $discardPileList.length > 0 ? getCurrentCardZoneType($discardPileList[$discardPileList.length - 1]) : getKingZoneType();
   
-  // Look into pure css transition: https://svelte.dev/repl/3f1e68203ef140969a8240eba3475a8d?version=3.55.0
-  // or custom crossfade: https://imfeld.dev/writing/svelte_deferred_transitions
+  let shouldAnimate = true;
 
   function sortById(itemA: { id: string; }, itemB: { id: string; }) { return parseInt(itemA.id) - parseInt(itemB.id); }
   function handleDndConsider(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById); }
   function handleDndFinalize(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById); }
 
   function setPilePositions() {
+    const drawPileInfo = $drawPileBoundingRect();
     const cardContBoundingRect = cardContainer.getBoundingClientRect();
     drawPileLeft = -(cardContBoundingRect.left - drawPileInfo.left);
     drawPileTop = -(cardContBoundingRect.top - drawPileInfo.top);
@@ -51,7 +44,7 @@
 
   afterUpdate(() => {
     setTimeout(() => {
-      const elems = document.getElementsByClassName("transition-out");
+      const elems = cardContainer.getElementsByClassName("transition-out");
       for (const elem of elems) {
         elem.classList.remove("transition-out");
       }
@@ -60,9 +53,9 @@
 
   onMount(() => {
     $discardPileBoundingRect = cardContainer.getBoundingClientRect.bind(cardContainer);
-    discardCardSub = discardCard.subscribe((value) => {
-      if (value.length > 0) {
-        for (const val of value) {
+    discardCardSub = discardPileList.subscribe((values) => {
+      if (values.length > 0) {
+        for (const val of values) {
           if (!items.find((itm) => `${itm.data.card}|${itm.data.suit}` == `${val.card}|${val.suit}`)) {
             items.push({
               "id": `${$discardId++}`,
@@ -77,11 +70,7 @@
       } else {
         items = [];
       }
-      type = value.length > 0 ? getCurrentCardZoneType(value[value.length - 1]) : getKingZoneType();
-    });
-
-    drawPileBoundingRectSub = drawPileBoundingRect.subscribe((value) => {
-      drawPileInfo = value();
+      type = values.length > 0 ? getCurrentCardZoneType(values[values.length - 1]) : getKingZoneType();
       
       setPilePositions();
     });
@@ -89,7 +78,6 @@
 
   onDestroy(() => {
     if (discardCardSub) discardCardSub();
-    if (drawPileBoundingRectSub) drawPileBoundingRectSub();
   });
 </script>
 
@@ -97,8 +85,8 @@
   <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;">
     <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px;" bind:this={cardContainer}>
       <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, type, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
-        {#each items as playingCard (playingCard.id)}
-          <div class="card-wrapper transition-out">
+        {#each items as playingCard, i (playingCard.id)}
+          <div class="card-wrapper{(i == items.length-1 && shouldAnimate) ? " transition-out": ""}">
             <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
           </div>
         {/each}
@@ -121,13 +109,13 @@
     
     left: 0px;
     top: 0px;
-    transition: left 300ms ease-in-out;
+    transition: left 300ms ease-in-out, top 300ms ease-in-out;
   }
 
   .transition-out {
     left: var(--drawPileLeft);
     top: var(--drawPileTop);
-    transition: left 300ms ease-in-out;
+    transition: left 300ms ease-in-out, top 300ms ease-in-out;
   }
 
   .empty-pile {

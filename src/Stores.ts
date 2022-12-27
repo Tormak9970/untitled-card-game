@@ -1,6 +1,5 @@
 import { writable, type Writable } from "svelte/store";
 import type { LinkedList } from "./lib/data-structs/LinkedList";
-import { Stack } from "./lib/data-structs/Stack";
 import type { PlayingCard } from "./lib/models/PlayingCard";
 
 type CardColumn = LinkedList<PlayingCard>[];
@@ -13,8 +12,8 @@ export const highScore = writable(0);
 export const moves:Writable<string[]> = writable([]);
 
 export const cardColumns:Writable<CardColumn> = writable([]);
-export const drawCard:Writable<PlayingCard[]> = writable([]);
-export const discardCard:Writable<PlayingCard[]> = writable([]);
+export const drawPileList:Writable<PlayingCard[]> = writable([]);
+export const discardPileList:Writable<PlayingCard[]> = writable([]);
 
 // Draw/Discard pile stores
 export const discardId = writable(0);

@@ -4,11 +4,12 @@
 
   export let scale:number;
 
+  let increaseDrawZIndex:boolean;
 </script>
 
 <div class="deck">
-  <div class="draw-cont">
-    <DrawPile scale={scale} />
+  <div class="draw-cont" style="{increaseDrawZIndex ? "z-index: 10;": ""}">
+    <DrawPile scale={scale} bind:shouldAnimate={increaseDrawZIndex} />
   </div>
   <div class="discard-cont">
     <DiscardPile scale={scale} />

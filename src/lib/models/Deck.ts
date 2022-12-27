@@ -1,7 +1,8 @@
 import type { PlayingCard } from "./PlayingCard";
 import { Stack } from "../data-structs/Stack";
 import type { GameBoard } from "./GameBoard";
-import { discardCard, drawCard } from "../../Stores";
+import { discardPileList, drawPileList } from "../../Stores";
+import { get } from "svelte/store";
 
 /**
  * Class representing a deck of cards.
@@ -91,7 +92,11 @@ export class Deck {
 
     // const dscCard = this._discardPile.peek();
     // if (dscCard) discardCard.set(JSON.parse(JSON.stringify(dscCard)));
-    drawCard.set(this._drawPile.toArray());
-    discardCard.set(this._discardPile.toArray());
+    drawPileList.set(this._drawPile.toArray());
+    discardPileList.set(this._discardPile.toArray());
+    // console.log({
+    //   "drawPile": get(drawPileList),
+    //   "discardPile": get(discardPileList)
+    // })
   }
 }

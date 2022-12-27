@@ -9,7 +9,7 @@
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID } from "svelte-dnd-action";
 
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { cardColumns, discardCard, drawCard, dropZoneStyle, moves, renderedList } from "../../Stores";
+  import { cardColumns, discardPileList, drawPileList, dropZoneStyle, moves, renderedList } from "../../Stores";
   import { getHiddenZoneType, getZoneType } from "../../UiLogic";
   import { Stack } from "../../lib/data-structs/Stack";
   import { Controller } from "../../Controller";
@@ -85,12 +85,12 @@
       } else {
         $moves.push(`multiState:${JSON.stringify({
           "boardState": $cardColumns,
-          "drawState": $drawCard,
-          "discardState": $discardCard
+          "drawState": $drawPileList,
+          "discardState": $discardPileList
         })}`);
         $moves = $moves;
-        const card = new LinkedNode<PlayingCard>($discardCard.pop());
-        $discardCard = [...$discardCard];
+        const card = new LinkedNode<PlayingCard>($discardPileList.pop());
+        $discardPileList = [...$discardPileList];
         Controller.playCurrentCard();
         $renderedList[`${card.data.card}|${card.data.suit}`] = true;
         e.detail.items[0] = {
