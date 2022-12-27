@@ -10,7 +10,9 @@
   import Card from "../cards/Card.svelte";
 
   export let scale:number;
-  export let shouldAnimate = false
+  export let shouldAnimate = false;
+
+  const ANIM_DELAY = 200;
   
   let discardPileLeft = 0;
   let discardPileTop = 0;
@@ -27,14 +29,23 @@
     });
   }
 
+  function recursiveAnimate(list:HTMLCollectionOf<Element>, idx:number) {
+    const elem = list[idx];
+    if (idx < list.length) {
+      elem.classList.remove("transition-out");
+      setTimeout(() => {
+        recursiveAnimate(list, idx++);
+      }, ANIM_DELAY);
+    } else {
+      shouldAnimate = false;
+    }
+  }
+
   function triggerAnimation() {
     console.log("triggering animation");
     setTimeout(() => {
-      // const elems = cardContainer.getElementsByClassName("transition-out");
-      // for (const elem of elems) {
-      //   elem.classList.remove("transition-out");
-      // }
-      // shouldAnimate = false;
+      const elems = cardContainer.getElementsByClassName("transition-out");
+      recursiveAnimate(elems, 0);
     }, 0);
   }
 
