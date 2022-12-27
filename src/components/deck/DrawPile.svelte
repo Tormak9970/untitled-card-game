@@ -12,7 +12,7 @@
   export let scale:number;
   export let shouldAnimate = false;
 
-  const ANIM_DELAY = 200;
+  const ANIM_DELAY = 50;
   
   let discardPileLeft = 0;
   let discardPileTop = 0;
@@ -23,10 +23,6 @@
     const cardContBoundingRect = cardContainer.getBoundingClientRect();
     discardPileLeft = discardPileInfo.left - cardContBoundingRect.left;
     discardPileTop = discardPileInfo.top - cardContBoundingRect.top;
-    console.log({
-      "discardPile": discardPileInfo,
-      "drawPile": cardContBoundingRect
-    });
   }
 
   function recursiveAnimate(list:HTMLCollectionOf<Element>, idx:number) {
