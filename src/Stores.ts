@@ -1,5 +1,6 @@
 import { writable, type Writable } from "svelte/store";
 import type { LinkedList } from "./lib/data-structs/LinkedList";
+import { Difficulty } from "./lib/models/Difficulty";
 import type { PlayingCard } from "./lib/models/PlayingCard";
 
 type CardColumn = LinkedList<PlayingCard>[];
@@ -20,6 +21,8 @@ export const discardId = writable(0);
 export const drawPileBoundingRect:Writable<() => DOMRect> = writable(null);
 export const discardPileBoundingRect:Writable<() => DOMRect> = writable(null);
 
+// Settings stores
+export const difficulty:Writable<Difficulty> = writable(Difficulty.INTERMEDIATE);
 
 export const dropZoneStyle = {
   "border": '1px solid #d87e08',
