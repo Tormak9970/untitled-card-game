@@ -2,6 +2,7 @@
   import Board from "./board/Board.svelte";
   import Deck from "./deck/Deck.svelte";
   import { CARD_WIDTH } from "../lib/SpriteLUT";
+  import Piles from "./piles/Piles.svelte";
 
   const CARD_SCALE = 0.4;
 </script>
@@ -12,6 +13,9 @@
   </div>
   <div class="board-cont">
     <Board scale={CARD_SCALE} />
+  </div>
+  <div class="piles-cont">
+    <Piles scale={CARD_SCALE} />
   </div>
 </div>
 
@@ -35,5 +39,9 @@
 
   .board-cont {
     height: 100%;
+  }
+
+  .piles-cont {
+
   }
 </style>

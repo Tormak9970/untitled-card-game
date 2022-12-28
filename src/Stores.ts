@@ -21,6 +21,17 @@ export const discardId = writable(0);
 export const drawPileBoundingRect:Writable<() => DOMRect> = writable(null);
 export const discardPileBoundingRect:Writable<() => DOMRect> = writable(null);
 
+// Ace piles stores
+export const spadesPileId = writable(0);
+export const spadesPileList:Writable<PlayingCard[]> = writable([]);
+export const heartsPileId = writable(0);
+export const heartsPileList:Writable<PlayingCard[]> = writable([]);
+export const clubsPileId = writable(0);
+export const clubsPileList:Writable<PlayingCard[]> = writable([]);
+export const diamondPileId = writable(0);
+export const diamondsPileList:Writable<PlayingCard[]> = writable([]);
+
+
 // Settings stores
 export const difficulty:Writable<Difficulty> = writable(Difficulty.INTERMEDIATE);
 

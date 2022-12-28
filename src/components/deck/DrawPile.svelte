@@ -8,6 +8,7 @@
   import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect } from "../../Stores";
   
   import Card from "../cards/Card.svelte";
+    import CardContainer from "./CardContainer.svelte";
 
   export let scale:number;
   export let shouldAnimate = false;
@@ -62,8 +63,8 @@
 </script>
 
 <div class="draw-pile">
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;">
+  <CardContainer scale={scale}>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div class="empty-inner" on:click|stopPropagation={recycleDiscard} style="--discardPileLeft: {discardPileLeft}px; --discardPileTop: {discardPileTop}px;" bind:this={cardContainer}>
       {#if $drawPileList.length > 0}
         {#each $drawPileList as playingCard (`${playingCard.card}|${playingCard.suit}`)}
@@ -76,7 +77,7 @@
         <Icon data={refresh} scale={4} class="icon"/>
       {/if}
     </div>
-  </div>
+  </CardContainer>
 </div>
 
 <style>
@@ -102,19 +103,9 @@
     transition: left 300ms ease-in-out, top 300ms ease-in-out;
   }
 
-  .empty-pile {
-    background-color: var(--highlight);
-    border-radius: 4px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
   .empty-inner {
-    width: calc(100% - 8px);
-    height: calc(100% - 8px);
+    width: 100%;
+    height: 100%;
 
     background-color: var(--highlight-faded);
     border-radius: 4px;

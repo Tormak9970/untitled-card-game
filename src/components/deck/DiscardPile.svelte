@@ -14,6 +14,7 @@
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
 
   import Card from "../cards/Card.svelte";
+  import CardContainer from "./CardContainer.svelte";
   
   export let scale:number;
 
@@ -82,7 +83,7 @@
 </script>
 
 <div class="discard-pile">
-  <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;">
+  <CardContainer scale={scale}>
     <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px;" bind:this={cardContainer}>
       <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, type, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
         {#each items as playingCard, i (playingCard.id)}
@@ -92,7 +93,7 @@
         {/each}
       </div>
     </div>
-  </div>
+  </CardContainer>
 </div>
 
 <style>
@@ -118,19 +119,9 @@
     transition: left 300ms ease-in-out, top 300ms ease-in-out;
   }
 
-  .empty-pile {
-    background-color: var(--highlight);
-    border-radius: 4px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
   .empty-inner {
-    width: calc(100% - 8px);
-    height: calc(100% - 8px);
+    width: 100%;
+    height: 100%;
 
     background-color: var(--highlight-faded);
     border-radius: 4px;
