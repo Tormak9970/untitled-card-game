@@ -20,10 +20,14 @@ export class Controller {
   }
 
   static getSprite(card:Cards, suit:Suits|JokerTypes): SpriteInfo {
-    if (Object.values(FaceCards).includes(card as FaceCards)) {
-      return Controller.spriteLoader.loadFaceCard(card as FaceCards, suit);
+    if (card == null) {
+      return Controller.spriteLoader.loadSuitIcon(suit as Suits);
     } else {
-      return Controller.spriteLoader.loadBaseCard(card as BaseCards, suit as Suits);
+      if (Object.values(FaceCards).includes(card as FaceCards)) {
+        return Controller.spriteLoader.loadFaceCard(card as FaceCards, suit);
+      } else {
+        return Controller.spriteLoader.loadBaseCard(card as BaseCards, suit as Suits);
+      }
     }
   }
 

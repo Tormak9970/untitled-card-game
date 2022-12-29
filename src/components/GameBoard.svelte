@@ -14,7 +14,7 @@
   <div class="board-cont">
     <Board scale={CARD_SCALE} />
   </div>
-  <div class="piles-cont">
+  <div class="piles-cont" style="margin-left: {CARD_SCALE * CARD_WIDTH}px;">
     <Piles scale={CARD_SCALE} />
   </div>
 </div>
@@ -42,6 +42,6 @@
   }
 
   .piles-cont {
-
+    
   }
 </style>
