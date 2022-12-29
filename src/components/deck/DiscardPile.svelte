@@ -123,7 +123,6 @@
     width: 100%;
     height: 100%;
 
-    background-color: var(--highlight-faded);
     border-radius: 4px;
 
     display: flex;

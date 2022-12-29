@@ -33,7 +33,6 @@
     width: calc(100% - 15vh);
     height: calc(100% - 15vh);
 
-    background-color: var(--foreground);
     border-radius: 8px;
   }
 </style>

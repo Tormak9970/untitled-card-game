@@ -29,7 +29,7 @@
     width: calc(100% - 8px);
     height: calc(100% - 8px);
 
-    background-color: var(--highlight-faded);
+    background-color: var(--foreground);
     border-radius: 4px;
 
     display: flex;
