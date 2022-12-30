@@ -5,9 +5,9 @@
   import type { Unsubscriber } from "svelte/store";
   import Icon from 'svelte-awesome';
   import { refresh } from 'svelte-awesome/icons';
-  import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID } from "svelte-dnd-action";
+  import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect } from "../../Stores";
+  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit } from "../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
@@ -18,7 +18,7 @@
   
   export let scale:number;
 
-  let discardCardSub: Unsubscriber;
+  let discardPileListSub: Unsubscriber;
 
   let drawPileLeft = 0;
   let drawPileTop = 0;
@@ -28,12 +28,17 @@
   let dropFromOthersDisabled = true;
   let dragDisabled = false;
 
-  let type = $discardPileList.length > 0 ? getCurrentCardZoneType($discardPileList[$discardPileList.length - 1]) : getKingZoneType();
+  let type = $discardPileList.length > 0 ? getCurrentCardZoneType($discardPileList[$discardPileList.length - 1]) : "none";
   
   let shouldAnimate = true;
 
   function sortById(itemA: { id: string; }, itemB: { id: string; }) { return parseInt(itemA.id) - parseInt(itemB.id); }
-  function handleDndConsider(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById); }
+  function handleDndConsider(e:any) {
+    if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
+      $draggingSuit = e.detail.items[0].data.data.suit;
+    }
+    items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById);
+  }
   function handleDndFinalize(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById); }
 
   function setPilePositions() {
@@ -54,14 +59,14 @@
 
   onMount(() => {
     $discardPileBoundingRect = cardContainer.getBoundingClientRect.bind(cardContainer);
-    discardCardSub = discardPileList.subscribe((values) => {
+    discardPileListSub = discardPileList.subscribe((values) => {
       if (values.length > 0) {
         for (const val of values) {
           if (!items.find((itm) => `${itm.data.card}|${itm.data.suit}` == `${val.card}|${val.suit}`)) {
             items.push({
               "id": `${$discardId++}`,
               "data": new LinkedNode<PlayingCard>(val),
-              "column": "none",
+              "column": "pile-discard",
               "row": 0
             });
           }
@@ -71,14 +76,14 @@
       } else {
         items = [];
       }
-      type = values.length > 0 ? getCurrentCardZoneType(values[values.length - 1]) : getKingZoneType();
+      type = values.length > 0 ? getCurrentCardZoneType(values[values.length - 1]) : "none";
       
       setPilePositions();
     });
   });
 
   onDestroy(() => {
-    if (discardCardSub) discardCardSub();
+    if (discardPileListSub) discardPileListSub();
   });
 </script>
 

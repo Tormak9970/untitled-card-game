@@ -5,8 +5,8 @@
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
   import { LinkedNode, type LinkedList } from "../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
-  import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID} from "svelte-dnd-action";
-  import { cardColumns, discardPileList, drawPileList, dropZoneStyle, moves, renderedList } from "../../Stores";
+  import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS} from "svelte-dnd-action";
+  import { cardColumns, discardPileList, draggingSuit, drawPileList, dropZoneStyle, moves, renderedList } from "../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { Stack } from "../../lib/data-structs/Stack";
   import { Controller } from "../../Controller";
@@ -38,6 +38,9 @@
 
   const flipDurationMs = 300;
   function handleDndConsider(e:any) {
+    if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
+      $draggingSuit = e.detail.info.id.substring(e.detail.info.id.indexOf("|") + 1);
+    }
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
     dropFromOthersDisabled = false;
   }

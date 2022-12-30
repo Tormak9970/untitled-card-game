@@ -5,10 +5,13 @@ import type { PlayingCard } from "./lib/models/PlayingCard";
 
 type CardColumn = LinkedList<PlayingCard>[];
 
-// UI Stores
+// Universal stores
+export const draggingSuit = writable(null);
+
+// UI stores
 export const renderedList = writable({});
 
-// Game State Stores
+// Game State stores
 export const highScore = writable(0);
 export const moves:Writable<string[]> = writable([]);
 

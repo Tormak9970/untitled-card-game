@@ -7,10 +7,10 @@
 </script>
 
 <div class="piles">
-  <Pile scale={scale} suit={Suits.SPADE} suitPileId={$spadesPileId} suitPileList={$spadesPileList} />
-  <Pile scale={scale} suit={Suits.HEART} suitPileId={$heartsPileId} suitPileList={$heartsPileList} />
-  <Pile scale={scale} suit={Suits.CLUB} suitPileId={$clubsPileId} suitPileList={$clubsPileList} />
-  <Pile scale={scale} suit={Suits.DIAMOND} suitPileId={$diamondPileId} suitPileList={$diamondsPileList} />
+  <Pile scale={scale} suit={Suits.SPADE} suitPileId={spadesPileId} suitPileList={spadesPileList} />
+  <Pile scale={scale} suit={Suits.HEART} suitPileId={heartsPileId} suitPileList={heartsPileList} />
+  <Pile scale={scale} suit={Suits.CLUB} suitPileId={clubsPileId} suitPileList={clubsPileList} />
+  <Pile scale={scale} suit={Suits.DIAMOND} suitPileId={diamondPileId} suitPileList={diamondsPileList} />
 </div>
 
 <style>
