@@ -37,4 +37,14 @@ export class Controller {
   static drawCard(): void { Controller.gameController.drawCard(); }
   static recycleDeck(): void { Controller.gameController.recycleDeck(); }
   static playCurrentCard(): void { Controller.gameController.playCurrentCard(); }
+
+  static playPileCard(suit:Suits): void {
+
+  }
+  static playDiscardToPile(suit:Suits): void {
+
+  }
+  static playColumnToPile(suit:Suits): void {
+    
+  }
 }

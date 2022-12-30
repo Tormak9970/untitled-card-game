@@ -9,10 +9,12 @@
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
 
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { cardColumns, discardPileList, draggingSuit, drawPileList, dropZoneStyle, moves, renderedList } from "../../Stores";
+  import { cardColumns, clubsPileId, clubsPileList, diamondPileId, diamondsPileList, discardPileList, draggingSuit, drawPileList, dropZoneStyle, heartsPileId, heartsPileList, moves, renderedList, spadesPileId, spadesPileList } from "../../Stores";
   import { getHiddenZoneType, getZoneType } from "../../UiLogic";
   import { Stack } from "../../lib/data-structs/Stack";
   import { Controller } from "../../Controller";
+    import type { Writable } from "svelte/store";
+    import { Suits } from "../../lib/models/Suits";
 
   export let card:LinkedNode<PlayingCard>;
   export let column:number;
@@ -86,23 +88,75 @@
         tmp[column].add(nodes);
         tmp[tarElem.column] = tarColumn;
       } else {
-        $moves.push(`multiState:${JSON.stringify({
-          "boardState": $cardColumns,
-          "drawState": $drawPileList,
-          "discardState": $discardPileList
-        })}`);
-        $moves = $moves;
-        const card = new LinkedNode<PlayingCard>($discardPileList.pop());
-        $discardPileList = [...$discardPileList];
-        Controller.playCurrentCard();
-        $renderedList[`${card.data.card}|${card.data.suit}`] = true;
-        e.detail.items[0] = {
-          "id": `${card.data.card}|${card.data.suit}`,
-          "data": card,
-          "column": column,
-          "row": 0
-        };
-        tmp[column].add(card);
+        const typeInfo = tarElem.column.split("-");
+        if (typeInfo[1] == "discard") {
+          $moves.push(`multiState:${JSON.stringify({
+            "boardState": $cardColumns,
+            "drawState": $drawPileList,
+            "discardState": $discardPileList
+          })}`);
+          $moves = $moves;
+          const card = new LinkedNode<PlayingCard>($discardPileList.pop());
+          $discardPileList = [...$discardPileList];
+          $renderedList[`${card.data.card}|${card.data.suit}`] = true;
+          Controller.playCurrentCard();
+          e.detail.items[0] = {
+            "id": `${card.data.card}|${card.data.suit}`,
+            "data": card,
+            "column": column,
+            "row": 0
+          };
+          tmp[column].add(card);
+        } else {
+          let pileListStore:Writable<PlayingCard[]>;
+          let pileList:PlayingCard[];
+          let pileId:Writable<number>;
+          
+          switch(type[1]) {
+            case Suits.SPADE:
+              pileListStore = spadesPileList;
+              pileList = $spadesPileList;
+              pileId = spadesPileId;
+              break;
+            case Suits.HEART:
+              pileListStore = heartsPileList;
+              pileList = $heartsPileList;
+              pileId = heartsPileId;
+              break;
+            case Suits.CLUB:
+              pileListStore = clubsPileList;
+              pileList = $clubsPileList;
+              pileId = clubsPileId;
+              break;
+            case Suits.DIAMOND:
+              pileListStore = diamondsPileList;
+              pileList = $diamondsPileList;
+              pileId = diamondPileId;
+              break;
+          }
+
+          const moveState = {
+            "boardState": $cardColumns,
+            "drawState": $drawPileList
+          };
+          moveState[`${type[1]}PileState`] = pileList;
+          $moves.push(`multiState:${JSON.stringify(moveState)}`);
+          $moves = $moves;
+
+          const card = new LinkedNode<PlayingCard>(pileList.pop());
+          pileListStore.set([...pileList]);
+          $renderedList[`${card.data.card}|${card.data.suit}`] = true;
+          Controller.playCurrentCard();
+
+          e.detail.items[0] = {
+            "id": `${card.data.card}|${card.data.suit}`,
+            "data": card,
+            "column": column,
+            "row": 0
+          };
+          tmp[column].add(card);
+          pileId.update((val:number) => val - 1);
+        }
       }
 
       $cardColumns = tmp;
