@@ -20,11 +20,12 @@
   export let suitPileList:Writable<PlayingCard[]>;
 
   let suitPileListSub:Unsubscriber;
+  let draggingSuitSub:Unsubscriber;
 
   let cardContainer:HTMLDivElement;
 
   let items = [];
-  let dropFromOthersDisabled = false;
+  let dropFromOthersDisabled = true;
   let dragDisabled = false;
 
   let sprite:string = "";
@@ -76,28 +77,30 @@
       }
       type = values.length > 0 ? getAceZoneType(values[values.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`;
     });
+
+    draggingSuitSub = draggingSuit.subscribe((value) => {
+      dropFromOthersDisabled = value != suit;
+    });
   });
 
   onDestroy(() => {
     if (suitPileListSub) suitPileListSub();
+    if (draggingSuitSub) draggingSuitSub();
   });
 </script>
 
 <div class="pile">
   <CardContainer scale={scale}>
-    {#if $suitPileList.length > 0}
-      <div class="empty-inner" bind:this={cardContainer}>
-        <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, type, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
-          {#each items as playingCard (playingCard.id)}
-            <div class="card-wrapper">
-              <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
-            </div>
-          {/each}
-        </div>
+    <div class="empty-inner" bind:this={cardContainer}>
+      <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, type, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
+        {#each items as playingCard (playingCard.id)}
+          <div class="card-wrapper">
+            <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
+          </div>
+        {/each}
       </div>
-    {:else}
-      <div style="width: {SUIT_ICON_SIZE * scale}px; height: {SUIT_ICON_SIZE * scale}px; background-image: url({sprite}); background-position: left {offset.x * scale}px top {offset.y * scale}px; background-size: {SUIT_ICON_SIZE * scale}px {SUIT_ICON_SPRITE_SHEET_HEIGHT * scale}px;" />
-    {/if}
+    </div>
+    <div style="width: {SUIT_ICON_SIZE * scale}px; height: {SUIT_ICON_SIZE * scale}px; background-image: url({sprite}); background-position: left {offset.x * scale}px top {-1 * offset.y * scale}px; background-size: {SUIT_ICON_SIZE * scale}px {SUIT_ICON_SPRITE_SHEET_HEIGHT * scale}px;" />
   </CardContainer>
 </div>
 
@@ -121,7 +124,6 @@
     width: 100%;
     height: 100%;
 
-    background-color: var(--highlight-faded);
     border-radius: 4px;
 
     display: flex;
@@ -129,6 +131,7 @@
     justify-content: center;
     align-items: center;
 
-    position: relative;
+    position: absolute;
+    z-index: 1;
   }
 </style>
