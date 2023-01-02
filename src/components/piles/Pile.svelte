@@ -3,7 +3,7 @@
   import type { Unsubscriber, Writable } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { cardColumns, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, dropZoneStyle, moves, renderedList } from "../../Stores";
+  import { cardColumns, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, dropZoneStyle, moves, renderedList, shouldCalcDrop } from "../../Stores";
   import { CARD_HEIGHT, CARD_WIDTH, SUIT_ICON_SIZE, SUIT_ICON_SPRITE_SHEET_HEIGHT } from "../../lib/SpriteLUT";
 
   import Card from "../cards/Card.svelte";
@@ -13,6 +13,7 @@
   import { Controller } from "../../Controller";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import { getPreviousCard } from "../../lib/models/CardEnums";
+  import { getCurrentCardZoneType } from "../../UiLogic";
   
   export let scale:number;
   export let suit:Suits;
@@ -20,6 +21,7 @@
   export let suitPileList:Writable<PlayingCard[]>;
 
   let suitPileListSub:Unsubscriber;
+  let shouldCalcDropSub:Unsubscriber;
 
   let cardContainer:HTMLDivElement;
 
@@ -35,10 +37,19 @@
 
   let type = $suitPileList.length > 0 ? getAceZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`;
   $: dropFromOthersDisabled = $draggingSuit != suit || $draggingMoreThenOne;
-  $: console.log(`${suit}-pile:`, {
-    "dropFromOthersDisabled": dropFromOthersDisabled,
-    "type": type
-  });
+
+  function calcDragOrDrop(isDrop:boolean): void {
+    if (isDrop) {
+      type = $suitPileList.length > 0 ? getAceZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`
+    } else {
+      type = $suitPileList.length > 0 ? getCurrentCardZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`
+    }
+    console.log(`${suit}-pile:`, {
+      "items": JSON.parse(JSON.stringify(items)),
+      "pileList": $suitPileList,
+      "type": type
+    });
+  }
 
   function getAceZoneType(card:PlayingCard): string {
     const nextCard = getPreviousCard(card.card);
@@ -47,18 +58,27 @@
     return `${suitColor}|${nextCard}`
   }
 
+  function isNumeric(str:string) {
+    if (typeof str != "string") return false // we only process strings!  
+    return !isNaN(str as any) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+          !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+  }
+
   function sortById(itemA: { id: string; }, itemB: { id: string; }) { return parseInt(itemA.id) - parseInt(itemB.id); }
   function handleDndConsider(e:any) {
     if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
+      $shouldCalcDrop = false;
       $draggingSuit = e.detail.items[e.detail.items.length-1].data.data.suit;
       $draggingMoreThenOne = false;
     }
+
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById);
   }
   function handleDndFinalize(e:any) {
-    const tarElem = e.detail.items[0];
+    const tarElem = e.detail.items[e.detail.items.length - 1];
     
-    if (tarElem) {
+    if (tarElem && tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
+      let card:PlayingCard;
       if (typeof tarElem.column == "number") {
         const tmp = [...$cardColumns];
 
@@ -81,8 +101,7 @@
 
         $cardColumns = tmp;
         
-        $suitPileList.push(nodes.data);
-        $suitPileList = [...$suitPileList];
+        card = nodes.data;
       } else {
         const typeInfo = tarElem.column.split("-");
         if (typeInfo[1] == "discard") {
@@ -94,25 +113,20 @@
           $moves.push(`multiState:${JSON.stringify(moveState)}`);
           $moves = [...$moves];
 
-          const card = new LinkedNode<PlayingCard>($discardPileList.pop());
+          const cardNode = new LinkedNode<PlayingCard>($discardPileList.pop());
           $discardPileList = [...$discardPileList];
-          $renderedList[`${card.data.card}|${card.data.suit}`] = true;
+          $renderedList[`${cardNode.data.card}|${cardNode.data.suit}`] = true;
           Controller.playCurrentCard();
 
-          e.detail.items[0] = {
-            "id": `${card.data.card}|${card.data.suit}`,
-            "data": card,
-            "column": `pile-${suit}`,
-            "row": 0
-          };
-
-          $suitPileList.push(card.data);
-          $suitPileList = [...$suitPileList];
+          card = cardNode.data;
         }
       }
+      
+      $suitPileList.push(card);
     }
 
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById);
+    $suitPileList = [...$suitPileList];
   }
 
   onMount(() => {
@@ -125,12 +139,19 @@
       if (values.length > 0) {
         for (const val of values) {
           if (!items.find((itm) => `${itm.data.card}|${itm.data.suit}` == `${val.card}|${val.suit}`)) {
-            items.push({
+            const newElem = {
               "id": `${$suitPileId++}`,
               "data": new LinkedNode<PlayingCard>(val),
               "column": `pile-${suit}`,
               "row": 0
-            });
+            };
+            
+            const foundIdx = items.findIndex((itm) => itm.id == `${val.card}|${val.suit}`);
+            if (foundIdx > -1) {
+              items[foundIdx] = newElem;
+            } else {
+              items.push(newElem);
+            }
           }
         }
 
@@ -138,12 +159,15 @@
       } else {
         items = [];
       }
-      type = values.length > 0 ? getAceZoneType(values[values.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`;
+      calcDragOrDrop($shouldCalcDrop);
     });
+
+    shouldCalcDropSub = shouldCalcDrop.subscribe((value) => calcDragOrDrop(value));
   });
 
   onDestroy(() => {
     if (suitPileListSub) suitPileListSub();
+    if (shouldCalcDropSub) shouldCalcDropSub();
   });
 </script>
 

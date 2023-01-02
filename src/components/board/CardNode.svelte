@@ -9,7 +9,7 @@
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
 
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { cardColumns, clubsPileId, clubsPileList, diamondPileId, diamondsPileList, discardPileList, draggingMoreThenOne, draggingSuit, drawPileList, dropZoneStyle, heartsPileId, heartsPileList, moves, renderedList, spadesPileId, spadesPileList } from "../../Stores";
+  import { cardColumns, clubsPileId, clubsPileList, diamondPileId, diamondsPileList, discardPileList, draggingMoreThenOne, draggingSuit, drawPileList, dropZoneStyle, heartsPileId, heartsPileList, moves, renderedList, shouldCalcDrop, spadesPileId, spadesPileList } from "../../Stores";
   import { getHiddenZoneType, getZoneType } from "../../UiLogic";
   import { Stack } from "../../lib/data-structs/Stack";
   import { Controller } from "../../Controller";
@@ -63,6 +63,7 @@
   const flipDurationMs = 300;
   function handleDndConsider(e:any) {
     if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
+      $shouldCalcDrop = true;
       $draggingSuit = e.detail.info.id.substring(e.detail.info.id.indexOf("|") + 1);
       $draggingMoreThenOne = e.detail.items[0].data.next != null;
       console.log({

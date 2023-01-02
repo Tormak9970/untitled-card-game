@@ -38,10 +38,10 @@ export class Controller {
   static recycleDeck(): void { Controller.gameController.recycleDeck(); }
   static playCurrentCard(): void { Controller.gameController.playCurrentCard(); }
 
-  static playPileCard(suit:Suits): void {
+  // static playPileCard(suit:Suits): void {
 
-  }
-  static playDiscardToPile(suit:Suits): void {
-    Controller.playCurrentCard();
-  }
+  // }
+  // static playDiscardToPile(suit:Suits): void {
+  //   Controller.playCurrentCard();
+  // }
 }
