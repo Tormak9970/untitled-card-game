@@ -12,12 +12,11 @@
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   import { Controller } from "../../Controller";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
-  import { getPreviousCard } from "../../lib/models/CardEnums";
+  import { CARD_ORDER, getPreviousCard } from "../../lib/models/CardEnums";
   import { getCurrentCardZoneType } from "../../UiLogic";
   
   export let scale:number;
   export let suit:Suits;
-  export let suitPileId:Writable<number>;
   export let suitPileList:Writable<PlayingCard[]>;
 
   let suitPileListSub:Unsubscriber;
@@ -44,11 +43,17 @@
     } else {
       type = $suitPileList.length > 0 ? getCurrentCardZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`
     }
-    console.log(`${suit}-pile:`, {
-      "items": JSON.parse(JSON.stringify(items)),
-      "pileList": $suitPileList,
-      "type": type
-    });
+    // console.log(`${suit}-pile:`, {
+    //   "items": JSON.parse(JSON.stringify(items)),
+    //   "pileList": $suitPileList,
+    //   "type": type
+    // });
+  }
+
+  function isNumeric(str:string) {
+    if (typeof str != "string") return false // we only process strings!  
+    return !isNaN(str as any) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+          !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
   }
 
   function getAceZoneType(card:PlayingCard): string {
@@ -58,13 +63,7 @@
     return `${suitColor}|${nextCard}`
   }
 
-  function isNumeric(str:string) {
-    if (typeof str != "string") return false // we only process strings!  
-    return !isNaN(str as any) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-          !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
-  }
-
-  function sortById(itemA: { id: string; }, itemB: { id: string; }) { return parseInt(itemA.id) - parseInt(itemB.id); }
+  function sortById(itemA: { id: string; }, itemB: { id: string; }) { return CARD_ORDER[itemA.id.substring(0, itemA.id.indexOf("|"))] - CARD_ORDER[itemB.id.substring(0, itemB.id.indexOf("|"))]; }
   function handleDndConsider(e:any) {
     if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
       $shouldCalcDrop = false;
@@ -75,11 +74,11 @@
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById);
   }
   function handleDndFinalize(e:any) {
-    const tarElem = e.detail.items[e.detail.items.length - 1];
+    let tarElem = e.detail.items.sort(sortById)[e.detail.items.length - 1];
     
-    if (tarElem && tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
+    if (tarElem) {
       let card:PlayingCard;
-      if (typeof tarElem.column == "number") {
+      if (typeof tarElem.column == "number" && tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
         const tmp = [...$cardColumns];
 
         const moveState = {
@@ -102,23 +101,42 @@
         $cardColumns = tmp;
         
         card = nodes.data;
+
+        e.detail.items[e.detail.items.length - 1] = {
+          "id": `${card.card}|${card.suit}`,
+          "data": nodes,
+          "column": `pile-${suit}`,
+          "row": 0
+        };
       } else {
-        const typeInfo = tarElem.column.split("-");
-        if (typeInfo[1] == "discard") {
-          const moveState = {
-            "boardState": $cardColumns,
-            "discardState": $discardPileList
-          };
-          moveState[`${type[1]}PileState`] = $suitPileList;
-          $moves.push(`multiState:${JSON.stringify(moveState)}`);
-          $moves = [...$moves];
+        const tarElemIdx = e.detail.items.findIndex((itm) => isNumeric(itm.id));
+        tarElem = e.detail.items[tarElemIdx];
+        if (tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
+          const typeInfo = tarElem.column.split("-");
+          if (typeInfo[1] == "discard") {
+            const moveState = {
+              "boardState": $cardColumns,
+              "discardState": $discardPileList
+            };
+            moveState[`${type[1]}PileState`] = $suitPileList;
+            $moves.push(`multiState:${JSON.stringify(moveState)}`);
+            $moves = [...$moves];
 
-          const cardNode = new LinkedNode<PlayingCard>($discardPileList.pop());
-          $discardPileList = [...$discardPileList];
-          $renderedList[`${cardNode.data.card}|${cardNode.data.suit}`] = true;
-          Controller.playCurrentCard();
+            const cardNode = new LinkedNode<PlayingCard>($discardPileList.pop());
+            $discardPileList = [...$discardPileList];
+            console.log($discardPileList);
+            $renderedList[`${cardNode.data.card}|${cardNode.data.suit}`] = true;
+            Controller.playCurrentCard();
 
-          card = cardNode.data;
+            card = cardNode.data;
+
+            e.detail.items[tarElemIdx] = {
+              "id": `${card.card}|${card.suit}`,
+              "data": cardNode,
+              "column": `pile-${suit}`,
+              "row": 0
+            };
+          }
         }
       }
       
@@ -138,24 +156,19 @@
     suitPileListSub = suitPileList.subscribe((values) => {
       if (values.length > 0) {
         for (const val of values) {
-          if (!items.find((itm) => `${itm.data.card}|${itm.data.suit}` == `${val.card}|${val.suit}`)) {
+          if (!items.find((itm) => `${itm.data.data.card}|${itm.data.data.suit}` == `${val.card}|${val.suit}`)) {
             const newElem = {
-              "id": `${$suitPileId++}`,
+              "id": `${val.card}|${val.suit}`,
               "data": new LinkedNode<PlayingCard>(val),
               "column": `pile-${suit}`,
               "row": 0
             };
-            
-            const foundIdx = items.findIndex((itm) => itm.id == `${val.card}|${val.suit}`);
-            if (foundIdx > -1) {
-              items[foundIdx] = newElem;
-            } else {
-              items.push(newElem);
-            }
+
+            items.push(newElem);
           }
         }
 
-        items = [...items];
+        items = [...items].sort(sortById);
       } else {
         items = [];
       }

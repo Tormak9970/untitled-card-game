@@ -27,13 +27,9 @@ export const discardPileBoundingRect:Writable<() => DOMRect> = writable(null);
 
 // Ace piles stores
 export const shouldCalcDrop = writable(true);
-export const spadesPileId = writable(0);
 export const spadesPileList:Writable<PlayingCard[]> = writable([]);
-export const heartsPileId = writable(0);
 export const heartsPileList:Writable<PlayingCard[]> = writable([]);
-export const clubsPileId = writable(0);
 export const clubsPileList:Writable<PlayingCard[]> = writable([]);
-export const diamondPileId = writable(0);
 export const diamondsPileList:Writable<PlayingCard[]> = writable([]);
 
 

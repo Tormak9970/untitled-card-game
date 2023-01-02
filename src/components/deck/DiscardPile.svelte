@@ -38,11 +38,6 @@
       $shouldCalcDrop = true;
       $draggingSuit = e.detail.items[e.detail.items.length - 1].data.data.suit;
       $draggingMoreThenOne = false;
-      console.log({
-        "draggingSuit": $draggingSuit,
-        "draggingMoreThenOne": $draggingMoreThenOne,
-        "items": e.detail.items
-      });
     }
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById);
   }
@@ -69,7 +64,7 @@
     discardPileListSub = discardPileList.subscribe((values) => {
       if (values.length > 0) {
         for (const val of values) {
-          if (!items.find((itm) => `${itm.data.card}|${itm.data.suit}` == `${val.card}|${val.suit}`)) {
+          if (!items.find((itm) => `${itm.data.data.card}|${itm.data.data.suit}` == `${val.card}|${val.suit}`)) {
             items.push({
               "id": `${$discardId++}`,
               "data": new LinkedNode<PlayingCard>(val),

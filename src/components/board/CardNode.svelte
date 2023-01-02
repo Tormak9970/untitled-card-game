@@ -9,7 +9,7 @@
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
 
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { cardColumns, clubsPileId, clubsPileList, diamondPileId, diamondsPileList, discardPileList, draggingMoreThenOne, draggingSuit, drawPileList, dropZoneStyle, heartsPileId, heartsPileList, moves, renderedList, shouldCalcDrop, spadesPileId, spadesPileList } from "../../Stores";
+  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, draggingMoreThenOne, draggingSuit, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, shouldCalcDrop, spadesPileList } from "../../Stores";
   import { getHiddenZoneType, getZoneType } from "../../UiLogic";
   import { Stack } from "../../lib/data-structs/Stack";
   import { Controller } from "../../Controller";
@@ -66,11 +66,6 @@
       $shouldCalcDrop = true;
       $draggingSuit = e.detail.info.id.substring(e.detail.info.id.indexOf("|") + 1);
       $draggingMoreThenOne = e.detail.items[0].data.next != null;
-      console.log({
-        "draggingSuit": $draggingSuit,
-        "draggingMoreThenOne": $draggingMoreThenOne,
-        "items": e.detail.items
-      });
     }
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
     dropFromOthersDisabled = false;
@@ -117,28 +112,23 @@
         } else {
           let pileListStore:Writable<PlayingCard[]>;
           let pileList:PlayingCard[];
-          let pileId:Writable<number>;
           
           switch(type[1]) {
             case Suits.SPADE:
               pileListStore = spadesPileList;
               pileList = $spadesPileList;
-              pileId = spadesPileId;
               break;
             case Suits.HEART:
               pileListStore = heartsPileList;
               pileList = $heartsPileList;
-              pileId = heartsPileId;
               break;
             case Suits.CLUB:
               pileListStore = clubsPileList;
               pileList = $clubsPileList;
-              pileId = clubsPileId;
               break;
             case Suits.DIAMOND:
               pileListStore = diamondsPileList;
               pileList = $diamondsPileList;
-              pileId = diamondPileId;
               break;
           }
 
@@ -161,7 +151,6 @@
             "row": 0
           };
           tmp[column].add(card);
-          pileId.update((val:number) => val - 1);
         }
       }
 
