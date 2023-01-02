@@ -43,11 +43,6 @@
     } else {
       type = $suitPileList.length > 0 ? getCurrentCardZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`
     }
-    // console.log(`${suit}-pile:`, {
-    //   "items": JSON.parse(JSON.stringify(items)),
-    //   "pileList": $suitPileList,
-    //   "type": type
-    // });
   }
 
   function isNumeric(str:string) {
@@ -109,7 +104,7 @@
           "row": 0
         };
       } else {
-        const tarElemIdx = e.detail.items.findIndex((itm) => isNumeric(itm.id));
+        const tarElemIdx = e.detail.items.findIndex((itm: { id: string; }) => isNumeric(itm.id));
         tarElem = e.detail.items[tarElemIdx];
         if (tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
           const typeInfo = tarElem.column.split("-");
@@ -124,7 +119,6 @@
 
             const cardNode = new LinkedNode<PlayingCard>($discardPileList.pop());
             $discardPileList = [...$discardPileList];
-            console.log($discardPileList);
             $renderedList[`${cardNode.data.card}|${cardNode.data.suit}`] = true;
             Controller.playCurrentCard();
 
