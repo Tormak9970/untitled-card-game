@@ -7,7 +7,7 @@
   import { refresh } from 'svelte-awesome/icons';
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit } from "../../Stores";
+  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne } from "../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
@@ -35,7 +35,13 @@
   function sortById(itemA: { id: string; }, itemB: { id: string; }) { return parseInt(itemA.id) - parseInt(itemB.id); }
   function handleDndConsider(e:any) {
     if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
-      $draggingSuit = e.detail.items[0].data.data.suit;
+      $draggingSuit = e.detail.items[e.detail.items.length - 1].data.data.suit;
+      $draggingMoreThenOne = false;
+      console.log({
+        "draggingSuit": $draggingSuit,
+        "draggingMoreThenOne": $draggingMoreThenOne,
+        "items": e.detail.items
+      });
     }
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById);
   }

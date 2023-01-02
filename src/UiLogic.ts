@@ -16,15 +16,11 @@ export function validateMove(parent:LinkedNode<PlayingCard>, tarElem:LinkedNode<
 export function getZoneType(card:LinkedNode<PlayingCard>): string {
   const nextColor = (!isRedSuit(card.data.suit as Suits)) ? "Red" : "Black";
   const nextCard = getNextCard(card.data.card);
-  return nextCard == FaceCards.KING ? getKingZoneType() : `${nextColor}|${nextCard}`;
+  return `${nextColor}|${nextCard}`;
 }
 
 export function getHiddenZoneType(card:LinkedNode<PlayingCard>): string {
-  if (card.data.card == FaceCards.KING) {
-    return getKingZoneType();
-  } else {
-    return getCurrentCardZoneType(card.next);
-  }
+  return getCurrentCardZoneType(card.next);
 }
 
 function isLinkedNode(card:LinkedNode<PlayingCard>|PlayingCard): card is LinkedNode<PlayingCard> {

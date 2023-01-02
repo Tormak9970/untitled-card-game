@@ -7,6 +7,7 @@ type CardColumn = LinkedList<PlayingCard>[];
 
 // Universal stores
 export const draggingSuit = writable(null);
+export const draggingMoreThenOne = writable(false);
 
 // UI stores
 export const renderedList = writable({});

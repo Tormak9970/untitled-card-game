@@ -42,9 +42,6 @@ export class Controller {
 
   }
   static playDiscardToPile(suit:Suits): void {
-
-  }
-  static playColumnToPile(suit:Suits): void {
-    
+    Controller.playCurrentCard();
   }
 }

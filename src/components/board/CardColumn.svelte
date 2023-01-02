@@ -6,7 +6,7 @@
   import { LinkedNode, type LinkedList } from "../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
   import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS} from "svelte-dnd-action";
-  import { cardColumns, clubsPileId, clubsPileList, diamondPileId, diamondsPileList, discardPileList, draggingSuit, drawPileList, dropZoneStyle, heartsPileId, heartsPileList, moves, renderedList, spadesPileId, spadesPileList } from "../../Stores";
+  import { cardColumns, clubsPileId, clubsPileList, diamondPileId, diamondsPileList, discardPileList, draggingMoreThenOne, draggingSuit, drawPileList, dropZoneStyle, heartsPileId, heartsPileList, moves, renderedList, spadesPileId, spadesPileList } from "../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { Controller } from "../../Controller";
   import type { Writable } from "svelte/store";
@@ -41,6 +41,13 @@
   function handleDndConsider(e:any) {
     if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
       $draggingSuit = e.detail.info.id.substring(e.detail.info.id.indexOf("|") + 1);
+      $draggingMoreThenOne = e.detail.items[0].data.next != null;
+      console.log({
+        "draggingSuit": $draggingSuit,
+        "draggingMoreThenOne": $draggingMoreThenOne,
+        "items": e.detail.items
+      });
+      $draggingMoreThenOne = e.detail.items[0].data.next != null;
     }
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
     dropFromOthersDisabled = false;
@@ -54,7 +61,7 @@
       
       if (typeof tarElem.column == "number") {
         $moves.push(`boardState:${JSON.stringify($cardColumns)}`);
-        $moves = $moves;
+        $moves = [...$moves];
         const tarColumn = tmp[tarElem.column];
       
         const nodes = tarColumn.removeAllAfter(tarElem.row);
@@ -72,7 +79,7 @@
             "drawState": $drawPileList,
             "discardState": $discardPileList
           })}`);
-          $moves = $moves;
+          $moves = [...$moves];
           const card = new LinkedNode<PlayingCard>($discardPileList.pop());
           $discardPileList = [...$discardPileList];
           $renderedList[`${card.data.card}|${card.data.suit}`] = true;
@@ -113,12 +120,11 @@
           }
 
           const moveState = {
-            "boardState": $cardColumns,
-            "drawState": $drawPileList
+            "boardState": $cardColumns
           };
           moveState[`${type[1]}PileState`] = pileList;
           $moves.push(`multiState:${JSON.stringify(moveState)}`);
-          $moves = $moves;
+          $moves = [...$moves];
 
           const card = new LinkedNode<PlayingCard>(pileList.pop());
           pileListStore.set([...pileList]);
@@ -145,7 +151,7 @@
 </script>
 
 <div class="card-column" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;">
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, type}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * scale}px;">
+  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, type, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * scale}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
       <div animate:flip="{{duration: flipDurationMs}}">
         <CardNode card={playingCard.data} column={column} row={0} scale={scale} uncoveredPercenet={UNCOVERED_PERCENT} />
