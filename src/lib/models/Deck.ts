@@ -47,7 +47,8 @@ export class Deck {
    * Recycles the discard into the draw pile.
    */
   recycleDeck() {
-    for (let i = 0; i < this._discardPile.size(); i++) {
+    const discardSize = this._discardPile.size();
+    for (let i = 0; i < discardSize; i++) {
       const card = this._discardPile.pop();
       card.revealed = false;
       this._drawPile.push(card);

@@ -41,6 +41,10 @@ const CARD_ORDER: CardOrder = {
   "King": 12
 };
 
+export function getPreviousCard(card:Cards): string {
+  return card == FaceCards.KING ? "None" : Object.keys(CARD_ORDER).find((val) => CARD_ORDER[val] == CARD_ORDER[card] + 1);
+}
+
 export function getNextCard(card:Cards): string {
   return card == FaceCards.ACE ? "None" : Object.keys(CARD_ORDER).find((val) => CARD_ORDER[val] == CARD_ORDER[card] - 1);
 }

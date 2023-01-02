@@ -12,7 +12,7 @@
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   import { Controller } from "../../Controller";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
-  import { getNextCard } from "../../lib/models/CardEnums";
+  import { getPreviousCard } from "../../lib/models/CardEnums";
   
   export let scale:number;
   export let suit:Suits;
@@ -20,12 +20,12 @@
   export let suitPileList:Writable<PlayingCard[]>;
 
   let suitPileListSub:Unsubscriber;
-  let draggingSuitSub:Unsubscriber;
 
   let cardContainer:HTMLDivElement;
 
   let items = [];
   let dragDisabled = false;
+  let dropFromOthersDisabled = true;
 
   let sprite:string = "";
   let offset:SpriteOffset = {
@@ -34,12 +34,23 @@
   };
 
   let type = $suitPileList.length > 0 ? getAceZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`;
-  $: dropFromOthersDisabled = $draggingSuit != suit && !$draggingMoreThenOne;
+  $: dropFromOthersDisabled = $draggingSuit != suit || $draggingMoreThenOne;
+  $: console.log(`${suit}-pile:`, {
+    "dropFromOthersDisabled": dropFromOthersDisabled,
+    "type": type
+  });
+
+  function getAceZoneType(card:PlayingCard): string {
+    const nextCard = getPreviousCard(card.card);
+    const suitColor = isRedSuit(suit) ? "Red" : "Black";
+
+    return `${suitColor}|${nextCard}`
+  }
 
   function sortById(itemA: { id: string; }, itemB: { id: string; }) { return parseInt(itemA.id) - parseInt(itemB.id); }
   function handleDndConsider(e:any) {
     if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
-      $draggingSuit = e.detail.items[0].data.data.suit;
+      $draggingSuit = e.detail.items[e.detail.items.length-1].data.data.suit;
       $draggingMoreThenOne = false;
     }
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById);
@@ -48,9 +59,9 @@
     const tarElem = e.detail.items[0];
     
     if (tarElem) {
-      const tmp = [...$cardColumns];
-      
       if (typeof tarElem.column == "number") {
+        const tmp = [...$cardColumns];
+
         const moveState = {
           "boardState": $cardColumns,
           "discardState": $discardPileList
@@ -67,6 +78,8 @@
         }
 
         tmp[tarElem.column] = tarColumn;
+
+        $cardColumns = tmp;
         
         $suitPileList.push(nodes.data);
         $suitPileList = [...$suitPileList];
@@ -97,18 +110,9 @@
           $suitPileList = [...$suitPileList];
         }
       }
-
-      $cardColumns = tmp;
     }
 
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById);
-  }
-
-  function getAceZoneType(card:PlayingCard): string {
-    const nextCard = getNextCard(card.card);
-    const suitColor = isRedSuit(suit) ? "Red" : "Black";
-
-    return `${suitColor}|${nextCard}`
   }
 
   onMount(() => {
@@ -136,15 +140,10 @@
       }
       type = values.length > 0 ? getAceZoneType(values[values.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`;
     });
-
-    // draggingSuitSub = draggingSuit.subscribe((value) => {
-    //   dropFromOthersDisabled = value != suit;
-    // });
   });
 
   onDestroy(() => {
     if (suitPileListSub) suitPileListSub();
-    // if (draggingSuitSub) draggingSuitSub();
   });
 </script>
 
