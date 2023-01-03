@@ -35,7 +35,7 @@
           offset.x = (offset.x - CARD_WIDTH) % (ANIM_SPRITE_STRIP_WIDTH);
         }
       }
-    }, Controller.ANIM_SPEED)
+    }, Controller.ANIM_SPEED);
   });
 </script>
 
