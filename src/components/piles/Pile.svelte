@@ -38,11 +38,11 @@
   $: dropFromOthersDisabled = $draggingSuit != suit || $draggingMoreThenOne;
 
   function calcDragOrDrop(isDrop:boolean): void {
-    if (isDrop) {
-      type = $suitPileList.length > 0 ? getAceZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`
-    } else {
-      type = $suitPileList.length > 0 ? getCurrentCardZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`
-    }
+    // if (isDrop) {
+    //   type = $suitPileList.length > 0 ? getAceZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`
+    // } else {
+    //   type = $suitPileList.length > 0 ? getCurrentCardZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`
+    // }
   }
 
   function isNumeric(str:string) {

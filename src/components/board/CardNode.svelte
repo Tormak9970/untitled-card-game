@@ -113,7 +113,7 @@
           let pileListStore:Writable<PlayingCard[]>;
           let pileList:PlayingCard[];
           
-          switch(type[1]) {
+          switch(typeInfo[1]) {
             case Suits.SPADE:
               pileListStore = spadesPileList;
               pileList = $spadesPileList;
@@ -135,7 +135,7 @@
           const moveState = {
             "boardState": $cardColumns
           };
-          moveState[`${type[1]}PileState`] = pileList;
+          moveState[`${typeInfo[1]}PileState`] = pileList;
           $moves.push(`multiState:${JSON.stringify(moveState)}`);
           $moves = [...$moves];
 
