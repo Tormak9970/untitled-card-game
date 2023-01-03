@@ -136,23 +136,41 @@
   }
 </script>
 
-<div class="card-column" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;">
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * scale}px;">
-    {#each items.slice(0, 1) as playingCard (playingCard.id)}
-      <div animate:flip="{{duration: flipDurationMs}}">
-        <CardNode card={playingCard.data} column={column} row={0} scale={scale} uncoveredPercenet={UNCOVERED_PERCENT} />
-      </div>
-    {/each}
+<div class="card-column-wrapper" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;">
+  <div class="card-column" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;">
+    <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * scale}px;">
+      {#each items.slice(0, 1) as playingCard (playingCard.id)}
+        <div animate:flip="{{duration: flipDurationMs}}">
+          <CardNode card={playingCard.data} column={column} row={0} scale={scale} uncoveredPercenet={UNCOVERED_PERCENT} />
+        </div>
+      {/each}
+    </div>
+  </div>
+  <div class="icon-cont" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px;">
+    <img src="/assets/pixel-crown.png" alt="king-slot">
   </div>
 </div>
 
 <style>
   @import "/theme.css";
 
-  .card-column {
+  .card-column-wrapper {
     position: relative;
     margin-left: 3.5px;
     margin-right: 3.5px;
     margin-top: 7px;
+  }
+
+  .card-column { position: absolute; z-index: 1; }
+  .icon-cont {
+    position: absolute;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-sizing: border-box;
+    border: 2px solid var(--highlight);
+    border-radius: 8px;
   }
 </style>
