@@ -4,17 +4,15 @@
   
   import Card from "../cards/Card.svelte";
 
-  import { fade, slide } from "svelte/transition";
   import { flip } from "svelte/animate";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
 
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, draggingMoreThenOne, draggingSuit, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, shouldCalcDrop, spadesPileList } from "../../Stores";
+  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, spadesPileList } from "../../Stores";
   import { getHiddenZoneType, getZoneType } from "../../UiLogic";
-  import { Stack } from "../../lib/data-structs/Stack";
   import { Controller } from "../../Controller";
-    import type { Writable } from "svelte/store";
-    import { Suits } from "../../lib/models/Suits";
+  import type { Writable } from "svelte/store";
+  import { Suits } from "../../lib/models/Suits";
 
   export let card:LinkedNode<PlayingCard>;
   export let column:number;
@@ -63,7 +61,7 @@
   const flipDurationMs = 300;
   function handleDndConsider(e:any) {
     if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
-      $shouldCalcDrop = true;
+      $draggingType = type;
       $draggingSuit = e.detail.info.id.substring(e.detail.info.id.indexOf("|") + 1);
       $draggingMoreThenOne = e.detail.items[0].data.next != null;
     }
@@ -165,7 +163,7 @@
 <div class="card-node" style="width: {CARD_WIDTH * scale}px; height: {(CARD_HEIGHT * scale) * uncoveredPercenet + (CARD_HEIGHT * scale)}px;">
   <Card card={card.data.card} suit={card.data.suit} revealed={revealed} scale={scale} uncoveredPercent={uncoveredPercenet} column={column} row={row} />
 
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, type, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {uncoveredPercenet * CARD_HEIGHT * scale}px;">
+  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {uncoveredPercenet * CARD_HEIGHT * scale}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
       <div animate:flip="{{duration: flipDurationMs}}">
         <svelte:self {...{card:playingCard.data, column, row:row+1, scale, uncoveredPercenet}} />

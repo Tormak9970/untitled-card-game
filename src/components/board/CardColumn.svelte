@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { fade, slide } from "svelte/transition";
   import { flip } from "svelte/animate";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
   import { LinkedNode, type LinkedList } from "../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
   import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS} from "svelte-dnd-action";
-  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, draggingMoreThenOne, draggingSuit, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, shouldCalcDrop, spadesPileList } from "../../Stores";
+  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, spadesPileList } from "../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { Controller } from "../../Controller";
   import type { Writable } from "svelte/store";
@@ -40,7 +39,7 @@
   const flipDurationMs = 300;
   function handleDndConsider(e:any) {
     if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
-      $shouldCalcDrop = true;
+      $draggingType = type;
       $draggingSuit = e.detail.info.id.substring(e.detail.info.id.indexOf("|") + 1);
       $draggingMoreThenOne = e.detail.items[0].data.next != null;
       $draggingMoreThenOne = e.detail.items[0].data.next != null;
@@ -141,7 +140,7 @@
 </script>
 
 <div class="card-column" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;">
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, type, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * scale}px;">
+  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * scale}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
       <div animate:flip="{{duration: flipDurationMs}}">
         <CardNode card={playingCard.data} column={column} row={0} scale={scale} uncoveredPercenet={UNCOVERED_PERCENT} />

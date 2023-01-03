@@ -6,6 +6,7 @@ import type { PlayingCard } from "./lib/models/PlayingCard";
 type CardColumn = LinkedList<PlayingCard>[];
 
 // Universal stores
+export const draggingType = writable(null);
 export const draggingSuit = writable(null);
 export const draggingMoreThenOne = writable(false);
 
@@ -26,7 +27,6 @@ export const drawPileBoundingRect:Writable<() => DOMRect> = writable(null);
 export const discardPileBoundingRect:Writable<() => DOMRect> = writable(null);
 
 // Ace piles stores
-export const shouldCalcDrop = writable(true);
 export const spadesPileList:Writable<PlayingCard[]> = writable([]);
 export const heartsPileList:Writable<PlayingCard[]> = writable([]);
 export const clubsPileList:Writable<PlayingCard[]> = writable([]);

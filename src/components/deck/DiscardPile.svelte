@@ -1,14 +1,12 @@
 <script lang="ts">
   import { onDestroy, onMount, afterUpdate } from "svelte";
-	import { tweened } from 'svelte/motion';
-	import { cubicOut } from 'svelte/easing';
   import type { Unsubscriber } from "svelte/store";
   import Icon from 'svelte-awesome';
   import { refresh } from 'svelte-awesome/icons';
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne, shouldCalcDrop } from "../../Stores";
-  import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
+  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne, draggingType } from "../../Stores";
+  import { getCurrentCardZoneType } from "../../UiLogic";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
@@ -35,7 +33,7 @@
   function sortById(itemA: { id: string; }, itemB: { id: string; }) { return parseInt(itemA.id) - parseInt(itemB.id); }
   function handleDndConsider(e:any) {
     if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
-      $shouldCalcDrop = true;
+      $draggingType = type
       $draggingSuit = e.detail.items[e.detail.items.length - 1].data.data.suit;
       $draggingMoreThenOne = false;
     }
@@ -92,7 +90,7 @@
 <div class="discard-pile">
   <CardContainer scale={scale}>
     <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px;" bind:this={cardContainer}>
-      <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, type, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
+      <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
         {#each items as playingCard, i (playingCard.id)}
           <div class="card-wrapper{(i == items.length-1 && shouldAnimate) ? " transition-out": ""}">
             <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />

@@ -3,7 +3,7 @@
   import type { Unsubscriber, Writable } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { cardColumns, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, dropZoneStyle, moves, renderedList, shouldCalcDrop } from "../../Stores";
+  import { cardColumns, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, dropZoneStyle, moves, renderedList } from "../../Stores";
   import { CARD_HEIGHT, CARD_WIDTH, SUIT_ICON_SIZE, SUIT_ICON_SPRITE_SHEET_HEIGHT } from "../../lib/SpriteLUT";
 
   import Card from "../cards/Card.svelte";
@@ -13,14 +13,12 @@
   import { Controller } from "../../Controller";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import { CARD_ORDER, getPreviousCard } from "../../lib/models/CardEnums";
-  import { getCurrentCardZoneType } from "../../UiLogic";
   
   export let scale:number;
   export let suit:Suits;
   export let suitPileList:Writable<PlayingCard[]>;
 
   let suitPileListSub:Unsubscriber;
-  let shouldCalcDropSub:Unsubscriber;
 
   let cardContainer:HTMLDivElement;
 
@@ -35,15 +33,7 @@
   };
 
   let type = $suitPileList.length > 0 ? getAceZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`;
-  $: dropFromOthersDisabled = $draggingSuit != suit || $draggingMoreThenOne;
-
-  function calcDragOrDrop(isDrop:boolean): void {
-    // if (isDrop) {
-    //   type = $suitPileList.length > 0 ? getAceZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`
-    // } else {
-    //   type = $suitPileList.length > 0 ? getCurrentCardZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`
-    // }
-  }
+  $: dropFromOthersDisabled = $draggingSuit != suit || $draggingMoreThenOne || $draggingType != type;
 
   function isNumeric(str:string) {
     if (typeof str != "string") return false // we only process strings!  
@@ -61,8 +51,8 @@
   function sortById(itemA: { id: string; }, itemB: { id: string; }) { return CARD_ORDER[itemA.id.substring(0, itemA.id.indexOf("|"))] - CARD_ORDER[itemB.id.substring(0, itemB.id.indexOf("|"))]; }
   function handleDndConsider(e:any) {
     if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
-      $shouldCalcDrop = false;
-      $draggingSuit = e.detail.items[e.detail.items.length-1].data.data.suit;
+      $draggingType = `${isRedSuit(suit) ? "Red" : "Black"}|${e.detail.items[e.detail.items.length-1].data.data.card}`;
+      $draggingSuit = suit;
       $draggingMoreThenOne = false;
     }
 
@@ -103,38 +93,42 @@
           "column": `pile-${suit}`,
           "row": 0
         };
+        
+        $suitPileList.push(card);
       } else {
         const tarElemIdx = e.detail.items.findIndex((itm: { id: string; }) => isNumeric(itm.id));
         tarElem = e.detail.items[tarElemIdx];
-        if (tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
-          const typeInfo = tarElem.column.split("-");
-          if (typeInfo[1] == "discard") {
-            const moveState = {
-              "boardState": $cardColumns,
-              "discardState": $discardPileList
-            };
-            moveState[`${type[1]}PileState`] = $suitPileList;
-            $moves.push(`multiState:${JSON.stringify(moveState)}`);
-            $moves = [...$moves];
+        if (tarElem) {
+          if (tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
+            const typeInfo = tarElem.column.split("-");
+            if (typeInfo[1] == "discard") {
+              const moveState = {
+                "boardState": $cardColumns,
+                "discardState": $discardPileList
+              };
+              moveState[`${type[1]}PileState`] = $suitPileList;
+              $moves.push(`multiState:${JSON.stringify(moveState)}`);
+              $moves = [...$moves];
 
-            const cardNode = new LinkedNode<PlayingCard>($discardPileList.pop());
-            $discardPileList = [...$discardPileList];
-            $renderedList[`${cardNode.data.card}|${cardNode.data.suit}`] = true;
-            Controller.playCurrentCard();
+              const cardNode = new LinkedNode<PlayingCard>($discardPileList.pop());
+              $discardPileList = [...$discardPileList];
+              $renderedList[`${cardNode.data.card}|${cardNode.data.suit}`] = true;
+              Controller.playCurrentCard();
 
-            card = cardNode.data;
+              card = cardNode.data;
 
-            e.detail.items[tarElemIdx] = {
-              "id": `${card.card}|${card.suit}`,
-              "data": cardNode,
-              "column": `pile-${suit}`,
-              "row": 0
-            };
+              e.detail.items[tarElemIdx] = {
+                "id": `${card.card}|${card.suit}`,
+                "data": cardNode,
+                "column": `pile-${suit}`,
+                "row": 0
+              };
+              
+              $suitPileList.push(card);
+            }
           }
         }
       }
-      
-      $suitPileList.push(card);
     }
 
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById);
@@ -166,22 +160,19 @@
       } else {
         items = [];
       }
-      calcDragOrDrop($shouldCalcDrop);
+      type = values.length > 0 ? getAceZoneType(values[values.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`
     });
-
-    shouldCalcDropSub = shouldCalcDrop.subscribe((value) => calcDragOrDrop(value));
   });
 
   onDestroy(() => {
     if (suitPileListSub) suitPileListSub();
-    if (shouldCalcDropSub) shouldCalcDropSub();
   });
 </script>
 
 <div class="pile">
   <CardContainer scale={scale}>
     <div class="empty-inner" bind:this={cardContainer}>
-      <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, type, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
+      <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
         {#each items as playingCard (playingCard.id)}
           <div class="card-wrapper">
             <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
