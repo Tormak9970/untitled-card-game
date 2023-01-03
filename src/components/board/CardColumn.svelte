@@ -5,7 +5,7 @@
   import { LinkedNode, type LinkedList } from "../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
   import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS} from "svelte-dnd-action";
-  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, spadesPileList } from "../../Stores";
+  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, spadesPileList } from "../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { Controller } from "../../Controller";
   import type { Writable } from "svelte/store";
@@ -21,8 +21,8 @@
 
   let items = [];
   let dragDisabled = false;
-  let dropFromOthersDisabled = false;
   $: type = playingCards.first ? getCurrentCardZoneType(playingCards.first) : getKingZoneType();
+  $: dropFromOthersDisabled = (playingCards.first != null && items.length > 0) || ($draggingType != type);
 
   $: if (playingCards.first && notAdded) {
     notAdded = false;
@@ -33,7 +33,6 @@
       "row": 0
     });
     dragDisabled = !playingCards.first.data.revealed;
-    dropFromOthersDisabled = playingCards.first != null && items.length > 0;
   }
 
   const flipDurationMs = 300;
@@ -45,7 +44,6 @@
       $draggingMoreThenOne = e.detail.items[0].data.next != null;
     }
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
-    dropFromOthersDisabled = false;
   }
 
   function handleDndFinalize(e:any) {
@@ -132,7 +130,6 @@
       }
 
       $cardColumns = tmp;
-      dropFromOthersDisabled = true;
     }
     
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
@@ -140,7 +137,7 @@
 </script>
 
 <div class="card-column" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;">
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * scale}px;">
+  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * scale}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
       <div animate:flip="{{duration: flipDurationMs}}">
         <CardNode card={playingCard.data} column={column} row={0} scale={scale} uncoveredPercenet={UNCOVERED_PERCENT} />

@@ -8,7 +8,7 @@
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
 
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, spadesPileList } from "../../Stores";
+  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, spadesPileList } from "../../Stores";
   import { getHiddenZoneType, getZoneType } from "../../UiLogic";
   import { Controller } from "../../Controller";
   import type { Writable } from "svelte/store";
@@ -24,9 +24,9 @@
 
   let items = [];
   let dragDisabled = false;
-  let dropFromOthersDisabled = false;
   $: revealed = $renderedList[`${card.data.card}|${card.data.suit}`] ? $renderedList[`${card.data.card}|${card.data.suit}`] : false;
   $: type = card ? ((!card.next || card?.data?.revealed) ? getZoneType(card) : getHiddenZoneType(card)) : "";
+  $: dropFromOthersDisabled = (card.next != null && items.length > 0) || ($draggingType != type);
 
   $: if (card?.next && notAdded) {
     notAdded = false;
@@ -37,7 +37,6 @@
       "row": row+1
     });
     dragDisabled = !card.next?.data.revealed;
-    dropFromOthersDisabled = card.next != null && items.length > 0;
     console.info(`${card.data.card}|${card.data.suit}: `, {
       "next": card.next,
       "type": type
@@ -66,7 +65,6 @@
       $draggingMoreThenOne = e.detail.items[0].data.next != null;
     }
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
-    dropFromOthersDisabled = false;
   }
 
   function handleDndFinalize(e:any) {
@@ -153,7 +151,6 @@
       }
 
       $cardColumns = tmp;
-      dropFromOthersDisabled = true;
     }
     
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
@@ -163,7 +160,7 @@
 <div class="card-node" style="width: {CARD_WIDTH * scale}px; height: {(CARD_HEIGHT * scale) * uncoveredPercenet + (CARD_HEIGHT * scale)}px;">
   <Card card={card.data.card} suit={card.data.suit} revealed={revealed} scale={scale} uncoveredPercent={uncoveredPercenet} column={column} row={row} />
 
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {uncoveredPercenet * CARD_HEIGHT * scale}px;">
+  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {uncoveredPercenet * CARD_HEIGHT * scale}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
       <div animate:flip="{{duration: flipDurationMs}}">
         <svelte:self {...{card:playingCard.data, column, row:row+1, scale, uncoveredPercenet}} />

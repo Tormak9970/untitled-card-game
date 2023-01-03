@@ -3,7 +3,7 @@
   import type { Unsubscriber, Writable } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { cardColumns, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, dropZoneStyle, moves, renderedList } from "../../Stores";
+  import { cardColumns, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, moves, renderedList } from "../../Stores";
   import { CARD_HEIGHT, CARD_WIDTH, SUIT_ICON_SIZE, SUIT_ICON_SPRITE_SHEET_HEIGHT } from "../../lib/SpriteLUT";
 
   import Card from "../cards/Card.svelte";
@@ -172,7 +172,7 @@
 <div class="pile">
   <CardContainer scale={scale}>
     <div class="empty-inner" bind:this={cardContainer}>
-      <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:dropZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
+      <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
         {#each items as playingCard (playingCard.id)}
           <div class="card-wrapper">
             <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />

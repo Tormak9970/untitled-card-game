@@ -1,8 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount, afterUpdate } from "svelte";
   import type { Unsubscriber } from "svelte/store";
-  import Icon from 'svelte-awesome';
-  import { refresh } from 'svelte-awesome/icons';
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
   import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne, draggingType } from "../../Stores";
