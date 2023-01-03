@@ -5,10 +5,11 @@
 
   import { Controller } from "../../Controller";
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect } from "../../Stores";
+  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty } from "../../Stores";
   
   import Card from "../cards/Card.svelte";
     import CardContainer from "./CardContainer.svelte";
+    import { Difficulty } from "../../lib/models/Difficulty";
 
   export let scale:number;
   export let shouldAnimate = false;
@@ -46,7 +47,15 @@
     }, 0);
   }
 
-  function doDrawCard(): void { Controller.drawCard(); }
+  function doDrawCard(): void {
+    if ($difficulty == Difficulty.BEGINNER) {
+      Controller.drawCard();
+    } else {
+      Controller.drawCard();
+      Controller.drawCard();
+      Controller.drawCard();
+    }
+  }
   function recycleDiscard(): void {
     if ($drawPileList.length == 0) {
       shouldAnimate = true;
