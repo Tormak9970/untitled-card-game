@@ -4,17 +4,13 @@
   import { onMount } from "svelte";
 
   import { Controller } from "../../Controller";
-  import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty } from "../../Stores";
+  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect } from "../../Stores";
   
   import Card from "../cards/Card.svelte";
-    import CardContainer from "./CardContainer.svelte";
-    import { Difficulty } from "../../lib/models/Difficulty";
+  import CardContainer from "./CardContainer.svelte";
 
   export let scale:number;
   export let shouldAnimate = false;
-
-  const ANIM_DELAY = 50;
   
   let discardPileLeft = 0;
   let discardPileTop = 0;
@@ -33,31 +29,20 @@
       elem.classList.remove("transition-out");
       setTimeout(() => {
         recursiveAnimate(list, idx++);
-      }, ANIM_DELAY);
+      }, Controller.DRAW_ANIM_DELAY);
     } else {
       shouldAnimate = false;
     }
   }
 
   function triggerAnimation() {
-    console.log("triggering animation");
     setTimeout(() => {
       const elems = cardContainer.getElementsByClassName("transition-out");
       recursiveAnimate(elems, 0);
     }, 0);
   }
 
-  function doDrawCard(): void {
-    if ($difficulty == Difficulty.BEGINNER) {
-      Controller.drawCard();
-    } else {
-      for (let i = 0; i < 3; i++) {
-        if ($drawPileList.length > 0) {
-          Controller.drawCard();
-        }
-      }
-    }
-  }
+  function doDrawCard(): void { Controller.drawCard(); }
   function recycleDiscard(): void {
     if ($drawPileList.length == 0) {
       shouldAnimate = true;

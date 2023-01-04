@@ -10,6 +10,7 @@ import { ToastController } from "./lib/controllers/ToastController";
 export class Controller {
   static ANIM_SPEED = 150;
   static ANIM_PAUSE_LENGTH = 0;
+  static DRAW_ANIM_DELAY = 50;
 
   private static spriteLoader = new SpriteLoader();
   private static gameController = new GameController();

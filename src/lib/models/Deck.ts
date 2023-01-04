@@ -1,8 +1,9 @@
 import type { PlayingCard } from "./PlayingCard";
 import { Stack } from "../data-structs/Stack";
 import type { GameBoard } from "./GameBoard";
-import { discardPileList, drawPileList } from "../../Stores";
+import { difficulty, discardPileList, drawPileList } from "../../Stores";
 import { get } from "svelte/store";
+import { Difficulty } from "./Difficulty";
 
 /**
  * Class representing a deck of cards.
@@ -36,9 +37,23 @@ export class Deck {
    * Draws the top card of the draw pile.
    */
   drawCard() {
-    const card = this._drawPile.pop();
-    card.revealed = true;
-    this._discardPile.push(card);
+    const curDiff = get(difficulty);
+
+    let ittr = 3;
+    if (curDiff == Difficulty.BEGINNER) {
+      ittr = 1
+    }
+
+    for (let i = 0; i < ittr; i++) {
+      try {
+        const card = this._drawPile.pop();
+        card.revealed = true;
+        this._discardPile.push(card);
+      } catch (e:any) {
+        console.log("no cards left!");
+        break;
+      }
+    }
     
     this.updateStores();
   }
