@@ -11,7 +11,8 @@
 
   import Card from "../cards/Card.svelte";
   import CardContainer from "./CardContainer.svelte";
-    import { Difficulty } from "../../lib/models/Difficulty";
+  import { Difficulty } from "../../lib/models/Difficulty";
+  import { Controller } from "../../Controller";
   
   export let scale:number;
   export let uncoveredPercent:number;
@@ -48,14 +49,24 @@
     drawPileTop = -(cardContBoundingRect.top - drawPileInfo.top);
   }
 
-  afterUpdate(() => {
+  function recursiveAnimate(list:HTMLCollectionOf<Element>, idx:number) {
+    if (idx < list.length) {
+      const elem = list[idx];
+      elem.classList.remove("transition-out");
+      setTimeout(() => {
+        recursiveAnimate(list, idx++);
+      }, Controller.DRAW_ANIM_DELAY);
+    }
+  }
+
+  function triggerAnimation() {
     setTimeout(() => {
       const elems = cardContainer.getElementsByClassName("transition-out");
-      for (const elem of elems) {
-        elem.classList.remove("transition-out");
-      }
+      recursiveAnimate(elems, 0);
     }, 0);
-  });
+  }
+
+  afterUpdate(() => { triggerAnimation(); });
 
   onMount(() => {
     $discardPileBoundingRect = cardContainer.getBoundingClientRect.bind(cardContainer);
@@ -103,13 +114,19 @@
   {:else}
     <CardContainer scale={scale} width={(CARD_WIDTH * scale * uncoveredPercent * 2) + (CARD_WIDTH * scale) + 8}>
       <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px;" bind:this={cardContainer}>
-        <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
-          {#each items as playingCard, i (playingCard.id)}
-            <div class="card-wrapper{(i == items.length-1 && shouldAnimate) ? " transition-out": ""}" style="left: {$difficulty == Difficulty.BEGINNER ? 0 : (CARD_WIDTH * scale * uncoveredPercent * 2) - (i > items.length - 4 ? (CARD_WIDTH * scale * uncoveredPercent * ((items.length - 1 - i) % 3)) : (CARD_WIDTH * scale * uncoveredPercent * 2))}px;">
-              <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
-            </div>
-          {/each}
-        </div>
+        <div class="blocker" style="position: absolute; z-index: 100; width: {CARD_WIDTH * scale * uncoveredPercent * ((items.length - 1) % 3)}px; height: 100%" on:mousedown|stopPropagation />
+        <div
+            use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}"
+            on:consider="{handleDndConsider}"
+            on:finalize="{handleDndFinalize}"
+            style="width: {(CARD_WIDTH * scale * uncoveredPercent * 2) + (CARD_WIDTH * scale)}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px; left: 0px;"
+            >
+            {#each items as playingCard, i (`${i}|${playingCard.id}`)}
+              <div class="card-wrapper{(i >= items.length-3 && shouldAnimate) ? " transition-out": ""}" style="--base-left: {(CARD_WIDTH * scale * uncoveredPercent * 2) - (i >= $discardPileList.length - 3 ? (CARD_WIDTH * scale * uncoveredPercent * (($discardPileList.length - 1 - i) % 3)) : (CARD_WIDTH * scale * uncoveredPercent * 2))}px;">
+                <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
+              </div>
+            {/each}
+          </div>
       </div>
     </CardContainer>
   {/if}
@@ -121,13 +138,14 @@
   :root {
     --drawPileLeft: 0px;
     --drawPileTop: 0px;
+    --base-left: 0px;
   }
 
   .card-wrapper {
     position: absolute;
     overflow: hidden;
     
-    left: 0px;
+    left: var(--base-left);
     top: 0px;
     transition: left 300ms ease-in-out, top 300ms ease-in-out;
   }
