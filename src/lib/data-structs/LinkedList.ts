@@ -47,7 +47,13 @@ export class LinkedList<T> {
     } else if (!idx || idx < this.size) {
       this.first = newNode;
     }
-    this.size++;
+    this.size = 0;
+
+    let cNode = this.first;
+    while(cNode != null) {
+      this.size++;
+      cNode = cNode.next;
+    }
   }
 
   remove(idx:number): T {

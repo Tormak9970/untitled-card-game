@@ -15,6 +15,7 @@
   export let uncoveredPercent:number;
   export let column:number;
   export let row:number;
+  export let isDraggable = true;
 
   let cardElem:HTMLDivElement;
 
@@ -36,7 +37,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
   class="card"
-  class:draggable-source="{revealed}"
+  class:draggable-source="{revealed && isDraggable}"
   style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; top: {(row) * (CARD_HEIGHT * scale) * uncoveredPercent}px;"
   class:face-down={!revealed}
   bind:this={cardElem}

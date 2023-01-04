@@ -37,17 +37,6 @@
       "row": row+1
     });
     dragDisabled = !card.next?.data.revealed;
-    console.info(`${card.data.card}|${card.data.suit}: `, {
-      "next": card.next,
-      "type": type
-    });
-  } else {
-    if (!card?.next) {
-      console.info(`${card.data.card}|${card.data.suit}: `, {
-        "cardColumns": $cardColumns,
-        "type": type
-      });
-    }
   }
 
   $: if (!revealed && !$renderedList[`${card.data.card}|${card.data.suit}`] && card.data.revealed) {
@@ -85,6 +74,13 @@
 
         tmp[column].add(nodes);
         tmp[tarElem.column] = tarColumn;
+
+        e.detail.items[0] = {
+          "id": `${card.data.card}|${card.data.suit}`,
+          "data": card,
+          "column": column,
+          "row": row+1
+        };
       } else {
         const typeInfo = tarElem.column.split("-");
         if (typeInfo[1] == "discard") {
@@ -102,7 +98,7 @@
             "id": `${card.data.card}|${card.data.suit}`,
             "data": card,
             "column": column,
-            "row": 0
+            "row": row+1
           };
           tmp[column].add(card);
         } else {
@@ -144,7 +140,7 @@
             "id": `${card.data.card}|${card.data.suit}`,
             "data": card,
             "column": column,
-            "row": 0
+            "row": row+1
           };
           tmp[column].add(card);
         }
@@ -163,7 +159,7 @@
   <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {uncoveredPercenet * CARD_HEIGHT * scale}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
       <div animate:flip="{{duration: flipDurationMs}}">
-        <svelte:self {...{card:playingCard.data, column, row:row+1, scale, uncoveredPercenet}} />
+        <svelte:self {...{card:playingCard.data, column, row:playingCard.row, scale, uncoveredPercenet}} />
       </div>
     {/each}
   </div>
