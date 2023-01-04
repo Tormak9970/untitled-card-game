@@ -3,7 +3,7 @@
   import type { Unsubscriber } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne, draggingType } from "../../Stores";
+  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne, draggingType, difficulty } from "../../Stores";
   import { getCurrentCardZoneType } from "../../UiLogic";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
@@ -11,8 +11,10 @@
 
   import Card from "../cards/Card.svelte";
   import CardContainer from "./CardContainer.svelte";
+    import { Difficulty } from "../../lib/models/Difficulty";
   
   export let scale:number;
+  export let uncoveredPercent:number;
 
   let discardPileListSub: Unsubscriber;
 
@@ -86,17 +88,31 @@
 </script>
 
 <div class="discard-pile">
-  <CardContainer scale={scale}>
-    <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px;" bind:this={cardContainer}>
-      <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
-        {#each items as playingCard, i (playingCard.id)}
-          <div class="card-wrapper{(i == items.length-1 && shouldAnimate) ? " transition-out": ""}">
-            <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
-          </div>
-        {/each}
+  {#if $difficulty == Difficulty.BEGINNER}
+    <CardContainer scale={scale}>
+      <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px;" bind:this={cardContainer}>
+        <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
+          {#each items as playingCard, i (playingCard.id)}
+            <div class="card-wrapper{(i == items.length-1 && shouldAnimate) ? " transition-out": ""}">
+              <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
+            </div>
+          {/each}
+        </div>
       </div>
-    </div>
-  </CardContainer>
+    </CardContainer>
+  {:else}
+    <CardContainer scale={scale} width={(CARD_WIDTH * scale * uncoveredPercent * 2) + (CARD_WIDTH * scale) + 8}>
+      <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px;" bind:this={cardContainer}>
+        <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
+          {#each items as playingCard, i (playingCard.id)}
+            <div class="card-wrapper{(i == items.length-1 && shouldAnimate) ? " transition-out": ""}" style="left: {$difficulty == Difficulty.BEGINNER ? 0 : (CARD_WIDTH * scale * uncoveredPercent * 2) - (i > items.length - 4 ? (CARD_WIDTH * scale * uncoveredPercent * ((items.length - 1 - i) % 3)) : (CARD_WIDTH * scale * uncoveredPercent * 2))}px;">
+              <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
+            </div>
+          {/each}
+        </div>
+      </div>
+    </CardContainer>
+  {/if}
 </div>
 
 <style>
@@ -131,7 +147,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
 
     position: relative;
   }

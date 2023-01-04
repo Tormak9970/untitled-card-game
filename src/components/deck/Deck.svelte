@@ -3,6 +3,7 @@
   import DrawPile from "./DrawPile.svelte";
 
   export let scale:number;
+  export let uncoveredPercent:number;
 
   let increaseDrawZIndex:boolean;
 </script>
@@ -12,7 +13,7 @@
     <DrawPile scale={scale} bind:shouldAnimate={increaseDrawZIndex} />
   </div>
   <div class="discard-cont">
-    <DiscardPile scale={scale} />
+    <DiscardPile scale={scale} uncoveredPercent={uncoveredPercent} />
   </div>
 </div>
 

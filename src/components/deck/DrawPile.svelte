@@ -51,9 +51,11 @@
     if ($difficulty == Difficulty.BEGINNER) {
       Controller.drawCard();
     } else {
-      Controller.drawCard();
-      Controller.drawCard();
-      Controller.drawCard();
+      for (let i = 0; i < 3; i++) {
+        if ($drawPileList.length > 0) {
+          Controller.drawCard();
+        }
+      }
     }
   }
   function recycleDiscard(): void {

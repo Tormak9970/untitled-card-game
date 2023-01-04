@@ -2,10 +2,12 @@
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
   
   export let scale:number;
+  export let height = CARD_HEIGHT * scale + 8;
+  export let width = CARD_WIDTH * scale + 8;
 </script>
 
 <div class="discard-pile">
-  <div class="empty-pile" style="width: {CARD_WIDTH * scale + 8}px; height: {CARD_HEIGHT * scale + 8}px;">
+  <div class="empty-pile" style="width: {width}px; height: {height}px;">
     <div class="empty-inner">
       <slot />
     </div>
