@@ -3,9 +3,8 @@ import type { LinkedList } from "./lib/data-structs/LinkedList";
 import { Difficulty } from "./lib/models/Difficulty";
 import type { PlayingCard } from "./lib/models/PlayingCard";
 
-type CardColumn = LinkedList<PlayingCard>[];
-
 // Universal stores
+export const highScore = writable(0);
 export const draggingType = writable(null);
 export const draggingSuit = writable(null);
 export const draggingMoreThenOne = writable(false);
@@ -13,11 +12,15 @@ export const draggingMoreThenOne = writable(false);
 // UI stores
 export const renderedList = writable({});
 
-// Game State stores
-export const highScore = writable(0);
+// Game state stores
+export const difficulty:Writable<Difficulty> = writable(Difficulty.INTERMEDIATE);
+export const score = writable(0);
+export const turns = writable(0);
+export const gameTime = writable("");
 export const moves:Writable<string[]> = writable([]);
 
-export const cardColumns:Writable<CardColumn> = writable([]);
+// Game board stores
+export const cardColumns:Writable<LinkedList<PlayingCard>[]> = writable([]);
 export const drawPileList:Writable<PlayingCard[]> = writable([]);
 export const discardPileList:Writable<PlayingCard[]> = writable([]);
 
@@ -34,7 +37,6 @@ export const diamondsPileList:Writable<PlayingCard[]> = writable([]);
 
 
 // Settings stores
-export const difficulty:Writable<Difficulty> = writable(Difficulty.INTERMEDIATE);
 
 export const dropZoneStyle = {
   "border": '1px solid #d87e08',

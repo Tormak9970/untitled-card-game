@@ -3,6 +3,8 @@ import { SpriteLoader } from "./lib/controllers/SpriteLoader";
 import type { JokerTypes, Suits } from "./lib/models/Suits";
 import { GameController } from "./lib/controllers/GameController";
 import { ToastController } from "./lib/controllers/ToastController";
+import { SaveController } from "./lib/controllers/SaveController";
+import { SettingsController } from "./lib/controllers/SettingsController";
 
 /**
  * The main controller for the game.
@@ -12,9 +14,11 @@ export class Controller {
   static ANIM_PAUSE_LENGTH = 0;
   static DRAW_ANIM_DELAY = 50;
 
+  private static toastController = new ToastController();
+  private static saveController = new SaveController();
+  private static settingsController = new SettingsController();
   private static spriteLoader = new SpriteLoader();
   private static gameController = new GameController();
-  private static toastController = new ToastController();
 
   static init() {
     Controller.gameController.deal();
