@@ -5,7 +5,7 @@
   import { LinkedNode, type LinkedList } from "../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
   import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS} from "svelte-dnd-action";
-  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, spadesPileList } from "../../Stores";
+  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, spadesPileList, turns } from "../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { Controller } from "../../Controller";
   import type { Writable } from "svelte/store";
@@ -65,6 +65,7 @@
         
         tmp[column].add(nodes);
         tmp[tarElem.column] = tarColumn;
+        $turns++;
       } else {
         const typeInfo = tarElem.column.split("-");
         if (typeInfo[1] == "discard") {
@@ -130,6 +131,8 @@
           tmp[column].add(card);
           Controller.scorePileToBoard();
         }
+        
+        $turns++;
       }
 
       $cardColumns = tmp;

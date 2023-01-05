@@ -8,7 +8,7 @@
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
 
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, spadesPileList } from "../../Stores";
+  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, spadesPileList, turns } from "../../Stores";
   import { getHiddenZoneType, getZoneType } from "../../UiLogic";
   import { Controller } from "../../Controller";
   import type { Writable } from "svelte/store";
@@ -82,6 +82,7 @@
           "column": column,
           "row": row+1
         };
+        $turns++;
       } else {
         const typeInfo = tarElem.column.split("-");
         if (typeInfo[1] == "discard") {
@@ -147,6 +148,7 @@
           tmp[column].add(card);
           Controller.scorePileToBoard();
         }
+        $turns++;
       }
 
       $cardColumns = tmp;

@@ -55,4 +55,20 @@ export class Controller {
   static checkWin(): void {
     
   }
+
+  static saveSettings(toFile:boolean): void {
+    if (toFile) {
+      // Controller.settingsController.saveSettingsToFile();
+    } else {
+      // Controller.settingsController.saveSettings();
+    }
+  }
+
+  static saveGame(toFile:boolean): void {
+    if (toFile) {
+      Controller.saveController.saveGameToFile();
+    } else {
+      Controller.saveController.saveGame();
+    }
+  }
 }

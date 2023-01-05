@@ -20,7 +20,7 @@
   @import "/theme.css";
   
   .game-info {
-    width: 400px;
+    width: 500px;
     position: absolute;
     pointer-events: auto;
 

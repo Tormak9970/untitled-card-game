@@ -3,7 +3,7 @@
   import type { Unsubscriber, Writable } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { cardColumns, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, moves, renderedList } from "../../Stores";
+  import { cardColumns, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, moves, renderedList, turns } from "../../Stores";
   import { CARD_HEIGHT, CARD_WIDTH, SUIT_ICON_SIZE, SUIT_ICON_SPRITE_SHEET_HEIGHT } from "../../lib/SpriteLUT";
 
   import Card from "../cards/Card.svelte";
@@ -97,6 +97,7 @@
         
         $suitPileList.push(card);
         Controller.scoreCardToAcePile();
+        $turns++;
       } else {
         const tarElemIdx = e.detail.items.findIndex((itm: { id: string; }) => isNumeric(itm.id));
         tarElem = e.detail.items[tarElemIdx];
@@ -128,6 +129,7 @@
               
               $suitPileList.push(card);
               Controller.scoreCardToAcePile();
+              $turns++;
             }
           }
         }

@@ -35,8 +35,8 @@ export const heartsPileList:Writable<PlayingCard[]> = writable([]);
 export const clubsPileList:Writable<PlayingCard[]> = writable([]);
 export const diamondsPileList:Writable<PlayingCard[]> = writable([]);
 
-
 // Settings stores
+
 
 export const dropZoneStyle = {
   "border": '1px solid #d87e08',
