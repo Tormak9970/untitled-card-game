@@ -4,14 +4,15 @@
   import Timer from "./Timer.svelte";
   import Turns from "./Turns.svelte";
 
-  
 </script>
 
 <div class="game-info">
   <Pannel>
-    <Timer />
-    <ScoreTracker />
-    <Turns />
+    <div class="wrapper">
+      <Timer />
+      <ScoreTracker />
+      <Turns />
+    </div>
   </Pannel>
 </div>
 
@@ -30,4 +31,13 @@
     align-items: center;
   }
   
+  .wrapper {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+  }
 </style>

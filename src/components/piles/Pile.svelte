@@ -79,6 +79,7 @@
         const nodes = tarColumn.removeAllAfter(tarElem.row);
         if (tarColumn.size > 0) {
           tarColumn.get(tarColumn.size - 1).data.revealed = true;
+          Controller.scoreCardReveal();
         }
 
         tmp[tarElem.column] = tarColumn;
@@ -95,6 +96,7 @@
         };
         
         $suitPileList.push(card);
+        Controller.scoreCardToAcePile();
       } else {
         const tarElemIdx = e.detail.items.findIndex((itm: { id: string; }) => isNumeric(itm.id));
         tarElem = e.detail.items[tarElemIdx];
@@ -125,6 +127,7 @@
               };
               
               $suitPileList.push(card);
+              Controller.scoreCardToAcePile();
             }
           }
         }

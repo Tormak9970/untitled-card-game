@@ -16,7 +16,7 @@ export const renderedList = writable({});
 export const difficulty:Writable<Difficulty> = writable(Difficulty.INTERMEDIATE);
 export const score = writable(0);
 export const turns = writable(0);
-export const gameTime = writable("");
+export const gameTime = writable(0);
 export const moves:Writable<string[]> = writable([]);
 
 // Game board stores

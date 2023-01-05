@@ -5,6 +5,8 @@ import { GameController } from "./lib/controllers/GameController";
 import { ToastController } from "./lib/controllers/ToastController";
 import { SaveController } from "./lib/controllers/SaveController";
 import { SettingsController } from "./lib/controllers/SettingsController";
+import { gameTime, score } from "./Stores";
+import { get } from "svelte/store";
 
 /**
  * The main controller for the game.
@@ -35,13 +37,20 @@ export class Controller {
       }
     }
   }
-
   static getCardBackSprite(): SpriteInfo { return Controller.spriteLoader.loadCardBack(); }
   static getAboutCardSprite(): SpriteInfo { return Controller.spriteLoader.loadAboutCard(); }
 
   static drawCard(): void { Controller.gameController.drawCard(); }
   static recycleDeck(): void { Controller.gameController.recycleDeck(); }
   static playCurrentCard(): void { Controller.gameController.playCurrentCard(); }
+
+  static scoreDiscardToBoard(): void { score.update(val => val + 5); }
+  static scoreCardToAcePile(): void { score.update(val => val + 10); }
+  static scoreCardReveal(): void { score.update(val => val + 5); }
+  static scorePileToBoard(): void { score.update(val => Math.max(val - 15, 0)); }
+  static scoreBeginnerRecycle(): void { score.update(val => Math.max(val - 100, 0)); }
+  static scoreTimePass(): void { score.update(val => Math.max(val - 2, 0)); }
+  static scoreTime(): void { score.update(val => val + (700000 / get(gameTime))); }
 
   static checkWin(): void {
     

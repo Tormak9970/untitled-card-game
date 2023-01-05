@@ -4,10 +4,11 @@
   import { onMount } from "svelte";
 
   import { Controller } from "../../Controller";
-  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect } from "../../Stores";
+  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty } from "../../Stores";
   
   import Card from "../cards/Card.svelte";
   import CardContainer from "./CardContainer.svelte";
+    import { Difficulty } from "../../lib/models/Difficulty";
 
   export let scale:number;
   export let shouldAnimate = false;
@@ -48,6 +49,7 @@
       shouldAnimate = true;
       setPilePositions();
       Controller.recycleDeck();
+      if ($difficulty == Difficulty.BEGINNER) Controller.scoreBeginnerRecycle();
       $discardId = 0;
       triggerAnimation();
     }

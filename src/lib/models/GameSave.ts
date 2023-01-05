@@ -10,7 +10,7 @@ export class GameSave {
   difficulty:Difficulty;
   score:number;
   turns:number;
-  gameTime:string;
+  gameTime:number;
   moves:string[];
 
   // Game board data

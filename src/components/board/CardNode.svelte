@@ -70,6 +70,7 @@
         const nodes = tarColumn.removeAllAfter(tarElem.row);
         if (tarColumn.size > 0) {
           tarColumn.get(tarColumn.size - 1).data.revealed = true;
+          Controller.scoreCardReveal();
         }
 
         tmp[column].add(nodes);
@@ -101,6 +102,7 @@
             "row": row+1
           };
           tmp[column].add(card);
+          Controller.scoreDiscardToBoard();
         } else {
           let pileListStore:Writable<PlayingCard[]>;
           let pileList:PlayingCard[];
@@ -143,6 +145,7 @@
             "row": row+1
           };
           tmp[column].add(card);
+          Controller.scorePileToBoard();
         }
       }
 
