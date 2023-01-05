@@ -1,7 +1,7 @@
 <script lang="ts">
   import Board from "./board/Board.svelte";
   import Deck from "./deck/Deck.svelte";
-  import { CARD_HEIGHT, CARD_WIDTH } from "../lib/SpriteLUT";
+  import { CARD_WIDTH } from "../lib/SpriteLUT";
   import Piles from "./piles/Piles.svelte";
   import { difficulty } from "../Stores";
   import { Difficulty } from "../lib/models/Difficulty";
@@ -37,15 +37,15 @@
     color: var(--font-color);
   }
 
-  .deck-cont {
+  /* .deck-cont {
 
-  }
+  } */
 
   .board-cont {
     height: 100%;
   }
 
-  .piles-cont {
+  /* .piles-cont {
     
-  }
+  } */
 </style>

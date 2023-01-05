@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { Controller } from "./Controller";
   import GameBoard from "./components/GameBoard.svelte";
+  import Interface from "./components/Interface.svelte";
   
   onMount(() => {
     Controller.init();
@@ -11,6 +12,9 @@
 <main>
   <div class="board-cont">
     <GameBoard />
+  </div>
+  <div class="ui">
+    <Interface />
   </div>
 </main>
 
@@ -34,5 +38,16 @@
     height: calc(100% - 15vh);
 
     border-radius: 8px;
+  }
+
+  .ui {
+    width: 100%;
+    height: 100%;
+
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    
+    pointer-events: none;
   }
 </style>
