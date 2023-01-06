@@ -71,8 +71,7 @@
           </div>
         {/each}
       {:else}
-        <!-- Same size as card but suggest drawing a card -->
-        <Icon data={refresh} scale={4} class="icon"/>
+        <div class="bg-icon"/>
       {/if}
     </div>
   </CardContainer>
@@ -115,6 +114,19 @@
     cursor: pointer;
 
     position: relative;
+  }
+
+  .bg-icon {
+    background-image: url("/assets/ui/Pixel Refresh.png");
+    filter: hue-rotate(12deg);
+    background-size: 90px 90px;
+    width: 90px;
+    height: 90px;
+  }
+
+  .bg-icon:hover {
+    filter: hue-rotate(0deg);
+    cursor: pointer;
   }
 
   :global(.empty-inner > .icon) { color: var(--highlight); }
