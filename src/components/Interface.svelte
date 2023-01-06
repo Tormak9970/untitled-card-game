@@ -1,11 +1,12 @@
 <script lang="ts">
-    import GameInfo from "./interface/board/game-info/GameInfo.svelte";
-    import GameControls from "./interface/board/GameControls.svelte";
+  import GameInfo from "./interface/board/game-info/GameInfo.svelte";
+  import GameControls from "./interface/board/game-controls/GameControls.svelte";
+  import Logo from "./interface/board/Logo.svelte";
 
-  
 </script>
 
 <div class="game-ui">
+  <Logo />
   <GameInfo />
   <GameControls />
 </div>

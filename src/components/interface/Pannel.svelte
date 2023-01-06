@@ -20,6 +20,7 @@
 
   .pannel {
     border: 1px solid #000;
+    border-radius: 6px;
     box-shadow: 0 0 4px rgb(0 0 0 / 50%);
 
     position: relative;

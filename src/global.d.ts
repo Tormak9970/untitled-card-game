@@ -16,3 +16,5 @@ declare namespace svelte.JSX {
 		onfinalize?: (event: CustomEvent<DndEvent<ItemType>> & { target: EventTarget & T }) => void;
 	}
 }
+
+declare const __APP_VERSION__:string;
