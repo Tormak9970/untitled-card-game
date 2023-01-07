@@ -1,13 +1,12 @@
 <script lang="ts">
-  import Button from "../../interactables/Button.svelte";
-  import Pannel from "../../Pannel.svelte";
+import Pannel from "../../Pannel.svelte";
   
 </script>
 
 <div class="game-controls">
   <Pannel>
     <div class="wrapper">
-      <!--  -->
+      <!-- License declaration? -->
       <!-- Hint Button -->
       <!-- Settings Button -->
     </div>

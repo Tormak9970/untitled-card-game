@@ -46,7 +46,7 @@
   .input > input {
     color: var(--font-color);
     background-color: var(--background);
-    border-radius: 1px;
+    border-radius: 6px;
     outline: none;
     border: 1px solid black;
     padding: 3px;

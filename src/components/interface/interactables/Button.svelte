@@ -19,7 +19,7 @@
     
     background-color: var(--background);
     border: 1px solid #000;
-    border-radius: 1px;
+    border-radius: 6px;
 
     display: flex;
     align-items: center;
