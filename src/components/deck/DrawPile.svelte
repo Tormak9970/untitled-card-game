@@ -1,14 +1,12 @@
 <script lang="ts">
-  import Icon from 'svelte-awesome';
-  import { refresh } from 'svelte-awesome/icons';
   import { onMount } from "svelte";
 
   import { Controller } from "../../Controller";
-  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty } from "../../Stores";
+  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty, moves, discardPileList } from "../../Stores";
   
   import Card from "../cards/Card.svelte";
   import CardContainer from "./CardContainer.svelte";
-    import { Difficulty } from "../../lib/models/Difficulty";
+  import { Difficulty } from "../../lib/models/Difficulty";
 
   export let scale:number;
   export let shouldAnimate = false;
@@ -43,9 +41,20 @@
     }, 0);
   }
 
-  function doDrawCard(): void { Controller.drawCard(); }
+  function doDrawCard(): void {
+    $moves = [...$moves, `multiState:${JSON.stringify({
+      "drawPileState": $drawPileList,
+      "discardPileState": $discardPileList
+    })}`];
+    Controller.drawCard();
+  }
   function recycleDiscard(): void {
     if ($drawPileList.length == 0) {
+      $moves = [...$moves, `multiState:${JSON.stringify({
+        "drawPileState": $drawPileList,
+        "discardPileState": $discardPileList
+      })}`];
+
       shouldAnimate = true;
       setPilePositions();
       Controller.recycleDeck();

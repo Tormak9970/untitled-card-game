@@ -14,15 +14,15 @@
 <div class="game-controls">
   <Pannel>
     <div class="wrapper">
-      <div class="undo-redo" class:disabled={$redoDisabled}>
-        <IconButton onClick={redoClick}>
-          <div class="redo-icon" />
-        </IconButton>
-      </div>
-      
       <div class="undo-redo" class:disabled={$undoDisabled}>
         <IconButton onClick={undoClick}>
           <div class="undo-icon" />
+        </IconButton>
+      </div>
+      
+      <div class="undo-redo" class:disabled={$redoDisabled}>
+        <IconButton onClick={redoClick}>
+          <div class="redo-icon" />
         </IconButton>
       </div>
 
@@ -94,7 +94,7 @@
   .undo-redo .redo-icon, .undo-redo .undo-icon { background-image: url("/assets/ui/pixel-undo-redo.png"); background-size: 80px; width: 40px; height: 40px; }
   .undo-redo:hover .redo-icon, .undo-redo:hover .undo-icon { background-image: url("/assets/ui/pixel-undo-redo-hover.png"); }
 
-  .redo-icon { background-position: top -40px left 0px; }
-  .undo-icon { background-position: top -40px left -40px; }
+  .redo-icon { background-position: top -40px left -40px; }
+  .undo-icon { background-position: top -40px left 0px; }
   .disabled { pointer-events: none; opacity: 0.6; }
 </style>

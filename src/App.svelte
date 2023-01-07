@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { Controller } from "./Controller";
   import GameBoard from "./components/GameBoard.svelte";
   import Interface from "./components/Interface.svelte";
@@ -7,6 +7,10 @@
   onMount(() => {
     Controller.init();
   });
+
+  onDestroy(() => {
+    Controller.cleanUp();
+  })
 </script>
 
 <main>

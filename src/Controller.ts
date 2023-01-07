@@ -1,3 +1,4 @@
+import { get } from "svelte/store";
 import { BaseCards, FaceCards, type Cards } from "./lib/models/CardEnums";
 import { SpriteLoader } from "./lib/controllers/SpriteLoader";
 import type { JokerTypes, Suits } from "./lib/models/Suits";
@@ -6,7 +7,7 @@ import { ToastController } from "./lib/controllers/ToastController";
 import { SaveController } from "./lib/controllers/SaveController";
 import { SettingsController } from "./lib/controllers/SettingsController";
 import { gameTime, score } from "./Stores";
-import { get } from "svelte/store";
+import { MovesController } from "./lib/controllers/MovesController";
 
 /**
  * The main controller for the game.
@@ -21,9 +22,14 @@ export class Controller {
   private static settingsController = new SettingsController();
   private static spriteLoader = new SpriteLoader();
   private static gameController = new GameController();
+  private static movesController = new MovesController();
 
   static init() {
     Controller.gameController.deal();
+  }
+
+  static cleanUp() {
+    Controller.movesController.onDestroy();
   }
 
   static getSprite(card:Cards, suit:Suits|JokerTypes): SpriteInfo {
@@ -52,13 +58,8 @@ export class Controller {
   static scoreTimePass(): void { score.update(val => Math.max(val - 2, 0)); }
   static scoreTime(): void { score.update(val => val + (700000 / get(gameTime))); }
 
-  static redoMove() {
-
-  }
-
-  static undoMove() {
-    
-  }
+  static redoMove(): void { Controller.movesController.redo(); }
+  static undoMove(): void { Controller.movesController.undo(); }
 
   static showHint(): void {
     score.update(val => Math.max(val - 50, 0));
