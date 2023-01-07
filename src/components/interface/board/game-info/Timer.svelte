@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from "svelte";
   import type { Unsubscriber } from "svelte/store";
   import { Controller } from "../../../../Controller";
-  import { gameTime } from "../../../../Stores";
+  import { gameTime, isPaused } from "../../../../Stores";
 
   let gameTimeSub:Unsubscriber;
   let gameTimeInt: NodeJS.Timer;
@@ -26,8 +26,10 @@
     });
 
     gameTimeInt = setInterval(() => {
-      $gameTime = $gameTime + 1;
-      if ($gameTime % 10 == 0) Controller.scoreTimePass();
+      if (!$isPaused) {
+        $gameTime = $gameTime + 1;
+        if ($gameTime % 10 == 0) Controller.scoreTimePass();
+      }
     }, 1000);
   });
 

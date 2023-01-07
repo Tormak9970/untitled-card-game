@@ -10,6 +10,11 @@ export const draggingSuit = writable(null);
 export const draggingMoreThenOne = writable(false);
 
 // UI stores
+export const showMainMenu = writable(false);
+export const showPauseMenu = writable(false);
+export const showOptionsMenu = writable(false);
+export const isPaused = writable(false);
+
 export const renderedList = writable({});
 
 // Game state stores

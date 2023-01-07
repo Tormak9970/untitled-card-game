@@ -9,6 +9,7 @@
   <Logo />
   <GameInfo />
   <GameControls />
+	<div class="rights">© Travis Lane 2022</div>
 </div>
 
 <style>
@@ -20,4 +21,13 @@
 
     color: var(--font-color);
   }
+	.rights {
+		position: absolute;
+		left: 7px;
+		bottom: 7px;
+		font-size: 10px;
+		opacity: 0.4;
+
+		z-index: 1000;
+	}
 </style>
