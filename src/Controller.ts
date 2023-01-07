@@ -52,6 +52,11 @@ export class Controller {
   static scoreTimePass(): void { score.update(val => Math.max(val - 2, 0)); }
   static scoreTime(): void { score.update(val => val + (700000 / get(gameTime))); }
 
+  static showHint(): void {
+    score.update(val => Math.max(val - 50, 0));
+    // show hint
+  }
+
   static checkWin(): void {
     
   }
