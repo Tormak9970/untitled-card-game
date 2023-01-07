@@ -1,38 +1,26 @@
 <script lang="ts">
+  import { Controller } from "../../../../Controller";
+  import { isPaused, redoDisabled, showPauseMenu, undoDisabled } from "../../../../Stores";
   import IconButton from "../../interactables/IconButton.svelte";
   import Pannel from "../../Pannel.svelte";
   
-  function githubClick() {
-
-  }
-
-  function hintClick() {
-
-  }
-
-  function settingsClick() {
-
-  }
-
-  function redoClick() {
-
-  }
-
-  function undoClick() {
-
-  }
+  function redoClick() { Controller.redoMove(); }
+  function undoClick() { Controller.undoMove(); }
+  function githubClick() { window.open("https://github.com/Tormak9970/untitled-card-game", "_blank", "noreferrer noopener"); }
+  function hintClick() { Controller.showHint(); }
+  function settingsClick() { $isPaused = true; $showPauseMenu = true; }
 </script>
 
 <div class="game-controls">
   <Pannel>
     <div class="wrapper">
-      <div class="disabled undo-redo">
+      <div class="undo-redo" class:disabled={$redoDisabled}>
         <IconButton onClick={redoClick}>
           <div class="redo-icon" />
         </IconButton>
       </div>
       
-      <div class="disabled undo-redo">
+      <div class="undo-redo" class:disabled={$undoDisabled}>
         <IconButton onClick={undoClick}>
           <div class="undo-icon" />
         </IconButton>
@@ -108,9 +96,5 @@
 
   .redo-icon { background-position: top -40px left 0px; }
   .undo-icon { background-position: top -40px left -40px; }
-
-  .disabled {
-    pointer-events: none;
-    opacity: 0.6;
-  }
+  .disabled { pointer-events: none; opacity: 0.6; }
 </style>
