@@ -14,4 +14,8 @@ export class PlayingCard {
     this.suit = suit;
     this.revealed = revealed;
   }
+
+  static fromJson(json:any): PlayingCard {
+    return new PlayingCard(json.card, json.suit, json.revealed);
+  }
 }

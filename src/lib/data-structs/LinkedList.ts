@@ -6,20 +6,34 @@ export class LinkedNode<T> {
     this.data = data;
     this.next = next ? next : null;
   }
+
+  static fromJSON<T>(json:any): LinkedNode<T> {
+    return new LinkedNode<T>(json.data, json.next ? LinkedNode.fromJSON<T>(json.next) : null);
+  }
 }
 
 export class LinkedList<T> {
   size:number;
   first:LinkedNode<T>;
 
-  constructor() {
+  constructor(first:LinkedNode<T> = null) {
     this.size = 0;
-    this.first = null;
+    this.first = first;
+    this.calcSize();
   }
 
   private isLinkedNode(data: T | LinkedNode<T>): data is LinkedNode<T> {
     const test = (data as LinkedNode<T>);
     return test.next !== undefined && test.data !== undefined;
+  }
+
+  private calcSize() {
+    this.size = 0;
+    let cNode = this.first;
+    while(cNode != null) {
+      this.size++;
+      cNode = cNode.next;
+    }
   }
 
   get(idx:number): LinkedNode<T> {
@@ -47,13 +61,8 @@ export class LinkedList<T> {
     } else if (!idx || idx < this.size) {
       this.first = newNode;
     }
-    this.size = 0;
 
-    let cNode = this.first;
-    while(cNode != null) {
-      this.size++;
-      cNode = cNode.next;
-    }
+    this.calcSize();
   }
 
   remove(idx:number): T {

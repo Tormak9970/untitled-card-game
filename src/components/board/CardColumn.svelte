@@ -52,10 +52,10 @@
       const tmp = [...$cardColumns];
       
       if (typeof tarElem.column == "number") {
-        $moves.push(`multiState:${JSON.stringify({
+        $moves.push(JSON.stringify({
           "board": $cardColumns,
           "renderedList": $renderedList
-        })}`);
+        }));
         $moves = [...$moves];
         $preRedoMoves = [];
         const tarColumn = tmp[tarElem.column];
@@ -72,12 +72,12 @@
       } else {
         const typeInfo = tarElem.column.split("-");
         if (typeInfo[1] == "discard") {
-          $moves.push(`multiState:${JSON.stringify({
+          $moves.push(JSON.stringify({
             "board": $cardColumns,
             "renderedList": $renderedList,
             "drawPile": $drawPileList,
             "discardPile": $discardPileList
-          })}`);
+          }));
           $moves = [...$moves];
           $preRedoMoves = [];
           const card = new LinkedNode<PlayingCard>($discardPileList.pop());
@@ -120,7 +120,7 @@
             "renderedList": $renderedList
           };
           moveState[`${typeInfo[1]}Pile`] = pileList;
-          $moves.push(`multiState:${JSON.stringify(moveState)}`);
+          $moves.push(JSON.stringify(moveState));
           $moves = [...$moves];
           $preRedoMoves = [];
 

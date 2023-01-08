@@ -72,7 +72,7 @@
           "discardPile": $discardPileList
         };
         moveState[`${type[1]}Pile`] = $suitPileList;
-        $moves.push(`multiState:${JSON.stringify(moveState)}`);
+        $moves.push(JSON.stringify(moveState));
         $moves = [...$moves];
         $preRedoMoves = [];
 
@@ -114,7 +114,7 @@
                 "discard": $discardPileList
               };
               moveState[`${type[1]}Pile`] = $suitPileList;
-              $moves.push(`multiState:${JSON.stringify(moveState)}`);
+              $moves.push(JSON.stringify(moveState));
               $moves = [...$moves];
               $preRedoMoves = [];
 

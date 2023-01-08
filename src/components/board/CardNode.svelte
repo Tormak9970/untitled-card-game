@@ -63,10 +63,10 @@
       const tmp = [...$cardColumns];
       
       if (typeof tarElem.column == "number") {
-        $moves.push(`multiState:${JSON.stringify({
+        $moves.push(JSON.stringify({
           "board": $cardColumns,
           "renderedList": $renderedList
-        })}`);
+        }));
         $moves = [...$moves];
         $preRedoMoves = [];
         const tarColumn = tmp[tarElem.column];
@@ -138,7 +138,7 @@
             "renderedList": $renderedList
           };
           moveState[`${typeInfo[1]}Pile`] = pileList;
-          $moves.push(`multiState:${JSON.stringify(moveState)}`);
+          $moves.push(JSON.stringify(moveState));
           $moves = [...$moves];
           $preRedoMoves = [];
 
