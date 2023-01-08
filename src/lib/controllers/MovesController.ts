@@ -42,11 +42,10 @@ export class MovesController {
     for (const [s, value] of keyValPairs) {
       const state = s as MoveStates;
       
+      console.log(s, value);
       switch(state) {
         case MoveStates.BOARD:
-          cardColumns.set((value as any[]).map((val) => {
-            return new LinkedList<PlayingCard>(LinkedNode.fromJSON<PlayingCard>(val.first));
-          }));
+          cardColumns.set((value as any[]).map((val) => new LinkedList<PlayingCard>(LinkedNode.fromJSON<PlayingCard>(val.first))));
           break;
         case MoveStates.RENDERED_LIST:
           renderedList.set(value);
