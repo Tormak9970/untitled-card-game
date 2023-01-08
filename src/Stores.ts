@@ -8,11 +8,13 @@ export const highScore = writable(0);
 export const draggingType = writable(null);
 export const draggingSuit = writable(null);
 export const draggingMoreThenOne = writable(false);
+export const gameWasWon = writable(false);
 
 // UI stores
 export const showMainMenu = writable(false);
 export const showPauseMenu = writable(false);
 export const showOptionsMenu = writable(false);
+export const showGameOverModal = writable(false);
 export const isPaused = writable(false);
 export const redoDisabled = writable(true);
 export const undoDisabled = writable(true);

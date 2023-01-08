@@ -12,7 +12,7 @@
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   import { Controller } from "../../Controller";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
-  import { CARD_ORDER, getPreviousCard } from "../../lib/models/CardEnums";
+  import { CARD_ORDER, FaceCards, getPreviousCard } from "../../lib/models/CardEnums";
   
   export let scale:number;
   export let suit:Suits;
@@ -33,8 +33,7 @@
   };
 
   let type = $suitPileList.length > 0 ? getAceZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`;
-  $: dropFromOthersDisabled = $draggingSuit != suit || $draggingMoreThenOne || ($draggingType != "King" ? $draggingType != type : type != `${isRedSuit($draggingSuit) ? "Red" : "Black"}|King`);
-  $: console.log({ "dropFromOthersDisabled": dropFromOthersDisabled });
+  $: dropFromOthersDisabled = $draggingSuit != suit || $draggingMoreThenOne || ($draggingType != FaceCards.KING ? $draggingType != type : type != `${isRedSuit($draggingSuit) ? "Red" : "Black"}|King`);
 
   function isNumeric(str:string) {
     if (typeof str != "string") return false // we only process strings!  
@@ -99,6 +98,7 @@
         $suitPileList.push(card);
         Controller.scoreCardToAcePile();
         $turns++;
+        Controller.checkWin();
       } else {
         const tarElemIdx = e.detail.items.findIndex((itm: { id: string; }) => isNumeric(itm.id));
         tarElem = e.detail.items[tarElemIdx];
@@ -131,6 +131,7 @@
               $suitPileList.push(card);
               Controller.scoreCardToAcePile();
               $turns++;
+              Controller.checkWin();
             }
           }
         }

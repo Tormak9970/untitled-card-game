@@ -1,13 +1,14 @@
 import { get } from "svelte/store";
 import { BaseCards, FaceCards, type Cards } from "./lib/models/CardEnums";
 import { SpriteLoader } from "./lib/controllers/SpriteLoader";
-import type { JokerTypes, Suits } from "./lib/models/Suits";
+import { Suits, type JokerTypes } from "./lib/models/Suits";
 import { GameController } from "./lib/controllers/GameController";
 import { ToastController } from "./lib/controllers/ToastController";
 import { SaveController } from "./lib/controllers/SaveController";
 import { SettingsController } from "./lib/controllers/SettingsController";
-import { gameTime, score } from "./Stores";
+import { clubsPileList, diamondsPileList, gameTime, gameWasWon, heartsPileList, isPaused, score, showGameOverModal, spadesPileList } from "./Stores";
 import { MovesController } from "./lib/controllers/MovesController";
+import type { PlayingCard } from "./lib/models/PlayingCard";
 
 /**
  * The main controller for the game.
@@ -66,8 +67,35 @@ export class Controller {
     // show hint
   }
 
+  private static checkAcePile(suit:Suits): boolean {
+    let pileList:PlayingCard[];
+    switch(suit) {
+      case Suits.SPADE:
+        pileList = get(spadesPileList);
+        break;
+      case Suits.HEART:
+        pileList = get(heartsPileList);
+        break;
+      case Suits.CLUB:
+        pileList = get(clubsPileList);
+        break;
+      case Suits.DIAMOND:
+        pileList = get(diamondsPileList);
+        break;
+    }
+
+    return pileList.length > 0 ? pileList[pileList.length-1].card == FaceCards.KING : false;
+  }
+
   static checkWin(): void {
-    
+    const didWin = Object.values(Suits).every((suit:Suits) => Controller.checkAcePile(suit));
+
+    if (didWin) {
+      gameWasWon.set(true);
+      isPaused.set(true);
+      showGameOverModal.set(true);
+      console.log("You won!")
+    }
   }
 
   static saveSettings(toFile:boolean): void {
