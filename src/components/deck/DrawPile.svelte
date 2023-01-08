@@ -43,8 +43,8 @@
 
   function doDrawCard(): void {
     $moves = [...$moves, `multiState:${JSON.stringify({
-      "drawPileState": $drawPileList,
-      "discardPileState": $discardPileList
+      "drawPile": $drawPileList,
+      "discardPile": $discardPileList
     })}`];
     $preRedoMoves = [];
     Controller.drawCard();
@@ -52,8 +52,8 @@
   function recycleDiscard(): void {
     if ($drawPileList.length == 0) {
       $moves = [...$moves, `multiState:${JSON.stringify({
-        "drawPileState": $drawPileList,
-        "discardPileState": $discardPileList
+        "drawPile": $drawPileList,
+        "discardPile": $discardPileList
       })}`];
       $preRedoMoves = [];
 

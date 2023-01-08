@@ -53,7 +53,7 @@
       
       if (typeof tarElem.column == "number") {
         $moves.push(`multiState:${JSON.stringify({
-          "boardState": $cardColumns,
+          "board": $cardColumns,
           "renderedList": $renderedList
         })}`);
         $moves = [...$moves];
@@ -73,10 +73,10 @@
         const typeInfo = tarElem.column.split("-");
         if (typeInfo[1] == "discard") {
           $moves.push(`multiState:${JSON.stringify({
-            "boardState": $cardColumns,
+            "board": $cardColumns,
             "renderedList": $renderedList,
-            "drawState": $drawPileList,
-            "discardState": $discardPileList
+            "drawPile": $drawPileList,
+            "discardPile": $discardPileList
           })}`);
           $moves = [...$moves];
           $preRedoMoves = [];
@@ -116,10 +116,10 @@
           }
 
           const moveState = {
-            "boardState": $cardColumns,
+            "board": $cardColumns,
             "renderedList": $renderedList
           };
-          moveState[`${typeInfo[1]}PileState`] = pileList;
+          moveState[`${typeInfo[1]}Pile`] = pileList;
           $moves.push(`multiState:${JSON.stringify(moveState)}`);
           $moves = [...$moves];
           $preRedoMoves = [];

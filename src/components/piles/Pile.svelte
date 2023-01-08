@@ -67,11 +67,11 @@
         const tmp = [...$cardColumns];
 
         const moveState = {
-          "boardState": $cardColumns,
+          "board": $cardColumns,
           "renderedList": $renderedList,
-          "discardState": $discardPileList
+          "discardPile": $discardPileList
         };
-        moveState[`${type[1]}PileState`] = $suitPileList;
+        moveState[`${type[1]}Pile`] = $suitPileList;
         $moves.push(`multiState:${JSON.stringify(moveState)}`);
         $moves = [...$moves];
         $preRedoMoves = [];
@@ -109,11 +109,11 @@
             const typeInfo = tarElem.column.split("-");
             if (typeInfo[1] == "discard") {
               const moveState = {
-                "boardState": $cardColumns,
+                "board": $cardColumns,
                 "renderedList": $renderedList,
-                "discardState": $discardPileList
+                "discard": $discardPileList
               };
-              moveState[`${type[1]}PileState`] = $suitPileList;
+              moveState[`${type[1]}Pile`] = $suitPileList;
               $moves.push(`multiState:${JSON.stringify(moveState)}`);
               $moves = [...$moves];
               $preRedoMoves = [];

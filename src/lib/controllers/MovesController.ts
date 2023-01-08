@@ -19,7 +19,7 @@ export class MovesController {
 
   private saveCurrentState() {
     const curState = {
-      "boardState":
+      "boardState": ""
     }
   }
 
