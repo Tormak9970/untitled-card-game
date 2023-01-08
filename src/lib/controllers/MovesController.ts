@@ -1,4 +1,4 @@
-import type { Unsubscriber } from "svelte/store";
+import { get, type Unsubscriber } from "svelte/store";
 import { moves, preRedoMoves, redoDisabled, undoDisabled } from "../../Stores";
 
 /**
@@ -17,8 +17,18 @@ export class MovesController {
     });
   }
 
-  redo() {
+  private saveCurrentState() {
+    const curState = {
+      "boardState":
+    }
+  }
 
+  redo() {
+    const redoMoves = get(preRedoMoves);
+    const previousState = redoMoves.pop();
+
+
+    preRedoMoves.set([...redoMoves]);
   }
 
   undo() {
