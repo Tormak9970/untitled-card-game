@@ -50,7 +50,7 @@
   function handleDndConsider(e:any) {
     if (e.detail.info.trigger == TRIGGERS.DRAG_STARTED) {
       $draggingType = type;
-      $draggingSuit = e.detail.info.id.substring(e.detail.info.id.indexOf("|") + 1);
+      $draggingSuit = e.detail.items[0].data.data.suit;
       $draggingMoreThenOne = e.detail.items[0].data.next != null;
     }
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);

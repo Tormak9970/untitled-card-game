@@ -33,7 +33,8 @@
   };
 
   let type = $suitPileList.length > 0 ? getAceZoneType($suitPileList[$suitPileList.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`;
-  $: dropFromOthersDisabled = $draggingSuit != suit || $draggingMoreThenOne || $draggingType != type;
+  $: dropFromOthersDisabled = $draggingSuit != suit || $draggingMoreThenOne || ($draggingType != "King" ? $draggingType != type : type != `${isRedSuit($draggingSuit) ? "Red" : "Black"}|King`);
+  $: console.log({ "dropFromOthersDisabled": dropFromOthersDisabled });
 
   function isNumeric(str:string) {
     if (typeof str != "string") return false // we only process strings!  
