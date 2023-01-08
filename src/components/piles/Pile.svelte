@@ -3,7 +3,7 @@
   import type { Unsubscriber, Writable } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { cardColumns, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, moves, renderedList, turns } from "../../Stores";
+  import { cardColumns, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, moves, preRedoMoves, renderedList, turns } from "../../Stores";
   import { CARD_HEIGHT, CARD_WIDTH, SUIT_ICON_SIZE, SUIT_ICON_SPRITE_SHEET_HEIGHT } from "../../lib/SpriteLUT";
 
   import Card from "../cards/Card.svelte";
@@ -68,11 +68,13 @@
 
         const moveState = {
           "boardState": $cardColumns,
+          "renderedList": $renderedList,
           "discardState": $discardPileList
         };
         moveState[`${type[1]}PileState`] = $suitPileList;
         $moves.push(`multiState:${JSON.stringify(moveState)}`);
         $moves = [...$moves];
+        $preRedoMoves = [];
 
         const tarColumn = tmp[tarElem.column];
       
@@ -108,11 +110,13 @@
             if (typeInfo[1] == "discard") {
               const moveState = {
                 "boardState": $cardColumns,
+                "renderedList": $renderedList,
                 "discardState": $discardPileList
               };
               moveState[`${type[1]}PileState`] = $suitPileList;
               $moves.push(`multiState:${JSON.stringify(moveState)}`);
               $moves = [...$moves];
+              $preRedoMoves = [];
 
               const cardNode = new LinkedNode<PlayingCard>($discardPileList.pop());
               $discardPileList = [...$discardPileList];

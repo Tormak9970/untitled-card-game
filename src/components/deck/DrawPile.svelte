@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
 
   import { Controller } from "../../Controller";
-  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty, moves, discardPileList } from "../../Stores";
+  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty, moves, discardPileList, preRedoMoves } from "../../Stores";
   
   import Card from "../cards/Card.svelte";
   import CardContainer from "./CardContainer.svelte";
@@ -46,6 +46,7 @@
       "drawPileState": $drawPileList,
       "discardPileState": $discardPileList
     })}`];
+    $preRedoMoves = [];
     Controller.drawCard();
   }
   function recycleDiscard(): void {
@@ -54,6 +55,7 @@
         "drawPileState": $drawPileList,
         "discardPileState": $discardPileList
       })}`];
+      $preRedoMoves = [];
 
       shouldAnimate = true;
       setPilePositions();

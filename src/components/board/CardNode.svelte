@@ -8,7 +8,7 @@
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
 
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, renderedList, spadesPileList, turns } from "../../Stores";
+  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, preRedoMoves, renderedList, spadesPileList, turns } from "../../Stores";
   import { getHiddenZoneType, getZoneType } from "../../UiLogic";
   import { Controller } from "../../Controller";
   import type { Writable } from "svelte/store";
@@ -63,8 +63,12 @@
       const tmp = [...$cardColumns];
       
       if (typeof tarElem.column == "number") {
-        $moves.push(`boardState:${JSON.stringify($cardColumns)}`);
+        $moves.push(`multiState:${JSON.stringify({
+          "boardState": $cardColumns,
+          "renderedList": $renderedList
+        })}`);
         $moves = [...$moves];
+        $preRedoMoves = [];
         const tarColumn = tmp[tarElem.column];
       
         const nodes = tarColumn.removeAllAfter(tarElem.row);
@@ -88,10 +92,12 @@
         if (typeInfo[1] == "discard") {
           $moves.push(`multiState:${JSON.stringify({
             "boardState": $cardColumns,
+            "renderedList": $renderedList,
             "drawState": $drawPileList,
             "discardState": $discardPileList
           })}`);
           $moves = [...$moves];
+          $preRedoMoves = [];
           const card = new LinkedNode<PlayingCard>($discardPileList.pop());
           $discardPileList = [...$discardPileList];
           $renderedList[`${card.data.card}|${card.data.suit}`] = true;
@@ -128,11 +134,13 @@
           }
 
           const moveState = {
-            "boardState": $cardColumns
+            "boardState": $cardColumns,
+            "renderedList": $renderedList
           };
           moveState[`${typeInfo[1]}PileState`] = pileList;
           $moves.push(`multiState:${JSON.stringify(moveState)}`);
           $moves = [...$moves];
+          $preRedoMoves = [];
 
           const card = new LinkedNode<PlayingCard>(pileList.pop());
           pileListStore.set([...pileList]);
