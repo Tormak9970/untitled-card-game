@@ -93,7 +93,7 @@
   onDestroy(() => {
     if (shouldUndoAnimSub) shouldUndoAnimSub();
     if (shouldRedoAnimSub) shouldRedoAnimSub();
-  })
+  });
 </script>
 
 <div class="draw-pile">
