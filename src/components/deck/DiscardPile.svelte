@@ -49,24 +49,24 @@
     drawPileTop = -(cardContBoundingRect.top - drawPileInfo.top);
   }
 
-  function recursiveAnimate(list:HTMLCollectionOf<Element>, idx:number) {
+  function recursiveAnimateIn(list:HTMLCollectionOf<Element>, idx:number) {
     if (idx < list.length) {
       const elem = list[idx];
-      elem.classList.remove("transition-out");
+      elem.classList.remove("transition-in");
       setTimeout(() => {
-        recursiveAnimate(list, idx++);
+        recursiveAnimateIn(list, idx++);
       }, Controller.DRAW_ANIM_DELAY);
     }
   }
 
-  function triggerAnimation() {
+  function triggerAnimationIn() {
     setTimeout(() => {
-      const elems = cardContainer.getElementsByClassName("transition-out");
-      recursiveAnimate(elems, 0);
+      const elems = cardContainer.getElementsByClassName("transition-in");
+      recursiveAnimateIn(elems, 0);
     }, 0);
   }
 
-  afterUpdate(() => { triggerAnimation(); });
+  afterUpdate(() => { triggerAnimationIn(); });
 
   onMount(() => {
     $discardPileBoundingRect = cardContainer.getBoundingClientRect.bind(cardContainer);
@@ -122,7 +122,7 @@
             style="width: {(CARD_WIDTH * scale * uncoveredPercent * 2) + (CARD_WIDTH * scale)}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px; left: 0px;"
             >
             {#each items as playingCard, i (`${i}|${playingCard.id}`)}
-              <div class="card-wrapper{(i >= items.length-3 && shouldAnimate) ? " transition-out": ""}" style="--base-left: {(CARD_WIDTH * scale * uncoveredPercent * 2) - (i >= $discardPileList.length - 3 ? (CARD_WIDTH * scale * uncoveredPercent * (($discardPileList.length - 1 - i) % 3)) : (CARD_WIDTH * scale * uncoveredPercent * 2))}px;">
+              <div class="card-wrapper" class:transition-in={i >= items.length-3 && shouldAnimate} style="--base-left: {(CARD_WIDTH * scale * uncoveredPercent * 2) - (i >= $discardPileList.length - 3 ? (CARD_WIDTH * scale * uncoveredPercent * (($discardPileList.length - 1 - i) % 3)) : (CARD_WIDTH * scale * uncoveredPercent * 2))}px;">
                 <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
               </div>
             {/each}
@@ -150,7 +150,7 @@
     transition: left 300ms ease-in-out, top 300ms ease-in-out;
   }
 
-  .transition-out {
+  .transition-in {
     left: var(--drawPileLeft);
     top: var(--drawPileTop);
     transition: left 300ms ease-in-out, top 300ms ease-in-out;

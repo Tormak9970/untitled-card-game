@@ -61,8 +61,8 @@ export class Controller {
   static scoreTimePass(): void { score.update(val => Math.max(val - 2, 0)); }
   static scoreTime(): void { score.update(val => val + (700000 / get(gameTime))); }
 
-  static redoMove(): void { Controller.movesController.redo(); }
-  static undoMove(): void { Controller.movesController.undo(); }
+  static redoMove(): void { Controller.movesController.redo(); Controller.gameController.updateFromStores(); }
+  static undoMove(): void { Controller.movesController.undo(); Controller.gameController.updateFromStores(); }
 
   static showHint(): void {
     score.update(val => Math.max(val - 50, 0));

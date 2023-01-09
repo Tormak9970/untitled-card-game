@@ -38,11 +38,7 @@ export class GameController {
     return new Stack<PlayingCard>(cards);;
   }
 
-  undo() {
-
-  }
-
-  checkGameWon() {
-    
+  updateFromStores(): void {
+    this.deck.updateFromStores();
   }
 }

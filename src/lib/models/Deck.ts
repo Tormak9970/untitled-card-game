@@ -99,6 +99,11 @@ export class Deck {
     this.updateStores();
   }
 
+  updateFromStores(): void {
+    this._drawPile = new Stack<PlayingCard>(get(drawPileList));
+    this._discardPile = new Stack<PlayingCard>(get(discardPileList));
+  }
+
   /**
    * Updates the stores associated with the draw pile.
    */

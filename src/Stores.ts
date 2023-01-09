@@ -30,6 +30,8 @@ export const turns = writable(0);
 export const gameTime = writable(0);
 export const moves:Writable<string[]> = writable([]);
 export const preRedoMoves:Writable<string[]> = writable([]);
+export const shouldPlayUndoAnim = writable(false);
+export const shouldPlayRedoAnim = writable(false);
 
 // Game board stores
 export const cardColumns:Writable<LinkedList<PlayingCard>[]> = writable([]);

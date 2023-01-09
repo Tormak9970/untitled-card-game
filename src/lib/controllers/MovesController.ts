@@ -1,5 +1,5 @@
 import { get, type Unsubscriber, type Writable } from "svelte/store";
-import { cardColumns, clubsPileList, diamondsPileList, discardPileList, drawPileList, heartsPileList, moves, preRedoMoves, redoDisabled, renderedList, spadesPileList, undoDisabled } from "../../Stores";
+import { cardColumns, clubsPileList, diamondsPileList, discardPileList, drawPileList, heartsPileList, moves, preRedoMoves, redoDisabled, renderedList, shouldPlayRedoAnim, shouldPlayUndoAnim, spadesPileList, undoDisabled } from "../../Stores";
 import { LinkedList, LinkedNode } from "../data-structs/LinkedList";
 import { MoveStates } from "../models/MoveStates";
 import { PlayingCard } from "../models/PlayingCard";
@@ -44,7 +44,7 @@ export class MovesController {
       
       switch(state) {
         case MoveStates.BOARD:
-          cardColumns.set((value as any[]).map((val) => new LinkedList<PlayingCard>(LinkedNode.fromJSON<PlayingCard>(val.first))));
+          cardColumns.set((value as any[]).map((val) => new LinkedList<PlayingCard>(val.first ? LinkedNode.fromJSON<PlayingCard>(val.first) : null)));
           break;
         case MoveStates.RENDERED_LIST:
           renderedList.set(value);
@@ -72,6 +72,7 @@ export class MovesController {
   }
 
   redo() {
+    shouldPlayRedoAnim.set(true);
     const redoMoves = get(preRedoMoves);
     const previousState = redoMoves.pop();
     const currentState = this.saveCurrentState();
@@ -83,6 +84,7 @@ export class MovesController {
   }
 
   undo() {
+    shouldPlayUndoAnim.set(true);
     const undoMoves = get(moves);
     const previousState = undoMoves.pop();
     const currentState = this.saveCurrentState();

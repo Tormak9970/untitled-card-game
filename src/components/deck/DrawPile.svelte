@@ -76,11 +76,13 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div class="empty-inner" on:click|stopPropagation={recycleDiscard} style="--discardPileLeft: {discardPileLeft}px; --discardPileTop: {discardPileTop}px;" bind:this={cardContainer}>
       {#if $drawPileList.length > 0}
-        {#each $drawPileList as playingCard (`${playingCard.card}|${playingCard.suit}`)}
-          <div class="card-wrapper{shouldAnimate ? " transition-out": ""}" on:click|stopPropagation={doDrawCard}>
-            <Card card={playingCard.card} suit={playingCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
-          </div>
-        {/each}
+        {#key $drawPileList.length}
+          {#each $drawPileList as playingCard, i (`${i}|${playingCard.card}|${playingCard.suit}`)}
+            <div class="card-wrapper {playingCard.card}|{playingCard.suit}" class:transition-out={shouldAnimate} on:click|stopPropagation={doDrawCard}>
+              <Card card={playingCard.card} suit={playingCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
+            </div>
+          {/each}
+        {/key}
       {:else}
         <div class="bg-icon"/>
       {/if}
