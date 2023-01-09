@@ -3,7 +3,7 @@
   import type { Unsubscriber } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne, draggingType, difficulty } from "../../Stores";
+  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne, draggingType, difficulty, shouldPlayUndoAnim } from "../../Stores";
   import { getCurrentCardZoneType } from "../../UiLogic";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
@@ -122,7 +122,7 @@
             style="width: {(CARD_WIDTH * scale * uncoveredPercent * 2) + (CARD_WIDTH * scale)}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px; left: 0px;"
             >
             {#each items as playingCard, i (`${i}|${playingCard.id}`)}
-              <div class="card-wrapper" class:transition-in={i >= items.length-3 && shouldAnimate} style="--base-left: {(CARD_WIDTH * scale * uncoveredPercent * 2) - (i >= $discardPileList.length - 3 ? (CARD_WIDTH * scale * uncoveredPercent * (($discardPileList.length - 1 - i) % 3)) : (CARD_WIDTH * scale * uncoveredPercent * 2))}px;">
+              <div class="card-wrapper" class:transition-in={(i >= items.length-3 && shouldAnimate) || $shouldPlayUndoAnim} style="--base-left: {(CARD_WIDTH * scale * uncoveredPercent * 2) - (i >= $discardPileList.length - 3 ? (CARD_WIDTH * scale * uncoveredPercent * (($discardPileList.length - 1 - i) % 3)) : (CARD_WIDTH * scale * uncoveredPercent * 2))}px;">
                 <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
               </div>
             {/each}

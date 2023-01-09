@@ -1,15 +1,20 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, afterUpdate, onDestroy } from "svelte";
 
   import { Controller } from "../../Controller";
-  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty, moves, discardPileList, preRedoMoves } from "../../Stores";
+  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty, moves, discardPileList, preRedoMoves, shouldPlayUndoAnim, shouldPlayRedoAnim } from "../../Stores";
   
   import Card from "../cards/Card.svelte";
   import CardContainer from "./CardContainer.svelte";
   import { Difficulty } from "../../lib/models/Difficulty";
+  import type { Unsubscriber } from "svelte/store";
 
   export let scale:number;
   export let shouldAnimate = false;
+  let shouldRecycle = false;
+
+  let shouldUndoAnimSub:Unsubscriber;
+  let shouldRedoAnimSub:Unsubscriber;
   
   let discardPileLeft = 0;
   let discardPileTop = 0;
@@ -31,6 +36,7 @@
       }, Controller.DRAW_ANIM_DELAY);
     } else {
       shouldAnimate = false;
+      shouldRecycle = false;
     }
   }
 
@@ -51,6 +57,7 @@
   }
   function recycleDiscard(): void {
     if ($drawPileList.length == 0) {
+      shouldRecycle = true;
       $moves = [...$moves, JSON.stringify({
         "drawPile": $drawPileList,
         "discardPile": $discardPileList
@@ -58,17 +65,35 @@
       $preRedoMoves = [];
 
       shouldAnimate = true;
-      setPilePositions();
       Controller.recycleDeck();
       if ($difficulty == Difficulty.BEGINNER) Controller.scoreBeginnerRecycle();
       $discardId = 0;
-      triggerAnimation();
     }
   }
 
+  afterUpdate(() => {
+    try {
+      setPilePositions();
+      triggerAnimation();
+    } catch (e:any) {
+
+    }
+  });
+
   onMount(() => {
     $drawPileBoundingRect = cardContainer.getBoundingClientRect.bind(cardContainer);
+    shouldUndoAnimSub = shouldPlayUndoAnim.subscribe((val:boolean) => {
+      shouldAnimate = val;
+    });
+    shouldRedoAnimSub = shouldPlayRedoAnim.subscribe((val:boolean) => {
+      shouldAnimate = val;
+    });
   });
+
+  onDestroy(() => {
+    if (shouldUndoAnimSub) shouldUndoAnimSub();
+    if (shouldRedoAnimSub) shouldRedoAnimSub();
+  })
 </script>
 
 <div class="draw-pile">
@@ -78,7 +103,7 @@
       {#if $drawPileList.length > 0}
         {#key $drawPileList.length}
           {#each $drawPileList as playingCard, i (`${i}|${playingCard.card}|${playingCard.suit}`)}
-            <div class="card-wrapper {playingCard.card}|{playingCard.suit}" class:transition-out={shouldAnimate} on:click|stopPropagation={doDrawCard}>
+            <div class="card-wrapper {playingCard.card}|{playingCard.suit}" class:transition-out={(shouldAnimate && shouldRecycle) || ($drawPileList.length-i <= 3 && shouldAnimate)} on:click|stopPropagation={doDrawCard}>
               <Card card={playingCard.card} suit={playingCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
             </div>
           {/each}

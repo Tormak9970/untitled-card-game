@@ -26,7 +26,7 @@ export class MovesController {
     curState[MoveStates.BOARD] = get(cardColumns);
     curState[MoveStates.RENDERED_LIST] = get(renderedList);
     curState[MoveStates.DRAW_PILE] = get(drawPileList);
-    curState[MoveStates.DISCARD_PILE] = get(diamondsPileList);
+    curState[MoveStates.DISCARD_PILE] = get(discardPileList);
     curState[MoveStates.SPADE_PILE] = get(spadesPileList);
     curState[MoveStates.HEART_PILE] = get(heartsPileList);
     curState[MoveStates.CLUB_PILE] = get(clubsPileList);
@@ -81,6 +81,10 @@ export class MovesController {
 
     moves.set([...get(moves), currentState]);
     preRedoMoves.set([...redoMoves]);
+
+    setTimeout(() => {
+      shouldPlayUndoAnim.set(false);
+    }, 500);
   }
 
   undo() {
@@ -93,6 +97,10 @@ export class MovesController {
 
     preRedoMoves.set([...get(preRedoMoves), currentState]);
     moves.set([...undoMoves]);
+
+    setTimeout(() => {
+      shouldPlayUndoAnim.set(false);
+    }, 500);
   }
 
   onDestroy() {
