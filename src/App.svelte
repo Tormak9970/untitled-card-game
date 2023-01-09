@@ -1,11 +1,15 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
+  import { SvelteToast } from "@zerodevx/svelte-toast";
   import { Controller } from "./Controller";
   import GameBoard from "./components/GameBoard.svelte";
   import Interface from "./components/Interface.svelte";
   
   onMount(() => {
     Controller.init();
+    setTimeout(() => {
+      Controller.saveGame(true);
+    }, 1000);
   });
 
   onDestroy(() => {
@@ -21,6 +25,7 @@
     <Interface />
   </div>
 </main>
+<SvelteToast />
 
 <style>
   @import "/theme.css";

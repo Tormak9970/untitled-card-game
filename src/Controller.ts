@@ -9,6 +9,7 @@ import { SettingsController } from "./lib/controllers/SettingsController";
 import { clubsPileList, diamondsPileList, gameTime, gameWasWon, heartsPileList, isPaused, score, showGameOverModal, spadesPileList } from "./Stores";
 import { MovesController } from "./lib/controllers/MovesController";
 import type { PlayingCard } from "./lib/models/PlayingCard";
+import { ToastType } from "./lib/models/ToastType";
 
 /**
  * The main controller for the game.
@@ -31,6 +32,7 @@ export class Controller {
 
   static cleanUp() {
     Controller.movesController.onDestroy();
+    Controller.saveController.onDestroy();
   }
 
   static getSprite(card:Cards, suit:Suits|JokerTypes): SpriteInfo {
@@ -111,6 +113,28 @@ export class Controller {
       Controller.saveController.saveGameToFile();
     } else {
       Controller.saveController.saveGame();
+    }
+  }
+
+  static loadGame(fromFile:boolean): void {
+    if (fromFile) {
+      Controller.saveController.loadGameFromFile();
+    } else {
+      Controller.saveController.loadGame();
+    }
+  }
+
+  static showToast(message:string, type:ToastType, styles:Object = {}): void {
+    switch (type) {
+      case ToastType.INFO:
+        Controller.toastController.showGenericToast(message, styles);
+        break;
+      case ToastType.WARNING:
+        Controller.toastController.showWarningToast(message);
+        break;
+      case ToastType.SUCCESS:
+        Controller.toastController.showSuccessToast(message);
+        break;
     }
   }
 }
