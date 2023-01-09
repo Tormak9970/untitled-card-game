@@ -39,7 +39,14 @@
   });
 </script>
 
-<div class="face-card" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; background-image: url({sprite}); background-position: left {offset.x * scale}px top {offset.y * scale}px; background-size: {ANIM_SPRITE_STRIP_WIDTH * scale}px {CARD_HEIGHT * scale}px;" />
+<div
+  class="face-card"
+  style:width = "{CARD_WIDTH * scale}px"
+  style:height = "{CARD_HEIGHT * scale}px"
+  style:background-image = "url({sprite})"
+  style:background-position = "left {offset.x * scale}px top {offset.y * scale}px"
+  style:background-size = "{ANIM_SPRITE_STRIP_WIDTH * scale}px {CARD_HEIGHT * scale}px"
+  />
 
 <style>
   @import "/theme.css";

@@ -1,4 +1,4 @@
-import { get, type Unsubscriber, type Writable } from "svelte/store";
+import { get, type Unsubscriber } from "svelte/store";
 import { cardColumns, clubsPileList, diamondsPileList, discardPileList, drawPileList, heartsPileList, moves, preRedoMoves, redoDisabled, renderedList, shouldPlayRedoAnim, shouldPlayUndoAnim, spadesPileList, undoDisabled } from "../../Stores";
 import { LinkedList, LinkedNode } from "../data-structs/LinkedList";
 import { MoveStates } from "../models/MoveStates";

@@ -171,7 +171,7 @@
 
   <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {uncoveredPercenet * CARD_HEIGHT * scale}px;">
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
-      <div animate:flip="{{duration: flipDurationMs}}">
+      <div>
         <svelte:self {...{card:playingCard.data, column, row:playingCard.row, scale, uncoveredPercenet}} />
       </div>
     {/each}
