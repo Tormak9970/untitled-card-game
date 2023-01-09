@@ -69,9 +69,9 @@
         const moveState = {
           "board": $cardColumns,
           "renderedList": $renderedList,
-          "discardPile": $discardPileList
+          "discardPile": $discardPileList,
         };
-        moveState[`${type[1]}Pile`] = $suitPileList;
+        moveState[`${suit.toLowerCase()}Pile`] = $suitPileList;
         $moves.push(JSON.stringify(moveState));
         $moves = [...$moves];
         $preRedoMoves = [];
@@ -113,7 +113,7 @@
                 "renderedList": $renderedList,
                 "discard": $discardPileList
               };
-              moveState[`${type[1]}Pile`] = $suitPileList;
+              moveState[`${suit.toLowerCase()}Pile`] = $suitPileList;
               $moves.push(JSON.stringify(moveState));
               $moves = [...$moves];
               $preRedoMoves = [];
