@@ -12,8 +12,10 @@ export class GameSave {
   turns:number;
   gameTime:number;
   moves:string[];
+  preRedoMoves:string[];
 
   // Game board data
+  renderedList:boolean[];
   cardColumns:LinkedList<PlayingCard>[];
   drawPileList:PlayingCard[];
   discardPileList:PlayingCard[];
@@ -22,18 +24,33 @@ export class GameSave {
   clubsPileList:PlayingCard[];
   diamondsPileList:PlayingCard[];
 
-  // Utility data
+  constructor(difficulty:Difficulty, score:number, turns:number, gameTime:number, moves:string[], preRedoMoves:string[], renderedList:boolean[], cardColumns:LinkedList<PlayingCard>[], drawPileList:PlayingCard[], discardPileList:PlayingCard[], spadesPileList:PlayingCard[], heartsPileList:PlayingCard[], clubsPileList:PlayingCard[], diamondsPileList:PlayingCard[]) {
+    this.difficulty = difficulty;
+    this.score = score;
+    this.turns = turns;
+    this.gameTime = gameTime;
+    this.moves = moves;
+    this.preRedoMoves = preRedoMoves;
 
+    this.renderedList = renderedList;
+    this.cardColumns = cardColumns;
+    this.drawPileList = drawPileList;
+    this.discardPileList = diamondsPileList;
+    this.spadesPileList = spadesPileList;
+    this.heartsPileList = heartsPileList;
+    this.clubsPileList = clubsPileList;
+    this.diamondsPileList = diamondsPileList;
+  }
 
-  constructor() {
+  private genSubs(): void {
 
   }
 
-  toJSON() {
-
+  destroySubs(): void {
+    
   }
 
   static fromJSON(json:any) {
-
+    return new GameSave();
   }
 }
