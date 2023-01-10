@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { flip } from "svelte/animate";
+  import { onMount } from "svelte";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
   import { LinkedNode, type LinkedList } from "../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
   import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS} from "svelte-dnd-action";
-  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, preRedoMoves, renderedList, spadesPileList, turns } from "../../Stores";
+  import { cardColumns, clubsPileList, columnBoundingRects, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, preRedoMoves, renderedList, spadesPileList, turns } from "../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { Controller } from "../../Controller";
   import type { Writable } from "svelte/store";
@@ -17,7 +17,7 @@
 
   let notAdded = true;
 
-  const UNCOVERED_PERCENT = 0.3;
+  let cardContainer:HTMLDivElement;
 
   let items = [];
   let dragDisabled = false;
@@ -147,14 +147,18 @@
     
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
   }
+
+  onMount(() => {
+    $columnBoundingRects[`column${column}`] = cardContainer.getBoundingClientRect.bind(cardContainer);
+  });
 </script>
 
-<div class="card-column-wrapper" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;">
-  <div class="card-column" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;">
+<div class="card-column-wrapper" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * Controller.UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;">
+  <div class="card-column" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * Controller.UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;" bind:this={cardContainer}>
     <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * scale}px;">
       {#each items.slice(0, 1) as playingCard (playingCard.id)}
         <div>
-          <CardNode card={playingCard.data} column={column} row={0} scale={scale} uncoveredPercenet={UNCOVERED_PERCENT} />
+          <CardNode card={playingCard.data} column={column} row={0} scale={scale} uncoveredPercenet={Controller.UNCOVERED_PERCENT} />
         </div>
       {/each}
     </div>

@@ -41,8 +41,27 @@ export const discardPileList:Writable<PlayingCard[]> = writable([]);
 
 // Draw/Discard pile stores
 export const discardId = writable(0);
+
+// Layout stores
 export const drawPileBoundingRect:Writable<() => DOMRect> = writable(null);
 export const discardPileBoundingRect:Writable<() => DOMRect> = writable(null);
+
+export const columnBoundingRects:Writable<{[key:string]: () => DOMRect}> = writable({
+  "column1": null,
+  "column2": null,
+  "column3": null,
+  "column4": null,
+  "column5": null,
+  "column6": null,
+  "column7": null
+});
+
+export const suitPileBoundingRects:Writable<{[key:string]: () => DOMRect}> = writable({
+  "spade": null,
+  "heart": null,
+  "club": null,
+  "diamond": null,
+});
 
 // Ace piles stores
 export const spadesPileList:Writable<PlayingCard[]> = writable([]);

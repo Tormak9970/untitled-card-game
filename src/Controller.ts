@@ -18,6 +18,7 @@ export class Controller {
   static ANIM_SPEED = 150;
   static ANIM_PAUSE_LENGTH = 0;
   static DRAW_ANIM_DELAY = 50;
+  static UNCOVERED_PERCENT = 0.3;
 
   private static toastController = new ToastController();
   private static saveController = new SaveController();
