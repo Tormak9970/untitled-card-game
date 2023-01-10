@@ -65,10 +65,6 @@ export class Controller {
   static redoMove(): void { Controller.movesController.redo(); Controller.gameController.updateFromStores(); }
   static undoMove(): void { Controller.movesController.undo(); Controller.gameController.updateFromStores(); }
 
-  static getPosition(id:string) {
-    
-  }
-
   static showHint(): void {
     score.update(val => Math.max(val - 50, 0));
     // show hint

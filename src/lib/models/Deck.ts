@@ -1,9 +1,10 @@
 import type { PlayingCard } from "./PlayingCard";
 import { Stack } from "../data-structs/Stack";
 import type { GameBoard } from "./GameBoard";
-import { difficulty, discardPileList, drawPileList } from "../../Stores";
+import { cardPositionLUT, difficulty, discardPileList, drawPileList } from "../../Stores";
 import { get } from "svelte/store";
 import { Difficulty } from "./Difficulty";
+import { CardLocation } from "./CardLocation";
 
 /**
  * Class representing a deck of cards.
@@ -44,16 +45,22 @@ export class Deck {
       ittr = 1
     }
 
+    const cardPositions = get(cardPositionLUT);
+
     for (let i = 0; i < ittr; i++) {
       try {
         const card = this._drawPile.pop();
         card.revealed = true;
+        cardPositions[`${card.card}|${card.suit}`] = {
+          location: CardLocation.DISCARD_PILE
+        }
         this._discardPile.push(card);
       } catch (e:any) {
         console.log("no cards left!");
         break;
       }
     }
+    cardPositionLUT.set(cardPositions);
     
     this.updateStores();
   }

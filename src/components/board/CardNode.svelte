@@ -8,11 +8,12 @@
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
 
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { cardColumns, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, preRedoMoves, renderedList, spadesPileList, turns } from "../../Stores";
+  import { cardColumns, cardPositionLUT, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, preRedoMoves, renderedList, spadesPileList, turns } from "../../Stores";
   import { getHiddenZoneType, getZoneType } from "../../UiLogic";
   import { Controller } from "../../Controller";
   import type { Writable } from "svelte/store";
   import { Suits } from "../../lib/models/Suits";
+    import { CardLocation } from "../../lib/models/CardLocation";
 
   export let card:LinkedNode<PlayingCard>;
   export let column:number;
@@ -61,6 +62,13 @@
     
     if (tarElem && tarElem.id != `${card?.next?.data.card}|${card?.next?.data.suit}`) {
       const tmp = [...$cardColumns];
+
+      $cardPositionLUT[tarElem.id] = {
+        location: CardLocation.BOARD,
+        column: column,
+        row: row+1
+      };
+      $cardPositionLUT = {...$cardPositionLUT};
       
       if (typeof tarElem.column == "number") {
         $moves.push(JSON.stringify({

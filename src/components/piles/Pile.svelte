@@ -3,7 +3,7 @@
   import type { Unsubscriber, Writable } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { cardColumns, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, moves, preRedoMoves, renderedList, suitPileBoundingRects, turns } from "../../Stores";
+  import { cardColumns, cardPositionLUT, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, moves, preRedoMoves, renderedList, suitPileBoundingRects, turns } from "../../Stores";
   import { CARD_HEIGHT, CARD_WIDTH, SUIT_ICON_SIZE, SUIT_ICON_SPRITE_SHEET_HEIGHT } from "../../lib/SpriteLUT";
 
   import Card from "../cards/Card.svelte";
@@ -13,6 +13,7 @@
   import { Controller } from "../../Controller";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import { CARD_ORDER, FaceCards, getPreviousCard } from "../../lib/models/CardEnums";
+    import { CardLocation } from "../../lib/models/CardLocation";
   
   export let scale:number;
   export let suit:Suits;
@@ -64,6 +65,11 @@
     if (tarElem) {
       let card:PlayingCard;
       if (typeof tarElem.column == "number" && tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
+        $cardPositionLUT[tarElem.id] = {
+          location: CardLocation[`${suit.toUpperCase()}_PILE`]
+        };
+        $cardPositionLUT = {...$cardPositionLUT};
+
         const tmp = [...$cardColumns];
 
         const moveState = {
@@ -108,6 +114,11 @@
           if (tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
             const typeInfo = tarElem.column.split("-");
             if (typeInfo[1] == "discard") {
+              $cardPositionLUT[tarElem.id] = {
+                location: CardLocation[`${suit.toUpperCase()}_PILE`]
+              };
+              $cardPositionLUT = {...$cardPositionLUT};
+
               const moveState = {
                 "board": $cardColumns,
                 "renderedList": $renderedList,

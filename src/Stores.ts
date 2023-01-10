@@ -1,5 +1,6 @@
 import { writable, type Writable } from "svelte/store";
 import type { LinkedList } from "./lib/data-structs/LinkedList";
+import type { CardPosition } from "./lib/models/CardLocation";
 import { Difficulty } from "./lib/models/Difficulty";
 import type { PlayingCard } from "./lib/models/PlayingCard";
 
@@ -62,6 +63,10 @@ export const suitPileBoundingRects:Writable<{[key:string]: () => DOMRect}> = wri
   "club": null,
   "diamond": null,
 });
+
+// export const previousPositionLUT:Writable<{[id:string]:CardPosition}> = writable({});
+// export const currentPositionLUT:Writable<{[id:string]:CardPosition}> = writable({});
+export const cardPositionLUT:Writable<{[id:string]:CardPosition}> = writable({});
 
 // Ace piles stores
 export const spadesPileList:Writable<PlayingCard[]> = writable([]);
