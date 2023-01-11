@@ -65,7 +65,7 @@
     if (tarElem) {
       let card:PlayingCard;
       if (typeof tarElem.column == "number" && tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
-        $cardPositionLUT[tarElem.id] = {
+        $cardPositionLUT[`${tarElem.data.data.card}|${tarElem.data.data.suit}`] = {
           location: CardLocation[`${suit.toUpperCase()}_PILE`]
         };
         $cardPositionLUT = {...$cardPositionLUT};
@@ -114,7 +114,7 @@
           if (tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
             const typeInfo = tarElem.column.split("-");
             if (typeInfo[1] == "discard") {
-              $cardPositionLUT[tarElem.id] = {
+              $cardPositionLUT[`${tarElem.data.data.card}|${tarElem.data.data.suit}`] = {
                 location: CardLocation[`${suit.toUpperCase()}_PILE`]
               };
               $cardPositionLUT = {...$cardPositionLUT};

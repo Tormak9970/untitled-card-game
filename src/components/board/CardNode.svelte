@@ -63,14 +63,27 @@
     if (tarElem && tarElem.id != `${card?.next?.data.card}|${card?.next?.data.suit}`) {
       const tmp = [...$cardColumns];
 
-      $cardPositionLUT[tarElem.id] = {
+      $cardPositionLUT[`${tarElem.data.data.card}|${tarElem.data.data.suit}`] = {
         location: CardLocation.BOARD,
         column: column,
         row: row+1
       };
-      $cardPositionLUT = {...$cardPositionLUT};
       
       if (typeof tarElem.column == "number") {
+        let tmpRow = row+1;
+        let nextNode = tarElem.data.next;
+        while (nextNode != null) {
+          tmpRow++;
+
+          $cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
+            location: CardLocation.BOARD,
+            column: column,
+            row: tmpRow
+          };
+
+          nextNode = nextNode.next;
+        }
+
         $moves.push(JSON.stringify({
           "board": $cardColumns,
           "renderedList": $renderedList
@@ -89,8 +102,8 @@
         tmp[tarElem.column] = tarColumn;
 
         e.detail.items[0] = {
-          "id": `${card.data.card}|${card.data.suit}`,
-          "data": card,
+          "id": `${tarElem.data.data.card}|${tarElem.data.data.suit}`,
+          "data": tarElem.data,
           "column": column,
           "row": row+1
         };
@@ -166,6 +179,8 @@
         }
         $turns++;
       }
+      
+      $cardPositionLUT = {...$cardPositionLUT};
 
       $cardColumns = tmp;
     }

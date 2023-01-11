@@ -52,14 +52,27 @@
     if (tarElem && tarElem.id != `${playingCards.first?.data.card}|${playingCards.first?.data.suit}`) {
       const tmp = [...$cardColumns];
 
-      $cardPositionLUT[tarElem.id] = {
+      $cardPositionLUT[`${tarElem.data.data.card}|${tarElem.data.data.suit}`] = {
         location: CardLocation.BOARD,
         column: column,
         row: 0
       };
-      $cardPositionLUT = {...$cardPositionLUT};
       
       if (typeof tarElem.column == "number") {
+        let tmpRow = 0;
+        let nextNode = tarElem.data.next;
+        while (nextNode != null) {
+          tmpRow++;
+
+          $cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
+            location: CardLocation.BOARD,
+            column: column,
+            row: tmpRow
+          };
+
+          nextNode = nextNode.next;
+        }
+
         $moves.push(JSON.stringify({
           "board": $cardColumns,
           "renderedList": $renderedList
@@ -149,6 +162,8 @@
         
         $turns++;
       }
+      
+      $cardPositionLUT = {...$cardPositionLUT};
 
       $cardColumns = tmp;
     }
