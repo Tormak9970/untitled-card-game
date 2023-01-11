@@ -5,8 +5,9 @@
   import Piles from "./piles/Piles.svelte";
   import { difficulty } from "../Stores";
   import { Difficulty } from "../lib/models/Difficulty";
+  import { Controller } from "../Controller";
 
-  const CARD_SCALE = 0.4;
+  const CARD_SCALE = Controller.CARD_SCALE;
   
   const DISCARD_UNCOVERED_PERCENT = 0.3;
 </script>

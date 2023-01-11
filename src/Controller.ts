@@ -19,6 +19,7 @@ export class Controller {
   static ANIM_PAUSE_LENGTH = 0;
   static DRAW_ANIM_DELAY = 50;
   static UNCOVERED_PERCENT = 0.3;
+  static CARD_SCALE = 0.4;
 
   private static toastController = new ToastController();
   private static saveController = new SaveController();
@@ -64,6 +65,7 @@ export class Controller {
 
   static redoMove(): void { Controller.movesController.redo(); Controller.gameController.updateFromStores(); }
   static undoMove(): void { Controller.movesController.undo(); Controller.gameController.updateFromStores(); }
+  static getLastPosition(id:string): {left:number, top:number} { return Controller.movesController.getLastPosition(id, Controller.UNCOVERED_PERCENT, Controller.CARD_SCALE); }
 
   static showHint(): void {
     score.update(val => Math.max(val - 50, 0));

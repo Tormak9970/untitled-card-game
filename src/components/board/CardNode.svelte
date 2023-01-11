@@ -1,25 +1,31 @@
 <script lang="ts">
+  import { afterUpdate } from "svelte";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   
   import Card from "../cards/Card.svelte";
 
-  import { flip } from "svelte/animate";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
 
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
-  import { cardColumns, cardPositionLUT, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, heartsPileList, moves, preRedoMoves, renderedList, spadesPileList, turns } from "../../Stores";
+  import { cardColumns, cardPositionLUT, clubsPileList, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, frontColumn, heartsPileList, moves, preRedoMoves, renderedList, shouldPlayRedoAnim, shouldPlayUndoAnim, spadesPileList, turns } from "../../Stores";
   import { getHiddenZoneType, getZoneType } from "../../UiLogic";
   import { Controller } from "../../Controller";
   import type { Writable } from "svelte/store";
   import { Suits } from "../../lib/models/Suits";
-    import { CardLocation } from "../../lib/models/CardLocation";
+  import { CardLocation } from "../../lib/models/CardLocation";
 
   export let card:LinkedNode<PlayingCard>;
   export let column:number;
   export let row:number
   export let scale:number;
   export let uncoveredPercenet:number;
+
+  let cardContainer:HTMLDivElement;
+  let previousLeft = 0;
+  let previousTop = 0;
+
+  let shouldPlayAnim = true;
 
   let notAdded = true;
 
@@ -56,7 +62,6 @@
     }
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
   }
-
   function handleDndFinalize(e:any) {
     const tarElem = e.detail.items[0];
     
@@ -187,14 +192,69 @@
     
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
   }
+
+  
+  function triggerAnimationIn() {
+    setTimeout(() => {
+      const elems = cardContainer.getElementsByClassName("transition-in");
+      if (elems[0]) {
+        elems[0].classList.remove("transition-in");
+      }
+      shouldPlayAnim = true;
+    }, 0);
+  }
+
+  function setPositions() {
+    if (items[0] && ($cardPositionLUT[items[0].id].row != items[0].row || $cardPositionLUT[items[0].id].column != items[0].column)) {
+      const lastPosition = Controller.getLastPosition(items[0].id);
+
+      const cardContBoundingRect = cardContainer.getBoundingClientRect();
+      previousLeft = -(cardContBoundingRect.left - lastPosition.left);
+      previousTop = -(cardContBoundingRect.top - lastPosition.top);
+      console.log(previousLeft, previousTop)
+
+      // $cardPositionLUT[items[0].id] = {
+      //   location: CardLocation.BOARD,
+      //   column: column,
+      //   row: row+1
+      // };
+      
+      // let tmpRow = row+1;
+      // let nextNode = items[0].data.next;
+      // while (nextNode != null) {
+      //   tmpRow++;
+
+      //   $cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
+      //     location: CardLocation.BOARD,
+      //     column: column,
+      //     row: tmpRow
+      //   };
+
+      //   nextNode = nextNode.next;
+      // }
+    }
+  }
+
+  afterUpdate(() => {
+    if (cardContainer) {
+      if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
+        if (shouldPlayAnim) {
+          shouldPlayAnim = false;
+          setPositions();
+          $frontColumn = column;
+          triggerAnimationIn();
+        }
+      }
+    }
+  });
 </script>
 
-<div class="card-node" style="width: {CARD_WIDTH * scale}px; height: {(CARD_HEIGHT * scale) * uncoveredPercenet + (CARD_HEIGHT * scale)}px;">
+<div class="card-node" style="width: {CARD_WIDTH * scale}px; height: {(CARD_HEIGHT * scale) * uncoveredPercenet + (CARD_HEIGHT * scale)}px; --previousLeft: {previousLeft}px; --previousTop: {previousTop}px;">
   <Card card={card.data.card} suit={card.data.suit} revealed={revealed} scale={scale} uncoveredPercent={uncoveredPercenet} column={column} row={row} />
 
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {uncoveredPercenet * CARD_HEIGHT * scale}px;">
+  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {uncoveredPercenet * CARD_HEIGHT * scale}px;" bind:this={cardContainer}>
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
-      <div>
+      <div class="card-wrapper{(playingCard.id) ? (($cardPositionLUT[playingCard.id].row != playingCard.row || $cardPositionLUT[playingCard.id].column != playingCard.column) ? " transition-in" : "") : ""}">
         <svelte:self {...{card:playingCard.data, column, row:playingCard.row, scale, uncoveredPercenet}} />
       </div>
     {/each}
@@ -205,4 +265,23 @@
   @import "/theme.css";
 
   .card-node { position: relative; }
+
+  :root {
+    --previousLeft: 0px;
+    --previousTop: 0px;
+  }
+
+  .card-wrapper {
+    position: absolute;
+    
+    left: 0px;
+    top: 0px;
+    transition: left 300ms ease-in-out, top 300ms ease-in-out;
+  }
+
+  .transition-in {
+    left: var(--previousLeft);
+    top: var(--previousTop);
+    transition: none;
+  }
 </style>

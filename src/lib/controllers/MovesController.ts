@@ -1,8 +1,10 @@
 import { get, type Unsubscriber } from "svelte/store";
-import { cardColumns, clubsPileList, diamondsPileList, discardPileList, drawPileList, heartsPileList, moves, preRedoMoves, redoDisabled, renderedList, shouldPlayRedoAnim, shouldPlayUndoAnim, spadesPileList, undoDisabled } from "../../Stores";
+import { cardColumns, cardPositionLUT, clubsPileList, columnBoundingRects, diamondsPileList, discardPileBoundingRect, discardPileList, drawPileList, frontColumn, heartsPileList, moves, preRedoMoves, redoDisabled, renderedList, shouldPlayRedoAnim, shouldPlayUndoAnim, spadesPileList, suitPileBoundingRects, undoDisabled } from "../../Stores";
 import { LinkedList, LinkedNode } from "../data-structs/LinkedList";
+import { CardLocation } from "../models/CardLocation";
 import { MoveStates } from "../models/MoveStates";
 import { PlayingCard } from "../models/PlayingCard";
+import { CARD_HEIGHT, CARD_WIDTH } from "../SpriteLUT";
 
 /**
  * Controls undo and redo actions
@@ -84,6 +86,7 @@ export class MovesController {
 
     setTimeout(() => {
       shouldPlayUndoAnim.set(false);
+      frontColumn.set(-1);
     }, 500);
   }
 
@@ -100,7 +103,60 @@ export class MovesController {
 
     setTimeout(() => {
       shouldPlayUndoAnim.set(false);
+      frontColumn.set(-1);
     }, 500);
+  }
+
+  getLastPosition(id:string, UNCOVERED_PERCENT:number, CARD_SCALE:number): {left:number, top:number} {
+    const res = {
+      "left": 0,
+      "top": 0
+    };
+
+    const cardPos = get(cardPositionLUT);
+    const lastPos = cardPos[id];
+    console.log(id, lastPos);
+
+    switch (lastPos.location) {
+      case CardLocation.BOARD: {
+        const boundingRect = get(columnBoundingRects)[`column${lastPos.column}`]();
+        res.left = boundingRect.left;
+        res.top = boundingRect.top + (CARD_HEIGHT * UNCOVERED_PERCENT * CARD_SCALE) * lastPos.row;
+        break;
+      }
+      case CardLocation.DISCARD_PILE: {
+        const boundingRect = get(discardPileBoundingRect)();
+        res.left = boundingRect.right - CARD_WIDTH * CARD_SCALE;
+        res.top = boundingRect.top;
+        break;
+      }
+      case CardLocation.SPADE_PILE: {
+        const boundingRect = get(suitPileBoundingRects).spade();
+        res.left = boundingRect.left;
+        res.top = boundingRect.top;
+        break;
+      }
+      case CardLocation.HEART_PILE: {
+        const boundingRect = get(suitPileBoundingRects).heart();
+        res.left = boundingRect.left;
+        res.top = boundingRect.top;
+        break;
+      }
+      case CardLocation.CLUB_PILE: {
+        const boundingRect = get(suitPileBoundingRects).heart();
+        res.left = boundingRect.left;
+        res.top = boundingRect.top;
+        break;
+      }
+      case CardLocation.DIAMOND_PILE: {
+        const boundingRect = get(suitPileBoundingRects).heart();
+        res.left = boundingRect.left;
+        res.top = boundingRect.top;
+        break;
+      }
+    }
+
+    return res;
   }
 
   onDestroy() {
