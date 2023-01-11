@@ -45,13 +45,11 @@ export class Deck {
       ittr = 1
     }
 
-    const cardPositions = get(cardPositionLUT);
-
     for (let i = 0; i < ittr; i++) {
       try {
         const card = this._drawPile.pop();
         card.revealed = true;
-        cardPositions[`${card.card}|${card.suit}`] = {
+        cardPositionLUT[`${card.card}|${card.suit}`] = {
           location: CardLocation.DISCARD_PILE
         }
         this._discardPile.push(card);
@@ -60,7 +58,6 @@ export class Deck {
         break;
       }
     }
-    cardPositionLUT.set(cardPositions);
     
     this.updateStores();
   }

@@ -52,7 +52,7 @@
     if (tarElem && tarElem.id != `${playingCards.first?.data.card}|${playingCards.first?.data.suit}`) {
       const tmp = [...$cardColumns];
 
-      $cardPositionLUT[`${tarElem.data.data.card}|${tarElem.data.data.suit}`] = {
+      cardPositionLUT[`${tarElem.data.data.card}|${tarElem.data.data.suit}`] = {
         location: CardLocation.BOARD,
         column: column,
         row: 0
@@ -64,7 +64,7 @@
         while (nextNode != null) {
           tmpRow++;
 
-          $cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
+          cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
             location: CardLocation.BOARD,
             column: column,
             row: tmpRow
@@ -162,8 +162,6 @@
         
         $turns++;
       }
-      
-      $cardPositionLUT = {...$cardPositionLUT};
 
       $cardColumns = tmp;
     }

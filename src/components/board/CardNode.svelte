@@ -68,7 +68,7 @@
     if (tarElem && tarElem.id != `${card?.next?.data.card}|${card?.next?.data.suit}`) {
       const tmp = [...$cardColumns];
 
-      $cardPositionLUT[`${tarElem.data.data.card}|${tarElem.data.data.suit}`] = {
+      cardPositionLUT[`${tarElem.data.data.card}|${tarElem.data.data.suit}`] = {
         location: CardLocation.BOARD,
         column: column,
         row: row+1
@@ -80,7 +80,7 @@
         while (nextNode != null) {
           tmpRow++;
 
-          $cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
+          cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
             location: CardLocation.BOARD,
             column: column,
             row: tmpRow
@@ -184,8 +184,6 @@
         }
         $turns++;
       }
-      
-      $cardPositionLUT = {...$cardPositionLUT};
 
       $cardColumns = tmp;
     }
@@ -193,7 +191,7 @@
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
   }
 
-  
+
   function triggerAnimationIn() {
     setTimeout(() => {
       const elems = cardContainer.getElementsByClassName("transition-in");
@@ -205,33 +203,13 @@
   }
 
   function setPositions() {
-    if (items[0] && ($cardPositionLUT[items[0].id].row != items[0].row || $cardPositionLUT[items[0].id].column != items[0].column)) {
+    if (items[0] && (cardPositionLUT[items[0].id].row != items[0].row || cardPositionLUT[items[0].id].column != items[0].column)) {
       const lastPosition = Controller.getLastPosition(items[0].id);
 
       const cardContBoundingRect = cardContainer.getBoundingClientRect();
       previousLeft = -(cardContBoundingRect.left - lastPosition.left);
       previousTop = -(cardContBoundingRect.top - lastPosition.top);
       console.log(previousLeft, previousTop)
-
-      // $cardPositionLUT[items[0].id] = {
-      //   location: CardLocation.BOARD,
-      //   column: column,
-      //   row: row+1
-      // };
-      
-      // let tmpRow = row+1;
-      // let nextNode = items[0].data.next;
-      // while (nextNode != null) {
-      //   tmpRow++;
-
-      //   $cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
-      //     location: CardLocation.BOARD,
-      //     column: column,
-      //     row: tmpRow
-      //   };
-
-      //   nextNode = nextNode.next;
-      // }
     }
   }
 
@@ -243,6 +221,30 @@
           setPositions();
           $frontColumn = column;
           triggerAnimationIn();
+          
+          if (items[0]) {
+            setTimeout(() => {
+              cardPositionLUT[items[0].id] = {
+                location: CardLocation.BOARD,
+                column: column,
+                row: row+1
+              };
+              
+              let tmpRow = row+1;
+              let nextNode = items[0].data.next;
+              while (nextNode != null) {
+                tmpRow++;
+
+                cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
+                  location: CardLocation.BOARD,
+                  column: column,
+                  row: tmpRow
+                };
+
+                nextNode = nextNode.next;
+              }
+            }, 500);
+          }
         }
       }
     }
@@ -254,7 +256,7 @@
 
   <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {uncoveredPercenet * CARD_HEIGHT * scale}px;" bind:this={cardContainer}>
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
-      <div class="card-wrapper{(playingCard.id) ? (($cardPositionLUT[playingCard.id].row != playingCard.row || $cardPositionLUT[playingCard.id].column != playingCard.column) ? " transition-in" : "") : ""}">
+      <div class="card-wrapper{(playingCard.id) ? ((cardPositionLUT[playingCard.id].row != playingCard.row || cardPositionLUT[playingCard.id].column != playingCard.column) ? " transition-in" : "") : ""}">
         <svelte:self {...{card:playingCard.data, column, row:playingCard.row, scale, uncoveredPercenet}} />
       </div>
     {/each}

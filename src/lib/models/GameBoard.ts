@@ -16,8 +16,6 @@ export class GameBoard {
   setBoard(cards:PlayingCard[]) {
     const board:LinkedList<PlayingCard>[] = [];
 
-    const cardPositions = get(cardPositionLUT);
-
     let cardIdx = 0;
     for (let i = 0; i < 7; i++) {
       board[i] = new LinkedList<PlayingCard>();
@@ -27,7 +25,7 @@ export class GameBoard {
 
         if (i == j) card.revealed = true;
 
-        cardPositions[`${card.card}|${card.suit}`] = {
+        cardPositionLUT[`${card.card}|${card.suit}`] = {
           location: CardLocation.BOARD,
           column: i,
           row: j
@@ -37,8 +35,6 @@ export class GameBoard {
         cardIdx++;
       }
     }
-
-    cardPositionLUT.set(cardPositions);
 
     cardColumns.set(board);
   }

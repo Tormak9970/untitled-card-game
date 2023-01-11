@@ -65,9 +65,7 @@ export const suitPileBoundingRects:Writable<{[key:string]: () => DOMRect}> = wri
   "diamond": null,
 });
 
-// export const previousPositionLUT:Writable<{[id:string]:CardPosition}> = writable({});
-// export const currentPositionLUT:Writable<{[id:string]:CardPosition}> = writable({});
-export const cardPositionLUT:Writable<{[id:string]:CardPosition}> = writable({});
+export const cardPositionLUT:{[id:string]:CardPosition} = {};
 
 // Ace piles stores
 export const spadesPileList:Writable<PlayingCard[]> = writable([]);

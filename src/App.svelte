@@ -4,9 +4,6 @@
   import { Controller } from "./Controller";
   import GameBoard from "./components/GameBoard.svelte";
   import Interface from "./components/Interface.svelte";
-  import { cardPositionLUT } from "./Stores";
-  
-  $: console.log($cardPositionLUT)
 
   onMount(() => {
     Controller.init();

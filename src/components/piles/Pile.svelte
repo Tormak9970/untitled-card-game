@@ -65,10 +65,9 @@
     if (tarElem) {
       let card:PlayingCard;
       if (typeof tarElem.column == "number" && tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
-        $cardPositionLUT[`${tarElem.data.data.card}|${tarElem.data.data.suit}`] = {
+        cardPositionLUT[`${tarElem.data.data.card}|${tarElem.data.data.suit}`] = {
           location: CardLocation[`${suit.toUpperCase()}_PILE`]
         };
-        $cardPositionLUT = {...$cardPositionLUT};
 
         const tmp = [...$cardColumns];
 
@@ -114,10 +113,9 @@
           if (tarElem.id != `${$suitPileList[$suitPileList.length - 1]?.card}|${$suitPileList[$suitPileList.length - 1]?.suit}`) {
             const typeInfo = tarElem.column.split("-");
             if (typeInfo[1] == "discard") {
-              $cardPositionLUT[`${tarElem.data.data.card}|${tarElem.data.data.suit}`] = {
+              cardPositionLUT[`${tarElem.data.data.card}|${tarElem.data.data.suit}`] = {
                 location: CardLocation[`${suit.toUpperCase()}_PILE`]
               };
-              $cardPositionLUT = {...$cardPositionLUT};
 
               const moveState = {
                 "board": $cardColumns,
@@ -160,7 +158,7 @@
   }
 
   onMount(() => {
-    $suitPileBoundingRects[suit] = cardContainer.getBoundingClientRect.bind(cardContainer);
+    $suitPileBoundingRects[suit.toLowerCase()] = cardContainer.getBoundingClientRect.bind(cardContainer);
     
     const spriteInfo = Controller.getSprite(null, suit);
 

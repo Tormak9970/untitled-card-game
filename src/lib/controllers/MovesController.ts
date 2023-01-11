@@ -113,8 +113,7 @@ export class MovesController {
       "top": 0
     };
 
-    const cardPos = get(cardPositionLUT);
-    const lastPos = cardPos[id];
+    const lastPos = cardPositionLUT[id];
     console.log(id, lastPos);
 
     switch (lastPos.location) {
