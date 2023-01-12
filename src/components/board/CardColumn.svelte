@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { afterUpdate, onMount } from "svelte";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
   import { LinkedNode, type LinkedList } from "../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
   import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS} from "svelte-dnd-action";
-  import { cardColumns, cardPositionLUT, clubsPileList, columnBoundingRects, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, frontColumn, heartsPileList, moves, preRedoMoves, renderedList, spadesPileList, turns } from "../../Stores";
+  import { cardColumns, cardPositionLUT, clubsPileList, columnBoundingRects, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, frontColumn, heartsPileList, moves, preRedoMoves, renderedList, shouldPlayRedoAnim, shouldPlayUndoAnim, spadesPileList, turns } from "../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { Controller } from "../../Controller";
   import type { Writable } from "svelte/store";
   import { Suits } from "../../lib/models/Suits";
-    import { CardLocation } from "../../lib/models/CardLocation";
+  import { CardLocation } from "../../lib/models/CardLocation";
 
   export let playingCards:LinkedList<PlayingCard>;
   export let column:number;
@@ -19,13 +19,17 @@
   let notAdded = true;
 
   let cardContainer:HTMLDivElement;
+  let previousLeft = 0;
+  let previousTop = 0;
+
+  let shouldPlayAnim = true;
 
   let items = [];
   let dragDisabled = false;
   $: type = playingCards.first ? getCurrentCardZoneType(playingCards.first) : getKingZoneType();
   $: dropFromOthersDisabled = (playingCards.first != null && items.length > 0) || ($draggingType != type);
 
-  $: if (playingCards.first && notAdded) {
+  $: if (playingCards.first && notAdded && items.length == 0) {
     notAdded = false;
     items.push({
       "id": `${playingCards.first.data.card}|${playingCards.first.data.suit}`,
@@ -168,17 +172,74 @@
     
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID);
   }
+  
+  function triggerAnimationIn() {
+    setTimeout(() => {
+      const elems = cardContainer.getElementsByClassName("transition-in");
+      if (elems[0]) {
+        elems[0].classList.remove("transition-in");
+      }
+      shouldPlayAnim = true;
+    }, 0);
+  }
+
+  function setPositions() {
+    if (items[0] && (cardPositionLUT[items[0].id].row != items[0].row || cardPositionLUT[items[0].id].column != items[0].column)) {
+      const lastPosition = Controller.getLastPosition(items[0].id);
+
+      const cardContBoundingRect = cardContainer.getBoundingClientRect();
+      previousLeft = -(cardContBoundingRect.left - lastPosition.left);
+      previousTop = -(cardContBoundingRect.top - lastPosition.top);
+    }
+  }
+
+  afterUpdate(() => {
+    if (cardContainer) {
+      if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
+        if (shouldPlayAnim) {
+          shouldPlayAnim = false;
+          setPositions();
+          $frontColumn = column;
+          triggerAnimationIn();
+          
+          if (items[0]) {
+            setTimeout(() => {
+              cardPositionLUT[items[0].id] = {
+                location: CardLocation.BOARD,
+                column: column,
+                row: 0
+              };
+              
+              let tmpRow = 0;
+              let nextNode = items[0].data.next;
+              while (nextNode != null) {
+                tmpRow++;
+
+                cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
+                  location: CardLocation.BOARD,
+                  column: column,
+                  row: tmpRow
+                };
+                
+                nextNode = nextNode.next;
+              }
+            }, 500);
+          }
+        }
+      }
+    }
+  });
 
   onMount(() => {
-    $columnBoundingRects[`column${column}`] = cardContainer.getBoundingClientRect.bind(cardContainer);
+    columnBoundingRects[`column${column}`] = cardContainer.getBoundingClientRect.bind(cardContainer);
   });
 </script>
 
-<div class="card-column-wrapper" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * Controller.UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;">
+<div class="card-column-wrapper" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * Controller.UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px; --previousLeft: {previousLeft}px; --previousTop: {previousTop}px;">
   <div class="card-column" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * Controller.UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;{$frontColumn == column ? " z-index: 100;" : ""}" bind:this={cardContainer}>
     <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * scale}px;">
       {#each items.slice(0, 1) as playingCard (playingCard.id)}
-        <div>
+        <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && typeof playingCard.column != "string") ? ((cardPositionLUT[playingCard.id].row != playingCard.row || cardPositionLUT[playingCard.id].column != playingCard.column) ? " transition-in" : "") : ""}">
           <CardNode card={playingCard.data} column={column} row={0} scale={scale} uncoveredPercenet={Controller.UNCOVERED_PERCENT} />
         </div>
       {/each}
@@ -191,6 +252,11 @@
 
 <style>
   @import "/theme.css";
+
+  :root {
+    --previousLeft: 0px;
+    --previousTop: 0px;
+  }
 
   .card-column-wrapper {
     position: relative;
@@ -210,5 +276,19 @@
     box-sizing: border-box;
     border: 2px solid var(--highlight);
     border-radius: 8px;
+  }
+
+  .card-wrapper {
+    position: absolute;
+    
+    left: 0px;
+    top: 0px;
+    transition: left 300ms ease-in-out, top 300ms ease-in-out;
+  }
+
+  .transition-in {
+    left: var(--previousLeft);
+    top: var(--previousTop);
+    transition: none;
   }
 </style>

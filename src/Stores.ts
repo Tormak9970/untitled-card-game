@@ -48,22 +48,22 @@ export const drawPileBoundingRect:Writable<() => DOMRect> = writable(null);
 export const discardPileBoundingRect:Writable<() => DOMRect> = writable(null);
 
 export const frontColumn = writable(-1);
-export const columnBoundingRects:Writable<{[key:string]: () => DOMRect}> = writable({
+export const columnBoundingRects:{[key:string]: () => DOMRect} = {
+  "column0": null,
   "column1": null,
   "column2": null,
   "column3": null,
   "column4": null,
   "column5": null,
-  "column6": null,
-  "column7": null
-});
+  "column6": null
+};
 
-export const suitPileBoundingRects:Writable<{[key:string]: () => DOMRect}> = writable({
+export const suitPileBoundingRects:{[key:string]: () => DOMRect} = {
   "spade": null,
   "heart": null,
   "club": null,
   "diamond": null,
-});
+};
 
 export const cardPositionLUT:{[id:string]:CardPosition} = {};
 

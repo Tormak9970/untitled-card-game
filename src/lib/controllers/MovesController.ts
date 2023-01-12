@@ -118,9 +118,25 @@ export class MovesController {
 
     switch (lastPos.location) {
       case CardLocation.BOARD: {
-        const boundingRect = get(columnBoundingRects)[`column${lastPos.column}`]();
+        const bRects = columnBoundingRects;
+        const boundingRect = columnBoundingRects[`column${lastPos.column}`]();
+        
+        console.log({
+          "columnBoundingRects": {
+            "column0": bRects.column0(),
+            "column1": bRects.column1(),
+            "column2": bRects.column2(),
+            "column3": bRects.column3(),
+            "column4": bRects.column4(),
+            "column5": bRects.column5(),
+            "column6": bRects.column6()
+          },
+          "boundingRect": boundingRect
+        });
+
         res.left = boundingRect.left;
         res.top = boundingRect.top + (CARD_HEIGHT * UNCOVERED_PERCENT * CARD_SCALE) * lastPos.row;
+
         break;
       }
       case CardLocation.DISCARD_PILE: {
@@ -130,25 +146,25 @@ export class MovesController {
         break;
       }
       case CardLocation.SPADE_PILE: {
-        const boundingRect = get(suitPileBoundingRects).spade();
+        const boundingRect = suitPileBoundingRects.spade();
         res.left = boundingRect.left;
         res.top = boundingRect.top;
         break;
       }
       case CardLocation.HEART_PILE: {
-        const boundingRect = get(suitPileBoundingRects).heart();
+        const boundingRect = suitPileBoundingRects.heart();
         res.left = boundingRect.left;
         res.top = boundingRect.top;
         break;
       }
       case CardLocation.CLUB_PILE: {
-        const boundingRect = get(suitPileBoundingRects).heart();
+        const boundingRect = suitPileBoundingRects.heart();
         res.left = boundingRect.left;
         res.top = boundingRect.top;
         break;
       }
       case CardLocation.DIAMOND_PILE: {
-        const boundingRect = get(suitPileBoundingRects).heart();
+        const boundingRect = suitPileBoundingRects.heart();
         res.left = boundingRect.left;
         res.top = boundingRect.top;
         break;

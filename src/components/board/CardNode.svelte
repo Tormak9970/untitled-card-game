@@ -209,7 +209,6 @@
       const cardContBoundingRect = cardContainer.getBoundingClientRect();
       previousLeft = -(cardContBoundingRect.left - lastPosition.left);
       previousTop = -(cardContBoundingRect.top - lastPosition.top);
-      console.log(previousLeft, previousTop)
     }
   }
 
@@ -224,7 +223,6 @@
           
           if (items[0]) {
             setTimeout(() => {
-              console.log(items[0])
               cardPositionLUT[items[0].id] = {
                 location: CardLocation.BOARD,
                 column: column,
@@ -267,12 +265,12 @@
 <style>
   @import "/theme.css";
 
-  .card-node { position: relative; }
-
   :root {
     --previousLeft: 0px;
     --previousTop: 0px;
   }
+
+  .card-node { position: relative; }
 
   .card-wrapper {
     position: absolute;

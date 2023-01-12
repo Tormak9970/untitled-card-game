@@ -158,7 +158,7 @@
   }
 
   onMount(() => {
-    $suitPileBoundingRects[suit.toLowerCase()] = cardContainer.getBoundingClientRect.bind(cardContainer);
+    suitPileBoundingRects[suit.toLowerCase()] = cardContainer.getBoundingClientRect.bind(cardContainer);
     
     const spriteInfo = Controller.getSprite(null, suit);
 
