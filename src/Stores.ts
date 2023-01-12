@@ -67,7 +67,13 @@ export const columnBoundingRects:{[key:string]: DOMRect} = {
   "column6": null
 };
 
-export const suitPileBoundingRects:{[key:string]: () => DOMRect} = {
+export const suitPileBoundingRectFuncs:{[key:string]: () => DOMRect} = {
+  "spade": null,
+  "heart": null,
+  "club": null,
+  "diamond": null,
+};
+export const suitPileBoundingRects:{[key:string]: DOMRect} = {
   "spade": null,
   "heart": null,
   "club": null,

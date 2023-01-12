@@ -3,7 +3,7 @@
   import type { Unsubscriber, Writable } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { cardColumns, cardPositionLUT, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, moves, preRedoMoves, renderedList, suitPileBoundingRects, turns } from "../../Stores";
+  import { cardColumns, cardPositionLUT, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, moves, preRedoMoves, renderedList, suitPileBoundingRectFuncs, turns } from "../../Stores";
   import { CARD_HEIGHT, CARD_WIDTH, SUIT_ICON_SIZE, SUIT_ICON_SPRITE_SHEET_HEIGHT } from "../../lib/SpriteLUT";
 
   import Card from "../cards/Card.svelte";
@@ -158,7 +158,7 @@
   }
 
   onMount(() => {
-    suitPileBoundingRects[suit.toLowerCase()] = cardContainer.getBoundingClientRect.bind(cardContainer);
+    suitPileBoundingRectFuncs[suit.toLowerCase()] = cardContainer.getBoundingClientRect.bind(cardContainer);
     
     const spriteInfo = Controller.getSprite(null, suit);
 

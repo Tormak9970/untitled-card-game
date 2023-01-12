@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { afterUpdate, beforeUpdate, onMount } from "svelte";
+  import { afterUpdate, onMount } from "svelte";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
   import { LinkedNode, type LinkedList } from "../../lib/data-structs/LinkedList";
@@ -192,10 +192,6 @@
       previousTop = -(cardContBoundingRect.top - lastPosition.top);
     }
   }
-
-  // beforeUpdate(() => {
-  //   console.log("About to update column", column);
-  // })
 
   afterUpdate(() => {
     if (cardContainer) {

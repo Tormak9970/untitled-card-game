@@ -119,24 +119,8 @@ export class MovesController {
     switch (lastPos.location) {
       case CardLocation.BOARD: {
         const boundingRect = columnBoundingRects[`column${lastPos.column}`];
-        
-        console.log({
-          "columnBoundingRects": JSON.parse(JSON.stringify(columnBoundingRects)),
-          "boundingRect": boundingRect
-        });
 
         res.left = boundingRect.left;
-
-        // if (res.left == 0) {
-        //   if (lastPos.column == 0) {
-
-        //   } else if (lastPos.column == 6) {
-        //     res.left = (columnBoundingRects.column1().left - columnBoundingRects.column0().left) + 
-        //   } else {
-        //     res.left = (columnBoundingRects[`column${lastPos.column + 1}`]().left - columnBoundingRects[`column${lastPos.column - 1}`]().left) / 2;
-        //   }
-        // }
-
         res.top = boundingRect.top + (CARD_HEIGHT * UNCOVERED_PERCENT * CARD_SCALE) * lastPos.row;
 
         break;
@@ -148,25 +132,25 @@ export class MovesController {
         break;
       }
       case CardLocation.SPADE_PILE: {
-        const boundingRect = suitPileBoundingRects.spade();
+        const boundingRect = suitPileBoundingRects.spade;
         res.left = boundingRect.left;
         res.top = boundingRect.top;
         break;
       }
       case CardLocation.HEART_PILE: {
-        const boundingRect = suitPileBoundingRects.heart();
+        const boundingRect = suitPileBoundingRects.heart;
         res.left = boundingRect.left;
         res.top = boundingRect.top;
         break;
       }
       case CardLocation.CLUB_PILE: {
-        const boundingRect = suitPileBoundingRects.heart();
+        const boundingRect = suitPileBoundingRects.heart;
         res.left = boundingRect.left;
         res.top = boundingRect.top;
         break;
       }
       case CardLocation.DIAMOND_PILE: {
-        const boundingRect = suitPileBoundingRects.heart();
+        const boundingRect = suitPileBoundingRects.heart;
         res.left = boundingRect.left;
         res.top = boundingRect.top;
         break;

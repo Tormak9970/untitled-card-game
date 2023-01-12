@@ -4,7 +4,7 @@
   import { Controller } from "./Controller";
   import GameBoard from "./components/GameBoard.svelte";
   import Interface from "./components/Interface.svelte";
-    import { columnBoundingRectFuncs, columnBoundingRects } from "./Stores";
+    import { columnBoundingRectFuncs, columnBoundingRects, suitPileBoundingRectFuncs, suitPileBoundingRects } from "./Stores";
 
   const debounce = (fn: Function, ms = 300) => {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -16,10 +16,13 @@
 
   function onResize() {
     // update column bounding rects
-    console.log(columnBoundingRectFuncs)
     for (const key of Object.keys(columnBoundingRectFuncs)) {
-      console.log(key);
       columnBoundingRects[key] = columnBoundingRectFuncs[key]();
+    }
+    
+    // update suit bounding rects
+    for (const key of Object.keys(suitPileBoundingRectFuncs)) {
+      suitPileBoundingRects[key] = suitPileBoundingRectFuncs[key]();
     }
   }
 
