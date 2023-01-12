@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { afterUpdate, onMount } from "svelte";
+  import { afterUpdate, beforeUpdate, onMount } from "svelte";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
   import { CARD_HEIGHT, CARD_WIDTH } from "../../lib/SpriteLUT";
   import { LinkedNode, type LinkedList } from "../../lib/data-structs/LinkedList";
   import CardNode from "./CardNode.svelte";
   import {dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS} from "svelte-dnd-action";
-  import { cardColumns, cardPositionLUT, clubsPileList, columnBoundingRects, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, frontColumn, heartsPileList, moves, preRedoMoves, renderedList, shouldPlayRedoAnim, shouldPlayUndoAnim, spadesPileList, turns } from "../../Stores";
+  import { cardColumns, cardPositionLUT, clubsPileList, columnBoundingRectFuncs, diamondsPileList, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, drawPileList, dropZoneStyle, frontColumn, heartsPileList, moves, preRedoMoves, renderedList, shouldPlayRedoAnim, shouldPlayUndoAnim, spadesPileList, turns } from "../../Stores";
   import { getCurrentCardZoneType, getKingZoneType } from "../../UiLogic";
   import { Controller } from "../../Controller";
   import type { Writable } from "svelte/store";
@@ -193,6 +193,10 @@
     }
   }
 
+  // beforeUpdate(() => {
+  //   console.log("About to update column", column);
+  // })
+
   afterUpdate(() => {
     if (cardContainer) {
       if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
@@ -231,7 +235,7 @@
   });
 
   onMount(() => {
-    columnBoundingRects[`column${column}`] = cardContainer.getBoundingClientRect.bind(cardContainer);
+    columnBoundingRectFuncs[`column${column}`] = cardContainer.getBoundingClientRect.bind(cardContainer);
   });
 </script>
 

@@ -118,23 +118,25 @@ export class MovesController {
 
     switch (lastPos.location) {
       case CardLocation.BOARD: {
-        const bRects = columnBoundingRects;
-        const boundingRect = columnBoundingRects[`column${lastPos.column}`]();
+        const boundingRect = columnBoundingRects[`column${lastPos.column}`];
         
         console.log({
-          "columnBoundingRects": {
-            "column0": bRects.column0(),
-            "column1": bRects.column1(),
-            "column2": bRects.column2(),
-            "column3": bRects.column3(),
-            "column4": bRects.column4(),
-            "column5": bRects.column5(),
-            "column6": bRects.column6()
-          },
+          "columnBoundingRects": JSON.parse(JSON.stringify(columnBoundingRects)),
           "boundingRect": boundingRect
         });
 
         res.left = boundingRect.left;
+
+        // if (res.left == 0) {
+        //   if (lastPos.column == 0) {
+
+        //   } else if (lastPos.column == 6) {
+        //     res.left = (columnBoundingRects.column1().left - columnBoundingRects.column0().left) + 
+        //   } else {
+        //     res.left = (columnBoundingRects[`column${lastPos.column + 1}`]().left - columnBoundingRects[`column${lastPos.column - 1}`]().left) / 2;
+        //   }
+        // }
+
         res.top = boundingRect.top + (CARD_HEIGHT * UNCOVERED_PERCENT * CARD_SCALE) * lastPos.row;
 
         break;

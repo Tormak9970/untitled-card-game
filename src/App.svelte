@@ -4,19 +4,40 @@
   import { Controller } from "./Controller";
   import GameBoard from "./components/GameBoard.svelte";
   import Interface from "./components/Interface.svelte";
+    import { columnBoundingRectFuncs, columnBoundingRects } from "./Stores";
+
+  const debounce = (fn: Function, ms = 300) => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    return function (this: any, ...args: any[]) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => fn.apply(this, args), ms);
+    };
+  };
+
+  function onResize() {
+    // update column bounding rects
+    console.log(columnBoundingRectFuncs)
+    for (const key of Object.keys(columnBoundingRectFuncs)) {
+      console.log(key);
+      columnBoundingRects[key] = columnBoundingRectFuncs[key]();
+    }
+  }
+
+  const debouncedResize = debounce(onResize, 500);
 
   onMount(() => {
     Controller.init();
     setTimeout(() => {
-      Controller.saveGame(true);
-    }, 1000);
+      onResize();
+    }, 0);
   });
 
   onDestroy(() => {
     Controller.cleanUp();
-  })
+  });
 </script>
 
+<svelte:window on:resize={debouncedResize}/>
 <main>
   <div class="board-cont">
     <GameBoard />
