@@ -177,6 +177,7 @@
     setTimeout(() => {
       const elems = cardContainer.getElementsByClassName("transition-in");
       if (elems[0]) {
+        $frontColumn = column;
         elems[0].classList.remove("transition-in");
       }
       shouldPlayAnim = true;
@@ -199,7 +200,6 @@
         if (shouldPlayAnim) {
           shouldPlayAnim = false;
           setPositions();
-          $frontColumn = column;
           triggerAnimationIn();
           
           if (items[0]) {

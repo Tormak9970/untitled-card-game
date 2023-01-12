@@ -3,7 +3,7 @@
   import Deck from "./deck/Deck.svelte";
   import { CARD_WIDTH } from "../lib/SpriteLUT";
   import Piles from "./piles/Piles.svelte";
-  import { difficulty } from "../Stores";
+  import { difficulty, frontColumn } from "../Stores";
   import { Difficulty } from "../lib/models/Difficulty";
   import { Controller } from "../Controller";
 
@@ -16,7 +16,7 @@
   <div class="deck-cont" style="margin-right: {CARD_SCALE * CARD_WIDTH * 2 - ($difficulty == Difficulty.BEGINNER ? 0 : (CARD_WIDTH * CARD_SCALE * DISCARD_UNCOVERED_PERCENT * 2))}px;">
     <Deck scale={CARD_SCALE} uncoveredPercent={DISCARD_UNCOVERED_PERCENT}/>
   </div>
-  <div class="board-cont">
+  <div class="board-cont" style="{($frontColumn != -1) ? "z-index:100;" : ""}">
     <Board scale={CARD_SCALE} />
   </div>
   <div class="piles-cont" style="margin-left: {CARD_SCALE * CARD_WIDTH}px;">
