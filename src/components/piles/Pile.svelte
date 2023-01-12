@@ -109,6 +109,7 @@
         $suitPileList.push(card);
         Controller.scoreCardToAcePile();
         $turns++;
+        $suitPileList = [...$suitPileList];
         Controller.checkWin();
       } else {
         const tarElemIdx = e.detail.items.findIndex((itm: { id: string; }) => isNumeric(itm.id));
@@ -148,6 +149,7 @@
               $suitPileList.push(card);
               Controller.scoreCardToAcePile();
               $turns++;
+              $suitPileList = [...$suitPileList];
               Controller.checkWin();
             }
           }
@@ -156,9 +158,6 @@
     }
 
     items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById);
-    $suitPileList = [...$suitPileList];
-
-    Controller.checkWin();
   }
 
   function triggerAnimationIn() {
@@ -228,7 +227,7 @@
       } else {
         items = [];
       }
-      type = values.length > 0 ? getAceZoneType(values[values.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`
+      type = values.length > 0 ? getAceZoneType(values[values.length - 1]) : `${isRedSuit(suit) ? "Red" : "Black"}|Ace`;
     });
   });
 
@@ -239,10 +238,10 @@
 
 <div class="pile">
   <CardContainer scale={scale}>
-    <div class="empty-inner" bind:this={cardContainer}>
-      <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
+    <div class="empty-inner" style="--previousLeft: {previousLeft}px; --previousTop: {previousTop}px;" bind:this={cardContainer}>
+      <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px; left: 0px">
         {#each items as playingCard, i (playingCard.id)}
-          <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && typeof playingCard.column != "string" && i == items.length - 1) ? ((cardPositionLUT[playingCard.id].row != playingCard.row || cardPositionLUT[playingCard.id].column != playingCard.column) ? " transition-in" : "") : ""}">
+          <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && i == items.length - 1) ? ((cardPositionLUT[playingCard.id].row != playingCard.row || cardPositionLUT[playingCard.id].column != playingCard.column) ? " transition-in" : "") : ""}">
             <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
           </div>
         {/each}
