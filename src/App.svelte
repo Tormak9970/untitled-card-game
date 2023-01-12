@@ -32,7 +32,7 @@
     Controller.init();
     setTimeout(() => {
       onResize();
-    }, 0);
+    }, 100);
   });
 
   onDestroy(() => {

@@ -85,7 +85,7 @@ export class MovesController {
     preRedoMoves.set([...redoMoves]);
 
     setTimeout(() => {
-      shouldPlayUndoAnim.set(false);
+      shouldPlayRedoAnim.set(false);
       frontColumn.set(-1);
     }, 500);
   }
@@ -151,6 +151,7 @@ export class MovesController {
       }
       case CardLocation.DIAMOND_PILE: {
         const boundingRect = suitPileBoundingRects.heart;
+        console.log(boundingRect)
         res.left = boundingRect.left;
         res.top = boundingRect.top;
         break;

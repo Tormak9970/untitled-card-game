@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { afterUpdate, onDestroy, onMount } from "svelte";
   import type { Unsubscriber, Writable } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { cardColumns, cardPositionLUT, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, moves, preRedoMoves, renderedList, suitPileBoundingRectFuncs, turns } from "../../Stores";
+  import { cardColumns, cardPositionLUT, discardPileList, discardZoneStyle, draggingMoreThenOne, draggingSuit, draggingType, moves, preRedoMoves, renderedList, shouldPlayRedoAnim, shouldPlayUndoAnim, suitPileBoundingRectFuncs, turns } from "../../Stores";
   import { CARD_HEIGHT, CARD_WIDTH, SUIT_ICON_SIZE, SUIT_ICON_SPRITE_SHEET_HEIGHT } from "../../lib/SpriteLUT";
 
   import Card from "../cards/Card.svelte";
@@ -13,7 +13,7 @@
   import { Controller } from "../../Controller";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import { CARD_ORDER, FaceCards, getPreviousCard } from "../../lib/models/CardEnums";
-    import { CardLocation } from "../../lib/models/CardLocation";
+  import { CardLocation } from "../../lib/models/CardLocation";
   
   export let scale:number;
   export let suit:Suits;
@@ -22,6 +22,10 @@
   let suitPileListSub:Unsubscriber;
 
   let cardContainer:HTMLDivElement;
+  let previousLeft = 0;
+  let previousTop = 0;
+
+  let shouldPlayAnim = true;
 
   let items = [];
   let dragDisabled = false;
@@ -157,6 +161,46 @@
     Controller.checkWin();
   }
 
+  function triggerAnimationIn() {
+    setTimeout(() => {
+      const elems = cardContainer.getElementsByClassName("transition-in");
+      if (elems[0]) {
+        elems[0].classList.remove("transition-in");
+      }
+      shouldPlayAnim = true;
+    }, 0);
+  }
+
+  function setPositions() {
+    if (items[0] && (cardPositionLUT[items[0].id].row != items[0].row || cardPositionLUT[items[0].id].column != items[0].column)) {
+      const lastPosition = Controller.getLastPosition(items[0].id);
+
+      const cardContBoundingRect = cardContainer.getBoundingClientRect();
+      previousLeft = -(cardContBoundingRect.left - lastPosition.left);
+      previousTop = -(cardContBoundingRect.top - lastPosition.top);
+    }
+  }
+
+  afterUpdate(() => {
+    if (cardContainer) {
+      if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
+        if (shouldPlayAnim) {
+          shouldPlayAnim = false;
+          setPositions();
+          triggerAnimationIn();
+          
+          if (items[0]) {
+            setTimeout(() => {
+              cardPositionLUT[items[0].id] = {
+                location: CardLocation[`${suit.toUpperCase()}_PILE`]
+              };
+            }, 500);
+          }
+        }
+      }
+    }
+  });
+
   onMount(() => {
     suitPileBoundingRectFuncs[suit.toLowerCase()] = cardContainer.getBoundingClientRect.bind(cardContainer);
     
@@ -197,8 +241,8 @@
   <CardContainer scale={scale}>
     <div class="empty-inner" bind:this={cardContainer}>
       <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
-        {#each items as playingCard (playingCard.id)}
-          <div class="card-wrapper">
+        {#each items as playingCard, i (playingCard.id)}
+          <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && typeof playingCard.column != "string" && i == items.length - 1) ? ((cardPositionLUT[playingCard.id].row != playingCard.row || cardPositionLUT[playingCard.id].column != playingCard.column) ? " transition-in" : "") : ""}">
             <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
           </div>
         {/each}
@@ -211,13 +255,23 @@
 <style>
   @import "/theme.css";
 
+  :root {
+    --previousLeft: 0px;
+    --previousTop: 0px;
+  }
+
   .card-wrapper {
     position: absolute;
-    overflow: hidden;
     
     left: 0px;
     top: 0px;
     transition: left 300ms ease-in-out, top 300ms ease-in-out;
+  }
+
+  .transition-in {
+    left: var(--previousLeft);
+    top: var(--previousTop);
+    transition: none;
   }
 
   .empty-inner {
