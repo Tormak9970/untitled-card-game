@@ -116,12 +116,12 @@
       } else {
         const typeInfo = tarElem.column.split("-");
         if (typeInfo[1] == "discard") {
-          $moves.push(`multiState:${JSON.stringify({
+          $moves.push(JSON.stringify({
             "board": $cardColumns,
             "renderedList": $renderedList,
             "drawPile": $drawPileList,
             "discardPile": $discardPileList
-          })}`);
+          }));
           $moves = [...$moves];
           $preRedoMoves = [];
           const card = new LinkedNode<PlayingCard>($discardPileList.pop());

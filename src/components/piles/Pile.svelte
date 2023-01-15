@@ -125,7 +125,7 @@
               const moveState = {
                 "board": $cardColumns,
                 "renderedList": $renderedList,
-                "discard": $discardPileList
+                "discardPile": $discardPileList
               };
               moveState[`${suit.toLowerCase()}Pile`] = $suitPileList;
               $moves.push(JSON.stringify(moveState));
@@ -241,7 +241,7 @@
     <div class="empty-inner" style="--previousLeft: {previousLeft}px; --previousTop: {previousTop}px;" bind:this={cardContainer}>
       <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px; left: 0px">
         {#each items as playingCard, i (playingCard.id)}
-          <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && i == items.length - 1) ? ((cardPositionLUT[playingCard.id].row != playingCard.row || cardPositionLUT[playingCard.id].column != playingCard.column) ? " transition-in" : "") : ""}">
+          <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && typeof playingCard.column != "string" && i == items.length - 1) ? ((cardPositionLUT[playingCard.id].row != playingCard.row || cardPositionLUT[playingCard.id].column != playingCard.column) ? " transition-in" : "") : ""}">
             <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
           </div>
         {/each}

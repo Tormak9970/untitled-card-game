@@ -38,6 +38,7 @@ export class MovesController {
   }
 
   private parseStateString(state:string): void {
+    console.log(state)
     const stateObj = JSON.parse(state);
     const keyValPairs = Object.entries(stateObj);
 
