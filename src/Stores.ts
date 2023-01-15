@@ -48,6 +48,7 @@ export const drawPileBoundingRect:Writable<() => DOMRect> = writable(null);
 export const discardPileBoundingRect:Writable<() => DOMRect> = writable(null);
 
 export const frontColumn = writable(-1);
+export const movingToDiscard = writable(false);
 export const columnBoundingRectFuncs:{[key:string]: () => DOMRect} = {
   "column0": null,
   "column1": null,

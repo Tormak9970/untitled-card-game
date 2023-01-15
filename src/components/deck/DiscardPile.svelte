@@ -3,7 +3,7 @@
   import type { Unsubscriber } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne, draggingType, difficulty, shouldPlayUndoAnim, drawPileList, cardPositionLUT, shouldPlayRedoAnim } from "../../Stores";
+  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne, draggingType, difficulty, shouldPlayUndoAnim, drawPileList, cardPositionLUT, shouldPlayRedoAnim, movingToDiscard } from "../../Stores";
   import { getCurrentCardZoneType } from "../../UiLogic";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
@@ -75,6 +75,7 @@
     setTimeout(() => {
       const elems = cardContainer.getElementsByClassName("transition-from-other");
       if (elems[0]) {
+        $movingToDiscard = true;
         elems[0].classList.remove("transition-from-other");
       }
       shouldPlayAnim = true;
@@ -102,7 +103,7 @@
           
           if (items[0]) {
             setTimeout(() => {
-              cardPositionLUT[items[0].id] = {
+              cardPositionLUT[items[items.length - 1].id] = {
                 location: CardLocation.DISCARD_PILE
               };
             }, 500);
@@ -153,10 +154,10 @@
 <div class="discard-pile">
   {#if $difficulty == Difficulty.BEGINNER}
     <CardContainer scale={scale}>
-      <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px;" bind:this={cardContainer}>
+      <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px; --previousLeft: {previousLeft}px; --previousTop: {previousTop}px;" bind:this={cardContainer}>
         <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
           {#each items as playingCard, i (playingCard.id)}
-            <div class="card-wrapper{(i == items.length-1 && shouldAnimate) ? " transition-out": ""}">
+            <div class="card-wrapper{(i == items.length-1 && shouldAnimate) ? " transition-out": ""}{(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location == CardLocation.BOARD || checkIfSuitLocation(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location)) ? ((playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID&& i == items.length - 1) ? (cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column ? " transition-from-other" : "") : "") : ((i == items.length-1 && shouldAnimate) ? " transition-from-draw": "")}">
               <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
             </div>
           {/each}

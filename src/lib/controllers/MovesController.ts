@@ -1,5 +1,5 @@
 import { get, type Unsubscriber } from "svelte/store";
-import { cardColumns, cardPositionLUT, clubsPileList, columnBoundingRects, diamondsPileList, discardPileBoundingRect, discardPileList, drawPileList, frontColumn, heartsPileList, moves, preRedoMoves, redoDisabled, renderedList, shouldPlayRedoAnim, shouldPlayUndoAnim, spadesPileList, suitPileBoundingRects, undoDisabled } from "../../Stores";
+import { cardColumns, cardPositionLUT, clubsPileList, columnBoundingRects, diamondsPileList, discardPileBoundingRect, discardPileList, drawPileList, frontColumn, heartsPileList, moves, movingToDiscard, preRedoMoves, redoDisabled, renderedList, shouldPlayRedoAnim, shouldPlayUndoAnim, spadesPileList, suitPileBoundingRects, undoDisabled } from "../../Stores";
 import { LinkedList, LinkedNode } from "../data-structs/LinkedList";
 import { CardLocation } from "../models/CardLocation";
 import { MoveStates } from "../models/MoveStates";
@@ -87,6 +87,7 @@ export class MovesController {
     setTimeout(() => {
       shouldPlayRedoAnim.set(false);
       frontColumn.set(-1);
+      movingToDiscard.set(false);
     }, 500);
   }
 
@@ -104,6 +105,7 @@ export class MovesController {
     setTimeout(() => {
       shouldPlayUndoAnim.set(false);
       frontColumn.set(-1);
+      movingToDiscard.set(false);
     }, 500);
   }
 

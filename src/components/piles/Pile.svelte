@@ -171,29 +171,29 @@
   }
 
   function setPositions() {
-    if (items.length > 0 && (cardPositionLUT[items[items.length - 1].id].row != items[items.length - 1].row || cardPositionLUT[items[items.length - 1].id].column != items[items.length - 1].column)) {
-      const lastPosition = Controller.getLastPosition(items[items.length - 1].id);
+    const lastPosition = Controller.getLastPosition(items[items.length - 1].id);
 
-      const cardContBoundingRect = cardContainer.getBoundingClientRect();
-      previousLeft = -(cardContBoundingRect.left - lastPosition.left);
-      previousTop = -(cardContBoundingRect.top - lastPosition.top);
-    }
+    const cardContBoundingRect = cardContainer.getBoundingClientRect();
+    previousLeft = -(cardContBoundingRect.left - lastPosition.left);
+    previousTop = -(cardContBoundingRect.top - lastPosition.top);
   }
 
   afterUpdate(() => {
     if (cardContainer) {
       if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
         if (shouldPlayAnim) {
-          shouldPlayAnim = false;
-          setPositions();
-          triggerAnimationIn();
-          
-          if (items[items.length - 1]) {
-            setTimeout(() => {
-              cardPositionLUT[items[items.length - 1].id] = {
-                location: CardLocation[`${suit.toUpperCase()}_PILE`]
-              };
-            }, 500);
+          if (items.length > 0 && (cardPositionLUT[items[items.length - 1].id].row != items[items.length - 1].row || cardPositionLUT[items[items.length - 1].id].column != items[items.length - 1].column)) {
+            shouldPlayAnim = false;
+            setPositions();
+            triggerAnimationIn();
+            
+            if (items[items.length - 1]) {
+              setTimeout(() => {
+                cardPositionLUT[items[items.length - 1].id] = {
+                  location: CardLocation[`${suit.toUpperCase()}_PILE`]
+                };
+              }, 500);
+            }
           }
         }
       }
@@ -221,6 +221,14 @@
 
             items.push(newElem);
           }
+        }
+
+        let i = items.length-1;
+        while (i >= 0) {
+          if (!values.find((val) => `${items[i].data.data.card}|${items[i].data.data.suit}` == `${val.card}|${val.suit}`)) {
+            items.splice(i, 1);
+          }
+          i--;
         }
 
         items = [...items].sort(sortById);

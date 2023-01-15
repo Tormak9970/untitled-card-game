@@ -185,45 +185,45 @@
   }
 
   function setPositions() {
-    if (items[0] && (cardPositionLUT[items[0].id].row != items[0].row || cardPositionLUT[items[0].id].column != items[0].column)) {
-      const lastPosition = Controller.getLastPosition(items[0].id);
+    const lastPosition = Controller.getLastPosition(items[0].id);
 
-      const cardContBoundingRect = cardContainer.getBoundingClientRect();
-      previousLeft = -(cardContBoundingRect.left - lastPosition.left);
-      previousTop = -(cardContBoundingRect.top - lastPosition.top);
-    }
+    const cardContBoundingRect = cardContainer.getBoundingClientRect();
+    previousLeft = -(cardContBoundingRect.left - lastPosition.left);
+    previousTop = -(cardContBoundingRect.top - lastPosition.top);
   }
 
   afterUpdate(() => {
     if (cardContainer) {
       if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
         if (shouldPlayAnim) {
-          shouldPlayAnim = false;
-          setPositions();
-          triggerAnimationIn();
-          
-          if (items[0]) {
-            setTimeout(() => {
-              cardPositionLUT[items[0].id] = {
-                location: CardLocation.BOARD,
-                column: column,
-                row: 0
-              };
-              
-              let tmpRow = 0;
-              let nextNode = items[0].data.next;
-              while (nextNode != null) {
-                tmpRow++;
-
-                cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
+          if (items[0] && (cardPositionLUT[items[0].id].row != items[0].row || cardPositionLUT[items[0].id].column != items[0].column)) {
+            shouldPlayAnim = false;
+            setPositions();
+            triggerAnimationIn();
+            
+            if (items[0]) {
+              setTimeout(() => {
+                cardPositionLUT[items[0].id] = {
                   location: CardLocation.BOARD,
                   column: column,
-                  row: tmpRow
+                  row: 0
                 };
                 
-                nextNode = nextNode.next;
-              }
-            }, 500);
+                let tmpRow = 0;
+                let nextNode = items[0].data.next;
+                while (nextNode != null) {
+                  tmpRow++;
+
+                  cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
+                    location: CardLocation.BOARD,
+                    column: column,
+                    row: tmpRow
+                  };
+                  
+                  nextNode = nextNode.next;
+                }
+              }, 500);
+            }
           }
         }
       }
@@ -239,7 +239,7 @@
   <div class="card-column" style="width: {CARD_WIDTH * scale}px; height: {(playingCards.size) * (CARD_HEIGHT * scale) * Controller.UNCOVERED_PERCENT + (CARD_HEIGHT * scale)}px;{$frontColumn == column ? " z-index: 100;" : ""}" bind:this={cardContainer}>
     <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * scale}px;">
       {#each items.slice(0, 1) as playingCard (playingCard.id)}
-        <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && typeof playingCard.column != "string") ? ((cardPositionLUT[playingCard.id].row != playingCard.row || cardPositionLUT[playingCard.id].column != playingCard.column) ? " transition-in" : "") : ""}">
+        <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID) ? ((cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].row != playingCard.row || cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column) ? " transition-in" : "") : ""}">
           <CardNode card={playingCard.data} column={column} row={0} scale={scale} uncoveredPercenet={Controller.UNCOVERED_PERCENT} />
         </div>
       {/each}

@@ -204,45 +204,45 @@
   }
 
   function setPositions() {
-    if (items[0] && (cardPositionLUT[items[0].id].row != items[0].row || cardPositionLUT[items[0].id].column != items[0].column)) {
-      const lastPosition = Controller.getLastPosition(items[0].id);
+    const lastPosition = Controller.getLastPosition(items[0].id);
 
-      const cardContBoundingRect = cardContainer.getBoundingClientRect();
-      previousLeft = -(cardContBoundingRect.left - lastPosition.left);
-      previousTop = -(cardContBoundingRect.top - lastPosition.top);
-    }
+    const cardContBoundingRect = cardContainer.getBoundingClientRect();
+    previousLeft = -(cardContBoundingRect.left - lastPosition.left);
+    previousTop = -(cardContBoundingRect.top - lastPosition.top);
   }
 
   afterUpdate(() => {
     if (cardContainer) {
       if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
         if (shouldPlayAnim) {
-          shouldPlayAnim = false;
-          setPositions();
-          triggerAnimationIn();
-          
-          if (items[0]) {
-            setTimeout(() => {
-              cardPositionLUT[items[0].id] = {
-                location: CardLocation.BOARD,
-                column: column,
-                row: row+1
-              };
-              
-              let tmpRow = row+1;
-              let nextNode = items[0].data.next;
-              while (nextNode != null) {
-                tmpRow++;
-
-                cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
+          if (items[0] && (cardPositionLUT[items[0].id].row != items[0].row || cardPositionLUT[items[0].id].column != items[0].column)) {
+            shouldPlayAnim = false;
+            setPositions();
+            triggerAnimationIn();
+            
+            if (items[0]) {
+              setTimeout(() => {
+                cardPositionLUT[items[0].id] = {
                   location: CardLocation.BOARD,
                   column: column,
-                  row: tmpRow
+                  row: row+1
                 };
+                
+                let tmpRow = row+1;
+                let nextNode = items[0].data.next;
+                while (nextNode != null) {
+                  tmpRow++;
 
-                nextNode = nextNode.next;
-              }
-            }, 500);
+                  cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
+                    location: CardLocation.BOARD,
+                    column: column,
+                    row: tmpRow
+                  };
+
+                  nextNode = nextNode.next;
+                }
+              }, 500);
+            }
           }
         }
       }
