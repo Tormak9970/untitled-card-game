@@ -81,7 +81,9 @@ export class Deck {
    * Plays the current card.
    */
   playCurrentCard() {
-    this._discardPile.pop();
+    if (this._discardPile.size() == get(discardPileList).length + 1) {
+      this._discardPile.pop();
+    }
     this.updateStores();
   }
 

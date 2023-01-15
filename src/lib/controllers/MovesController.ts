@@ -119,7 +119,7 @@ export class MovesController {
     };
 
     const lastPos = cardPositionLUT[id];
-    console.log(id, lastPos);
+    // console.log(id, lastPos);
 
     switch (lastPos.location) {
       case CardLocation.BOARD: {
