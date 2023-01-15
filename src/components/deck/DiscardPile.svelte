@@ -3,7 +3,7 @@
   import type { Unsubscriber } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne, draggingType, difficulty, shouldPlayUndoAnim, drawPileList } from "../../Stores";
+  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne, draggingType, difficulty, shouldPlayUndoAnim, drawPileList, cardPositionLUT, shouldPlayRedoAnim } from "../../Stores";
   import { getCurrentCardZoneType } from "../../UiLogic";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
@@ -13,6 +13,7 @@
   import CardContainer from "./CardContainer.svelte";
   import { Difficulty } from "../../lib/models/Difficulty";
   import { Controller } from "../../Controller";
+    import { CardLocation, checkIfSuitLocation } from "../../lib/models/CardLocation";
   
   export let scale:number;
   export let uncoveredPercent:number;
@@ -22,6 +23,10 @@
   let drawPileLeft = 0;
   let drawPileTop = 0;
   let cardContainer:HTMLDivElement;
+  let previousLeft = 0;
+  let previousTop = 0;
+
+  let shouldPlayAnim = true;
 
   let items = [];
   let dropFromOthersDisabled = true;
@@ -52,21 +57,60 @@
   function recursiveAnimateIn(list:HTMLCollectionOf<Element>, idx:number) {
     if (idx < list.length) {
       const elem = list[idx];
-      elem.classList.remove("transition-in");
+      elem.classList.remove("transition-from-draw");
       setTimeout(() => {
         recursiveAnimateIn(list, idx++);
       }, Controller.DRAW_ANIM_DELAY);
     }
   }
 
-  function triggerAnimationIn() {
+  function triggerAnimationFromDraw() {
     setTimeout(() => {
-      const elems = cardContainer.getElementsByClassName("transition-in");
+      const elems = cardContainer.getElementsByClassName("transition-from-draw");
       recursiveAnimateIn(elems, 0);
     }, 0);
   }
 
-  afterUpdate(() => { triggerAnimationIn(); });
+  function triggerAnimationFromOther() {
+    setTimeout(() => {
+      const elems = cardContainer.getElementsByClassName("transition-from-other");
+      if (elems[0]) {
+        elems[0].classList.remove("transition-from-other");
+      }
+      shouldPlayAnim = true;
+    }, 0);
+  }
+
+  function setPositions() {
+    if (items.length > 0 && cardPositionLUT[`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`].column != items[items.length - 1].column) {
+      const lastPosition = Controller.getLastPosition(`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`);
+
+      const cardContBoundingRect = cardContainer.getBoundingClientRect();
+      previousLeft = -(cardContBoundingRect.left - lastPosition.left);
+      previousTop = -(cardContBoundingRect.top - lastPosition.top);
+    }
+  }
+
+  afterUpdate(() => {
+    triggerAnimationFromDraw();
+    if (cardContainer) {
+      if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
+        if (shouldPlayAnim) {
+          shouldPlayAnim = false;
+          setPositions();
+          triggerAnimationFromOther();
+          
+          if (items[0]) {
+            setTimeout(() => {
+              cardPositionLUT[items[0].id] = {
+                location: CardLocation.DISCARD_PILE
+              };
+            }, 500);
+          }
+        }
+      }
+    }
+  });
 
   onMount(() => {
     $discardPileBoundingRect = cardContainer.getBoundingClientRect.bind(cardContainer);
@@ -121,7 +165,7 @@
     </CardContainer>
   {:else}
     <CardContainer scale={scale} width={(CARD_WIDTH * scale * uncoveredPercent * 2) + (CARD_WIDTH * scale) + 8}>
-      <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px;" bind:this={cardContainer}>
+      <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px; --previousLeft: {previousLeft}px; --previousTop: {previousTop}px;" bind:this={cardContainer}>
         <div class="blocker" style="position: absolute; z-index: 100; width: {CARD_WIDTH * scale * uncoveredPercent * ((items.length - 1) % 3)}px; height: 100%" on:mousedown|stopPropagation />
         <div
             use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}"
@@ -130,7 +174,7 @@
             style="width: {(CARD_WIDTH * scale * uncoveredPercent * 2) + (CARD_WIDTH * scale)}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px; left: 0px;"
             >
             {#each items as playingCard, i (`${i}|${playingCard.id}`)}
-              <div class="card-wrapper{(i >= items.length-3 && shouldAnimate) || ($drawPileList.length == 0 && $shouldPlayUndoAnim) ? " transition-in": ""}" style="--base-left: {(CARD_WIDTH * scale * uncoveredPercent * 2) - (i >= $discardPileList.length - 3 ? (CARD_WIDTH * scale * uncoveredPercent * (($discardPileList.length - 1 - i) % 3)) : (CARD_WIDTH * scale * uncoveredPercent * 2))}px;">
+              <div class="card-wrapper{(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location == CardLocation.BOARD || checkIfSuitLocation(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location)) ? ((playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID&& i == items.length - 1) ? (cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column ? " transition-from-other" : "") : "") : ((i >= items.length-3 && shouldAnimate) || ($drawPileList.length == 0 && $shouldPlayUndoAnim) ? " transition-from-draw": "")}" style="--base-left: {(CARD_WIDTH * scale * uncoveredPercent * 2) - (i >= $discardPileList.length - 3 ? (CARD_WIDTH * scale * uncoveredPercent * (($discardPileList.length - 1 - i) % 3)) : (CARD_WIDTH * scale * uncoveredPercent * 2))}px;">
                 <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
               </div>
             {/each}
@@ -144,6 +188,8 @@
   @import "/theme.css";
 
   :root {
+    --previousLeft: 0px;
+    --previousTop: 0px;
     --drawPileLeft: 0px;
     --drawPileTop: 0px;
     --base-left: 0px;
@@ -151,17 +197,22 @@
 
   .card-wrapper {
     position: absolute;
-    overflow: hidden;
     
     left: var(--base-left);
     top: 0px;
     transition: left 300ms ease-in-out, top 300ms ease-in-out;
   }
 
-  .transition-in {
+  .transition-from-draw {
     left: var(--drawPileLeft);
     top: var(--drawPileTop);
     transition: left 300ms ease-in-out, top 300ms ease-in-out;
+  }
+
+  .transition-from-other {
+    left: var(--previousLeft);
+    top: var(--previousTop);
+    transition: none;
   }
 
   .empty-inner {

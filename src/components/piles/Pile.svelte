@@ -171,8 +171,8 @@
   }
 
   function setPositions() {
-    if (items[0] && (cardPositionLUT[items[0].id].row != items[0].row || cardPositionLUT[items[0].id].column != items[0].column)) {
-      const lastPosition = Controller.getLastPosition(items[0].id);
+    if (items.length > 0 && (cardPositionLUT[items[items.length - 1].id].row != items[items.length - 1].row || cardPositionLUT[items[items.length - 1].id].column != items[items.length - 1].column)) {
+      const lastPosition = Controller.getLastPosition(items[items.length - 1].id);
 
       const cardContBoundingRect = cardContainer.getBoundingClientRect();
       previousLeft = -(cardContBoundingRect.left - lastPosition.left);
@@ -188,9 +188,9 @@
           setPositions();
           triggerAnimationIn();
           
-          if (items[0]) {
+          if (items[items.length - 1]) {
             setTimeout(() => {
-              cardPositionLUT[items[0].id] = {
+              cardPositionLUT[items[items.length - 1].id] = {
                 location: CardLocation[`${suit.toUpperCase()}_PILE`]
               };
             }, 500);
@@ -241,7 +241,7 @@
     <div class="empty-inner" style="--previousLeft: {previousLeft}px; --previousTop: {previousTop}px;" bind:this={cardContainer}>
       <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px; left: 0px">
         {#each items as playingCard, i (playingCard.id)}
-          <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && typeof playingCard.column != "string" && i == items.length - 1) ? ((cardPositionLUT[playingCard.id].row != playingCard.row || cardPositionLUT[playingCard.id].column != playingCard.column) ? " transition-in" : "") : ""}">
+          <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && i == items.length - 1) ? ((cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].row != playingCard.row || cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column) ? " transition-in" : "") : ""}">
             <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
           </div>
         {/each}

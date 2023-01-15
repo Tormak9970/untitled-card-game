@@ -30,7 +30,16 @@ export enum CardLocation {
 }
 
 /**
- * Represents the position of a card
+ * Checks if a given card location was any ace pile.
+ * @param location The location to check.
+ * @returns True if the location was an ace pile.
+ */
+export function checkIfSuitLocation(location:CardLocation): boolean {
+  return location == CardLocation.SPADE_PILE || location == CardLocation.HEART_PILE || location == CardLocation.CLUB_PILE || location == CardLocation.DIAMOND_PILE;
+}
+
+/**
+ * Represents the position of a card.
  */
 export type CardPosition = {
   location:CardLocation,
