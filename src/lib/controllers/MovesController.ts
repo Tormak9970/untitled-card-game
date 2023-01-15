@@ -144,13 +144,13 @@ export class MovesController {
         break;
       }
       case CardLocation.CLUB_PILE: {
-        const boundingRect = suitPileBoundingRects.heart;
+        const boundingRect = suitPileBoundingRects.club;
         res.left = boundingRect.left;
         res.top = boundingRect.top;
         break;
       }
       case CardLocation.DIAMOND_PILE: {
-        const boundingRect = suitPileBoundingRects.heart;
+        const boundingRect = suitPileBoundingRects.diamond;
         res.left = boundingRect.left;
         res.top = boundingRect.top;
         break;

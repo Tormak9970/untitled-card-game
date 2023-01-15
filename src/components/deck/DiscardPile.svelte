@@ -197,6 +197,7 @@
 
   .card-wrapper {
     position: absolute;
+    overflow: hidden;
     
     left: var(--base-left);
     top: 0px;
