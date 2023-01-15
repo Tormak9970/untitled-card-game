@@ -185,7 +185,7 @@
   }
 
   function setPositions() {
-    const lastPosition = Controller.getLastPosition(items[0].id);
+    const lastPosition = Controller.getLastPosition(`${items[0].data.data.card}|${items[0].data.data.suit}`);
 
     const cardContBoundingRect = cardContainer.getBoundingClientRect();
     previousLeft = -(cardContBoundingRect.left - lastPosition.left);
@@ -196,34 +196,32 @@
     if (cardContainer) {
       if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
         if (shouldPlayAnim) {
-          if (items[0] && (cardPositionLUT[items[0].id].row != items[0].row || cardPositionLUT[items[0].id].column != items[0].column)) {
+          if (items[0] && (cardPositionLUT[`${items[0].data.data.card}|${items[0].data.data.suit}`].row != items[0].row || cardPositionLUT[`${items[0].data.data.card}|${items[0].data.data.suit}`].column != items[0].column)) {
             shouldPlayAnim = false;
             setPositions();
             triggerAnimationIn();
             
-            if (items[0]) {
-              setTimeout(() => {
-                cardPositionLUT[items[0].id] = {
+            setTimeout(() => {
+              cardPositionLUT[`${items[0].data.data.card}|${items[0].data.data.suit}`] = {
+                location: CardLocation.BOARD,
+                column: column,
+                row: 0
+              };
+              
+              let tmpRow = 0;
+              let nextNode = items[0].data.next;
+              while (nextNode != null) {
+                tmpRow++;
+
+                cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
                   location: CardLocation.BOARD,
                   column: column,
-                  row: 0
+                  row: tmpRow
                 };
                 
-                let tmpRow = 0;
-                let nextNode = items[0].data.next;
-                while (nextNode != null) {
-                  tmpRow++;
-
-                  cardPositionLUT[`${nextNode.data.card}|${nextNode.data.suit}`] = {
-                    location: CardLocation.BOARD,
-                    column: column,
-                    row: tmpRow
-                  };
-                  
-                  nextNode = nextNode.next;
-                }
-              }, 500);
-            }
+                nextNode = nextNode.next;
+              }
+            }, 500);
           }
         }
       }

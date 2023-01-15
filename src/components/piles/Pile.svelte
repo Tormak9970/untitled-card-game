@@ -171,7 +171,7 @@
   }
 
   function setPositions() {
-    const lastPosition = Controller.getLastPosition(items[items.length - 1].id);
+    const lastPosition = Controller.getLastPosition(`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`);
 
     const cardContBoundingRect = cardContainer.getBoundingClientRect();
     previousLeft = -(cardContBoundingRect.left - lastPosition.left);
@@ -182,18 +182,16 @@
     if (cardContainer) {
       if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
         if (shouldPlayAnim) {
-          if (items.length > 0 && (cardPositionLUT[items[items.length - 1].id].row != items[items.length - 1].row || cardPositionLUT[items[items.length - 1].id].column != items[items.length - 1].column)) {
+          if (items.length > 0 && (cardPositionLUT[`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`].row != items[items.length - 1].row || cardPositionLUT[`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`].column != items[items.length - 1].column)) {
             shouldPlayAnim = false;
             setPositions();
             triggerAnimationIn();
             
-            if (items[items.length - 1]) {
-              setTimeout(() => {
-                cardPositionLUT[items[items.length - 1].id] = {
-                  location: CardLocation[`${suit.toUpperCase()}_PILE`]
-                };
-              }, 500);
-            }
+            setTimeout(() => {
+              cardPositionLUT[`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`] = {
+                location: CardLocation[`${suit.toUpperCase()}_PILE`]
+              };
+            }, 500);
           }
         }
       }

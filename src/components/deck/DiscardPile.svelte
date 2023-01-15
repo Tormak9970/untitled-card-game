@@ -83,13 +83,11 @@
   }
 
   function setPositions() {
-    if (items.length > 0 && cardPositionLUT[`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`].column != items[items.length - 1].column) {
-      const lastPosition = Controller.getLastPosition(`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`);
+    const lastPosition = Controller.getLastPosition(`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`);
 
-      const cardContBoundingRect = cardContainer.getBoundingClientRect();
-      previousLeft = -(cardContBoundingRect.left - lastPosition.left);
-      previousTop = -(cardContBoundingRect.top - lastPosition.top);
-    }
+    const cardContBoundingRect = cardContainer.getBoundingClientRect();
+    previousLeft = -(cardContBoundingRect.left - lastPosition.left);
+    previousTop = -(cardContBoundingRect.top - lastPosition.top);
   }
 
   afterUpdate(() => {
@@ -97,13 +95,13 @@
     if (cardContainer) {
       if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
         if (shouldPlayAnim) {
-          shouldPlayAnim = false;
-          setPositions();
-          triggerAnimationFromOther();
+          if (items.length > 0 && cardPositionLUT[`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`].column != items[items.length - 1].column) {
+            shouldPlayAnim = false;
+            setPositions();
+            triggerAnimationFromOther();
           
-          if (items[0]) {
             setTimeout(() => {
-              cardPositionLUT[items[items.length - 1].id] = {
+              cardPositionLUT[`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`] = {
                 location: CardLocation.DISCARD_PILE
               };
             }, 500);

@@ -13,6 +13,7 @@
   export let shouldAnimate = false;
   let shouldRecycle = false;
 
+  let drawPileListSub:Unsubscriber;
   let shouldUndoAnimSub:Unsubscriber;
   let shouldRedoAnimSub:Unsubscriber;
   
@@ -72,25 +73,18 @@
   }
 
   afterUpdate(() => {
-    try {
-      setPilePositions();
-      triggerAnimation();
-    } catch (e:any) {
-
-    }
+    triggerAnimation();
   });
 
   onMount(() => {
     $drawPileBoundingRect = cardContainer.getBoundingClientRect.bind(cardContainer);
-    shouldUndoAnimSub = shouldPlayUndoAnim.subscribe((val:boolean) => {
-      shouldAnimate = val;
-    });
-    shouldRedoAnimSub = shouldPlayRedoAnim.subscribe((val:boolean) => {
-      shouldAnimate = val;
+    drawPileListSub = drawPileList.subscribe((values) => {
+      if ($discardPileBoundingRect) setPilePositions();
     });
   });
 
   onDestroy(() => {
+    if (drawPileListSub) drawPileListSub();
     if (shouldUndoAnimSub) shouldUndoAnimSub();
     if (shouldRedoAnimSub) shouldRedoAnimSub();
   });
@@ -103,7 +97,7 @@
       {#if $drawPileList.length > 0}
         {#key $drawPileList.length}
           {#each $drawPileList as playingCard, i (`${i}|${playingCard.card}|${playingCard.suit}`)}
-            <div class="card-wrapper {playingCard.card}|{playingCard.suit}" class:transition-out={(shouldAnimate && shouldRecycle) || ($drawPileList.length-i <= 3 && shouldAnimate)} on:click|stopPropagation={doDrawCard}>
+            <div class="card-wrapper{(shouldAnimate && (shouldRecycle || ($shouldPlayRedoAnim && $discardPileList.length == 0))) || ($drawPileList.length-i <= 3 && $shouldPlayUndoAnim) ? " transition-out" : ""} {playingCard.card}|{playingCard.suit}" on:click|stopPropagation={doDrawCard}>
               <Card card={playingCard.card} suit={playingCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
             </div>
           {/each}
