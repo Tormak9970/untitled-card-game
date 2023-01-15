@@ -100,7 +100,6 @@
           $moves.push(JSON.stringify({
             "board": $cardColumns,
             "renderedList": $renderedList,
-            "drawPile": $drawPileList,
             "discardPile": $discardPileList
           }));
           $moves = [...$moves];

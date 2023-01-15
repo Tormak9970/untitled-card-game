@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { drawPileList, shouldPlayUndoAnim } from "../../Stores";
+    import { discardPileList, drawPileList, shouldAnimateDrawPile, shouldPlayRedoAnim, shouldPlayUndoAnim } from "../../Stores";
   import DiscardPile from "./DiscardPile.svelte";
   import DrawPile from "./DrawPile.svelte";
 
@@ -10,7 +10,7 @@
 </script>
 
 <div class="deck">
-  <div class="draw-cont" style="{shouldAnimate || ($drawPileList.length != 0 && $shouldPlayUndoAnim) ? "z-index: 100;": ""}">
+  <div class="draw-cont" style="{shouldAnimate || ($shouldAnimateDrawPile && $shouldPlayRedoAnim && $discardPileList.length == 0) || ($drawPileList.length != 0 && $shouldPlayUndoAnim && $shouldAnimateDrawPile) ? "z-index: 100;": ""}">
     <DrawPile scale={scale} bind:shouldAnimate={shouldAnimate} />
   </div>
   <div class="discard-cont">

@@ -2,7 +2,7 @@
   import { onMount, afterUpdate, onDestroy } from "svelte";
 
   import { Controller } from "../../Controller";
-  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty, moves, discardPileList, preRedoMoves, shouldPlayUndoAnim, shouldPlayRedoAnim } from "../../Stores";
+  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty, moves, discardPileList, preRedoMoves, shouldPlayUndoAnim, shouldPlayRedoAnim, shouldAnimateDrawPile } from "../../Stores";
   
   import Card from "../cards/Card.svelte";
   import CardContainer from "./CardContainer.svelte";
@@ -97,7 +97,7 @@
       {#if $drawPileList.length > 0}
         {#key $drawPileList.length}
           {#each $drawPileList as playingCard, i (`${i}|${playingCard.card}|${playingCard.suit}`)}
-            <div class="card-wrapper{(shouldAnimate && (shouldRecycle || ($shouldPlayRedoAnim && $discardPileList.length == 0))) || ($drawPileList.length-i <= 3 && $shouldPlayUndoAnim) ? " transition-out" : ""} {playingCard.card}|{playingCard.suit}" on:click|stopPropagation={doDrawCard}>
+            <div class="card-wrapper{((shouldAnimate || $shouldAnimateDrawPile) && (shouldRecycle || ($shouldPlayRedoAnim && $discardPileList.length == 0))) || ($drawPileList.length-i <= 3 && $shouldPlayUndoAnim && $shouldAnimateDrawPile) ? " transition-out" : ""} {playingCard.card}|{playingCard.suit}" on:click|stopPropagation={doDrawCard}>
               <Card card={playingCard.card} suit={playingCard.suit} revealed={false} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
             </div>
           {/each}

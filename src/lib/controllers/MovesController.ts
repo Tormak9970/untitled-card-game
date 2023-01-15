@@ -1,5 +1,5 @@
 import { get, type Unsubscriber } from "svelte/store";
-import { cardColumns, cardPositionLUT, clubsPileList, columnBoundingRects, diamondsPileList, discardPileBoundingRect, discardPileList, drawPileList, frontColumn, heartsPileList, moves, movingToDiscard, preRedoMoves, redoDisabled, renderedList, shouldPlayRedoAnim, shouldPlayUndoAnim, spadesPileList, suitPileBoundingRects, undoDisabled } from "../../Stores";
+import { cardColumns, cardPositionLUT, clubsPileList, columnBoundingRects, diamondsPileList, discardPileBoundingRect, discardPileList, drawPileList, frontColumn, heartsPileList, moves, movingToDiscard, preRedoMoves, redoDisabled, renderedList, shouldAnimateDrawPile, shouldPlayRedoAnim, shouldPlayUndoAnim, spadesPileList, suitPileBoundingRects, undoDisabled } from "../../Stores";
 import { LinkedList, LinkedNode } from "../data-structs/LinkedList";
 import { CardLocation } from "../models/CardLocation";
 import { MoveStates } from "../models/MoveStates";
@@ -52,6 +52,7 @@ export class MovesController {
           renderedList.set(value);
           break;
         case MoveStates.DRAW_PILE:
+          shouldAnimateDrawPile.set(true);
           drawPileList.set((value as any[]).map((val) => PlayingCard.fromJson(val)));
           break;
         case MoveStates.DISCARD_PILE:
@@ -88,6 +89,7 @@ export class MovesController {
       shouldPlayRedoAnim.set(false);
       frontColumn.set(-1);
       movingToDiscard.set(false);
+      shouldAnimateDrawPile.set(false);
     }, 500);
   }
 
@@ -106,6 +108,7 @@ export class MovesController {
       shouldPlayUndoAnim.set(false);
       frontColumn.set(-1);
       movingToDiscard.set(false);
+      shouldAnimateDrawPile.set(false);
     }, 500);
   }
 
