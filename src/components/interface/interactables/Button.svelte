@@ -1,14 +1,27 @@
 <script lang="ts">
+  import type { Placement } from "tippy.js";
+  import { Controller } from "../../../Controller";
+
   export let text: string;
   export let width = "40px";
   export let onClick: (e: MouseEvent) => void;
   export let disabled = false;
+  
+  export let tooltip = false;
+  export let tooltipText = "";
+  export let placement:Placement = 'top';
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<button class="button" class:disabled={disabled} style="width: {width};" on:click={onClick}>
-  <div>{text}</div>
-</button>
+{#if tooltip}
+  <button class="button" class:disabled={disabled} style="width: {width};" on:click={onClick} use:Controller.tippy={{content: tooltipText, placement: placement}}>
+    <div>{text}</div>
+  </button>
+{:else}
+  <button class="button" on:click={onClick}>
+    <div>{text}</div>
+  </button>
+{/if}
 
 <style>
   @import "/theme.css";

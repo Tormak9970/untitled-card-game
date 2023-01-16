@@ -30,4 +30,8 @@
 
 		z-index: 1000;
 	}
+
+  :global(.tippy-box) {
+    font-size: 16px;
+  }
 </style>

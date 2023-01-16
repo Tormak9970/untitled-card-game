@@ -28,6 +28,12 @@ import { MovesController } from "./lib/controllers/MovesController";
 import type { PlayingCard } from "./lib/models/PlayingCard";
 import { ToastType } from "./lib/models/ToastType";
 
+import {createTippy} from 'svelte-tippy';
+import { roundArrow } from "tippy.js";
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/dist/svg-arrow.css';
+import 'tippy.js/animations/scale-subtle.css';
+
 /**
  * The main controller for the game.
  */
@@ -37,6 +43,13 @@ export class Controller {
   static DRAW_ANIM_DELAY = 50;
   static UNCOVERED_PERCENT = 0.3;
   static CARD_SCALE = 0.4;
+
+  static tippy = createTippy({
+    animation: 'scale-subtle',
+    arrow: roundArrow,
+    hideOnClick: false,
+    inertia: true
+  });
 
   private static toastController = new ToastController();
   private static saveController = new SaveController();

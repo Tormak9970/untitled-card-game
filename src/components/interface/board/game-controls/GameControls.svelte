@@ -15,26 +15,26 @@
   <Pannel>
     <div class="wrapper">
       <div class="undo-redo" class:disabled={$undoDisabled}>
-        <IconButton onClick={undoClick}>
+        <IconButton onClick={undoClick} tooltip={true} tooltipText={"Undo"}>
           <div class="undo-icon" />
         </IconButton>
       </div>
       
       <div class="undo-redo" class:disabled={$redoDisabled}>
-        <IconButton onClick={redoClick}>
+        <IconButton onClick={redoClick} tooltip={true} tooltipText={"Redo"}>
           <div class="redo-icon" />
         </IconButton>
       </div>
 
-      <IconButton onClick={githubClick}>
+      <IconButton onClick={githubClick} tooltip={true} tooltipText={"Github"}>
         <div class="github-icon" />
       </IconButton>
       
-      <IconButton onClick={hintClick}>
+      <IconButton onClick={hintClick} tooltip={true} tooltipText={"Show Hint"}>
         <div class="hint-icon" />
       </IconButton>
       
-      <IconButton onClick={settingsClick}>
+      <IconButton onClick={settingsClick} tooltip={true} tooltipText={"Settings"}>
         <div class="setting-icon" />
       </IconButton>
     </div>
