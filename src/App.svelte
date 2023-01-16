@@ -4,9 +4,7 @@
   import { Controller } from "./Controller";
   import GameBoard from "./components/GameBoard.svelte";
   import Interface from "./components/Interface.svelte";
-  import { columnBoundingRectFuncs, columnBoundingRects, discardPileList, suitPileBoundingRectFuncs, suitPileBoundingRects } from "./Stores";
-
-  // $: console.log($discardPileList)
+  import { columnBoundingRectFuncs, columnBoundingRects, suitPileBoundingRectFuncs, suitPileBoundingRects } from "./Stores";
 
   const debounce = (fn: Function, ms = 300) => {
     let timeoutId: ReturnType<typeof setTimeout>;

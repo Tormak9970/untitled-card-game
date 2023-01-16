@@ -77,7 +77,6 @@ export class MovesController {
           renderedList.set(value);
           break;
         case MoveStates.DRAW_PILE:
-          console.log("hit here")
           shouldAnimateDrawPile.set(true);
           drawPileList.set((value as any[]).map((val) => PlayingCard.fromJson(val)));
           break;
