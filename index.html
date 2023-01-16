@@ -1,93 +1,108 @@
+<!--
+ Untitled Card Game is a solitaire game made with TypeScript and Svelte.
+ Copyright (C) 2023 Travis Lane (Tormak)
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program. If not, see <https://www.gnu.org/licenses/>
+ -->
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
 
-<head>
-  <meta charset='utf-8'>
-  <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <title>Untitled Card Game</title>
 
-  <title>Untitled Card Game</title>
+    <link rel='icon' type='image/png' href='/favicon.png'>
 
-  <link rel='icon' type='image/png' href='/icons/maskable_icon.png'>
+    <style>
+      @font-face {
+        font-family: "PixelOperatorMono";
+        src: url("/font/PixelOperatorMono.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "PixelOperatorMono";
+        src: url("/font/PixelOperatorMono-Bold.ttf") format("truetype");
+        font-weight: bold;
+        font-style: normal;
+      }
+      
+      @font-face {
+        font-family: "PixelOperatorMono8";
+        src: url("/font/PixelOperatorMono8.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: "PixelOperatorMono8";
+        src: url("/font/PixelOperatorMono8-Bold.ttf") format("truetype");
+        font-weight: bold;
+        font-style: normal;
+      }
 
-  <style>
-    @font-face {
-			font-family: "PixelOperatorMono";
-			src: url("/font/PixelOperatorMono.ttf") format("truetype");
-			font-weight: normal;
-			font-style: normal;
-		}
-		@font-face {
-			font-family: "PixelOperatorMono";
-			src: url("/font/PixelOperatorMono-Bold.ttf") format("truetype");
-			font-weight: bold;
-			font-style: normal;
-		}
-    
-    @font-face {
-			font-family: "PixelOperatorMono8";
-			src: url("/font/PixelOperatorMono8.ttf") format("truetype");
-			font-weight: normal;
-			font-style: normal;
-		}
-		@font-face {
-			font-family: "PixelOperatorMono8";
-			src: url("/font/PixelOperatorMono8-Bold.ttf") format("truetype");
-			font-weight: bold;
-			font-style: normal;
-		}
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
 
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
+        background-color: #1a1a1a;
+        color: rgb(231, 231, 231);
 
-      background-color: #1a1a1a;
-      color: rgb(231, 231, 231);
+        font-family: 'PixelOperatorMono', sans-serif;
+        font-size: 22px;
 
-      font-family: 'PixelOperatorMono', sans-serif;
-      font-size: 22px;
+        overflow: hidden;
+      }
 
-      overflow: hidden;
-    }
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
 
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
 
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
+      ::-webkit-scrollbar-thumb {
+        background: #383838;
+        border-radius: 4px;
+      }
 
-    ::-webkit-scrollbar-thumb {
-      background: #383838;
-      border-radius: 4px;
-    }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #82b74bff;
+      }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: #82b74bff;
-    }
+      ::-webkit-scrollbar-corner {
+        background: transparent;
+      }
 
-    ::-webkit-scrollbar-corner {
-      background: transparent;
-    }
+      #app {
+        width: 100%;
+        height: 100%;
 
-    #app {
-      width: 100%;
-      height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
+  </head>
 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-  </style>
-</head>
-
-<body>
-  <div id="app"></div>
-  <script type="module" src="/src/main.ts"></script>
-</body>
-
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>
