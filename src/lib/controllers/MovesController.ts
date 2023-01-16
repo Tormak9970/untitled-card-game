@@ -22,17 +22,42 @@ export class MovesController {
     });
   }
 
-  private saveCurrentState():string {
+  private saveCurrentState(state:string):string {
+    const stateObj = JSON.parse(state);
+    const keyValPairs = Object.entries(stateObj);
+    
     const curState = {};
 
-    curState[MoveStates.BOARD] = get(cardColumns);
-    curState[MoveStates.RENDERED_LIST] = get(renderedList);
-    curState[MoveStates.DRAW_PILE] = get(drawPileList);
-    curState[MoveStates.DISCARD_PILE] = get(discardPileList);
-    curState[MoveStates.SPADE_PILE] = get(spadesPileList);
-    curState[MoveStates.HEART_PILE] = get(heartsPileList);
-    curState[MoveStates.CLUB_PILE] = get(clubsPileList);
-    curState[MoveStates.DIAMOND_PILE] = get(diamondsPileList);
+    for (const [s, value] of keyValPairs) {
+      const state = s as MoveStates;
+      
+      switch(state) {
+        case MoveStates.BOARD:
+          curState[MoveStates.BOARD] = get(cardColumns);
+          break;
+        case MoveStates.RENDERED_LIST:
+          curState[MoveStates.RENDERED_LIST] = get(renderedList);
+          break;
+        case MoveStates.DRAW_PILE:
+          curState[MoveStates.DRAW_PILE] = get(drawPileList);
+          break;
+        case MoveStates.DISCARD_PILE:
+          curState[MoveStates.DISCARD_PILE] = get(discardPileList);
+          break;
+        case MoveStates.SPADE_PILE:
+          curState[MoveStates.SPADE_PILE] = get(spadesPileList);
+          break;
+        case MoveStates.HEART_PILE:
+          curState[MoveStates.HEART_PILE] = get(heartsPileList);
+          break;
+        case MoveStates.CLUB_PILE:
+          curState[MoveStates.CLUB_PILE] = get(clubsPileList);
+          break;
+        case MoveStates.DIAMOND_PILE:
+          curState[MoveStates.DIAMOND_PILE] = get(diamondsPileList);
+          break;
+      }
+    }
 
     return JSON.stringify(curState);
   }
@@ -52,6 +77,7 @@ export class MovesController {
           renderedList.set(value);
           break;
         case MoveStates.DRAW_PILE:
+          console.log("hit here")
           shouldAnimateDrawPile.set(true);
           drawPileList.set((value as any[]).map((val) => PlayingCard.fromJson(val)));
           break;
@@ -81,7 +107,7 @@ export class MovesController {
     shouldPlayRedoAnim.set(true);
     const redoMoves = get(preRedoMoves);
     const previousState = redoMoves.pop();
-    const currentState = this.saveCurrentState();
+    const currentState = this.saveCurrentState(previousState);
     
     this.parseStateString(previousState);
 
@@ -103,7 +129,7 @@ export class MovesController {
     shouldPlayUndoAnim.set(true);
     const undoMoves = get(moves);
     const previousState = undoMoves.pop();
-    const currentState = this.saveCurrentState();
+    const currentState = this.saveCurrentState(previousState);
     
     this.parseStateString(previousState);
 
