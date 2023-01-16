@@ -74,7 +74,10 @@ export class MovesController {
     }
   }
 
-  redo() {
+  /**
+   * Redoes the last move that was undone.
+   */
+  redo(): void {
     shouldPlayRedoAnim.set(true);
     const redoMoves = get(preRedoMoves);
     const previousState = redoMoves.pop();
@@ -93,7 +96,10 @@ export class MovesController {
     }, 500);
   }
 
-  undo() {
+  /**
+   * Undoes the last move.
+   */
+  undo(): void {
     shouldPlayUndoAnim.set(true);
     const undoMoves = get(moves);
     const previousState = undoMoves.pop();
@@ -112,6 +118,13 @@ export class MovesController {
     }, 500);
   }
 
+  /**
+   * Gets the absolute position of the target card before it was moved.
+   * @param id The target id.
+   * @param UNCOVERED_PERCENT The percent of a card that is uncovered when layering.
+   * @param CARD_SCALE The scale of a card when displayed.
+   * @returns The absolute position of the target card before it was moved.
+   */
   getLastPosition(id:string, UNCOVERED_PERCENT:number, CARD_SCALE:number): {left:number, top:number} {
     const res = {
       "left": 0,
@@ -165,7 +178,10 @@ export class MovesController {
     return res;
   }
 
-  onDestroy() {
+  /**
+   * Removes subscriptions registered by this controller.
+   */
+  onDestroy(): void {
     if (this.movesSub) this.movesSub();
     if (this.preRedoSub) this.preRedoSub();
   }

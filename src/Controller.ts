@@ -1,3 +1,20 @@
+/**
+ * Untitled Card Game is a solitaire game made with TypeScript and Svelte.
+ * Copyright (C) 2023 Travis Lane (Tormak)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>
+ */
 import { get } from "svelte/store";
 import { BaseCards, FaceCards, type Cards } from "./lib/models/CardEnums";
 import { SpriteLoader } from "./lib/controllers/SpriteLoader";
@@ -28,15 +45,27 @@ export class Controller {
   private static gameController = new GameController();
   private static movesController = new MovesController();
 
-  static init() {
+  /**
+   * Initializes the controller.
+   */
+  static init(): void {
     Controller.gameController.deal();
   }
 
-  static cleanUp() {
+  /**
+   * Cleans up any lingering logic (subscriptions, intervals, timeouts, etc).
+   */
+  static cleanUp(): void {
     Controller.movesController.onDestroy();
     Controller.saveController.onDestroy();
   }
 
+  /**
+   * Gets the sprite info for a card and suit.
+   * @param card The target card.
+   * @param suit The target suit.
+   * @returns The sprite info for the target card and suit.
+   */
   static getSprite(card:Cards, suit:Suits|JokerTypes): SpriteInfo {
     if (card == null) {
       return Controller.spriteLoader.loadSuitIcon(suit as Suits);
@@ -48,12 +77,43 @@ export class Controller {
       }
     }
   }
-  static getCardBackSprite(): SpriteInfo { return Controller.spriteLoader.loadCardBack(); }
-  static getAboutCardSprite(): SpriteInfo { return Controller.spriteLoader.loadAboutCard(); }
 
-  static drawCard(): void { Controller.gameController.drawCard(); }
-  static recycleDeck(): void { Controller.gameController.recycleDeck(); }
-  static playCurrentCard(): void { Controller.gameController.playCurrentCard(); }
+  /**
+   * Gets the sprite info for a card back.
+   * @returns The sprite info for a card back.
+   */
+  static getCardBackSprite(): SpriteInfo {
+    return Controller.spriteLoader.loadCardBack();
+  }
+
+  /**
+   * Gets the sprite info for the "About" card.
+   * @returns The sprite info for the "About" card.
+   */
+  static getAboutCardSprite(): SpriteInfo {
+    return Controller.spriteLoader.loadAboutCard();
+  }
+
+  /**
+   * Draws the card(s).
+   */
+  static drawCard(): void {
+    Controller.gameController.drawCard();
+  }
+
+  /**
+   * Recycles the deck.
+   */
+  static recycleDeck(): void {
+    Controller.gameController.recycleDeck();
+  }
+
+  /**
+   * Plays the top card of the discard pile.
+   */
+  static playCurrentCard(): void {
+    Controller.gameController.playCurrentCard();
+  }
 
   static scoreDiscardToBoard(): void { score.update(val => val + 5); }
   static scoreCardToAcePile(): void { score.update(val => val + 10); }
@@ -67,6 +127,9 @@ export class Controller {
   static undoMove(): void { Controller.movesController.undo(); Controller.gameController.updateFromStores(); }
   static getLastPosition(id:string): {left:number, top:number} { return Controller.movesController.getLastPosition(id, Controller.UNCOVERED_PERCENT, Controller.CARD_SCALE); }
 
+  /**
+   * Shows a hint.
+   */
   static showHint(): void {
     score.update(val => Math.max(val - 50, 0));
     // show hint
@@ -92,6 +155,9 @@ export class Controller {
     return pileList.length > 0 ? pileList[pileList.length-1].card == FaceCards.KING : false;
   }
 
+  /**
+   * Checks if the game is over.
+   */
   static checkWin(): void {
     const didWin = Object.values(Suits).every((suit:Suits) => Controller.checkAcePile(suit));
 
@@ -103,6 +169,10 @@ export class Controller {
     }
   }
 
+  /**
+   * Saves the current settings.
+   * @param toFile Whether to save to a file.
+   */
   static saveSettings(toFile:boolean): void {
     if (toFile) {
       // Controller.settingsController.saveSettingsToFile();
@@ -111,6 +181,22 @@ export class Controller {
     }
   }
 
+  /**
+   * Loads the saved settings.
+   * @param fromFile Whether to load from a file.
+   */
+  static loadSettings(fromFile:boolean): void {
+    if (fromFile) {
+      // Controller.settingsController.loadSettingsFromFile();
+    } else {
+      // Controller.settingsController.loadSettings();
+    }
+  }
+
+  /**
+   * Saves the current game.
+   * @param toFile Whether to save to a file.
+   */
   static saveGame(toFile:boolean): void {
     if (toFile) {
       Controller.saveController.saveGameToFile();
@@ -119,6 +205,10 @@ export class Controller {
     }
   }
 
+  /**
+   * Loads the saved game.
+   * @param fromFile Whether to load from a file.
+   */
   static loadGame(fromFile:boolean): void {
     if (fromFile) {
       Controller.saveController.loadGameFromFile();
@@ -127,6 +217,12 @@ export class Controller {
     }
   }
 
+  /**
+   * Displays a toast notification.
+   * @param message The message to display.
+   * @param type The type of toast.
+   * @param styles Any additional styles to add to the toast.
+   */
   static showToast(message:string, type:ToastType, styles:Object = {}): void {
     switch (type) {
       case ToastType.INFO:

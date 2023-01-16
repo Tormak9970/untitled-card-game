@@ -1,3 +1,20 @@
+/**
+ * Untitled Card Game is a solitaire game made with TypeScript and Svelte.
+ * Copyright (C) 2023 Travis Lane (Tormak)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>
+ */
 import type { BaseCards, FaceCards } from "../models/CardEnums";
 import { CARD_WIDTH, ANIM_SPRITE_STRIP_WIDTH, BASE_CARD_LUT, CARD_BACK_OFFSET, ABOUT_CARD_OFFSET } from "../SpriteLUT";
 import { Suits, type JokerTypes } from "../models/Suits";
@@ -17,6 +34,11 @@ export class SpriteLoader {
 
   }
 
+  /**
+   * Gets the sprite info for a suit.
+   * @param suit The target suit.
+   * @returns The sprite info for the provided suit.
+   */
   loadSuitIcon(suit:Suits): SpriteInfo {
     let yOffset:number = 0;
 
@@ -44,6 +66,12 @@ export class SpriteLoader {
     }
   }
 
+  /**
+   * Gets the sprite info for a face card and suit.
+   * @param card The target card.
+   * @param suit The target suit.
+   * @returns The sprite info for the target card and suit.
+   */
   loadFaceCard(card:FaceCards, suit:Suits|JokerTypes): SpriteInfo {
     return {
       "url": this.assembleFacePath(card, suit),
@@ -54,6 +82,12 @@ export class SpriteLoader {
     }
   }
 
+  /**
+   * Gets the sprite info for a base card and suit.
+   * @param card The target card.
+   * @param suit The target suit.
+   * @returns The sprite info for the target card and suit.
+   */
   loadBaseCard(card:BaseCards, suit:Suits): SpriteInfo {
     return {
       "url": this.baseCardSpriteSheet,
@@ -61,6 +95,10 @@ export class SpriteLoader {
     }
   }
 
+  /**
+   * Gets the sprite info for a card back.
+   * @returns The sprite info for the card back.
+   */
   loadCardBack(): SpriteInfo {
     return {
       "url": this.baseCardSpriteSheet,
@@ -68,6 +106,10 @@ export class SpriteLoader {
     }
   }
 
+  /**
+   * Gets the sprite info for an "About" card.
+   * @returns The sprite info for the "About" card.
+   */
   loadAboutCard(): SpriteInfo {
     return {
       "url": this.baseCardSpriteSheet,

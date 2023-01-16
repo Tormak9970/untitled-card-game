@@ -1,3 +1,25 @@
+/**
+ * Untitled Card Game is a solitaire game made with TypeScript and Svelte.
+ * Copyright (C) 2023 Travis Lane (Tormak)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>
+ */
+
+/**
+ * Represents a node in a LinkedList.
+ * @param T The type of this node.
+ */
 export class LinkedNode<T> {
   data:T;
   next:LinkedNode<T>;
@@ -7,11 +29,20 @@ export class LinkedNode<T> {
     this.next = next ? next : null;
   }
 
+  /**
+   * Creates a LinkedNode instance from the provided json data.
+   * @param json The json object.
+   * @returns A new LinkedNode of type T.
+   */
   static fromJSON<T>(json:any): LinkedNode<T> {
     return new LinkedNode<T>(json.data, json.next ? LinkedNode.fromJSON<T>(json.next) : null);
   }
 }
 
+/**
+ * A generic linked list data structure.
+ * @param T the type of the list.
+ */
 export class LinkedList<T> {
   size:number;
   first:LinkedNode<T>;
@@ -36,6 +67,11 @@ export class LinkedList<T> {
     }
   }
 
+  /**
+   * Gets the node at the provided index.
+   * @param idx The target index.
+   * @returns The node at the desired index.
+   */
   get(idx:number): LinkedNode<T> {
     if (idx < this.size) {
       let cNode = this.first;
@@ -52,6 +88,11 @@ export class LinkedList<T> {
     }
   }
 
+  /**
+   * Adds a node to the chain at the provided index, or to the end if none is specified.
+   * @param data The data to add.
+   * @param idx The target index.
+   */
   add(data:T|LinkedNode<T>, idx?:number) {
     const newNode = this.isLinkedNode(data) ? data : new LinkedNode(data, null);
     if (this.size > 0) {
@@ -65,6 +106,11 @@ export class LinkedList<T> {
     this.calcSize();
   }
 
+  /**
+   * Removed the node at the provided index.
+   * @param idx The target index.
+   * @returns The removed node
+   */
   remove(idx:number): T {
     let ret:T;
 
@@ -82,6 +128,11 @@ export class LinkedList<T> {
     return ret;
   }
 
+  /**
+   * Removed the node at the provided index, and all after it.
+   * @param idx The target index.
+   * @returns The removed nodes.
+   */
   removeAllAfter(idx:number): LinkedNode<T> {
     let ret:LinkedNode<T>;
 
