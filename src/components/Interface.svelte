@@ -2,6 +2,9 @@
   import GameInfo from "./interface/board/game-info/GameInfo.svelte";
   import GameControls from "./interface/board/game-controls/GameControls.svelte";
   import Logo from "./interface/board/Logo.svelte";
+  import Modal from "./interface/Modal.svelte";
+  import { showPauseMenu } from "../Stores";
+  import PauseMenu from "./interface/menu/PauseMenu.svelte";
 
 </script>
 
@@ -9,7 +12,12 @@
   <Logo />
   <GameInfo />
   <GameControls />
-	<div class="rights">© Travis Lane 2022</div>
+	<div class="rights">© Travis Lane {new Date().getFullYear()}</div>
+
+  <!-- Pause Menu Modal -->
+  <Modal showing={$showPauseMenu}>
+    <PauseMenu />
+  </Modal>
 </div>
 
 <style>

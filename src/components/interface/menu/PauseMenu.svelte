@@ -1,0 +1,37 @@
+<script lang="ts">
+  import { Controller } from "../../../Controller";
+  import { isPaused, showMainMenu, showOptionsMenu, showPauseMenu } from "../../../Stores";
+  import Button from "../interactables/Button.svelte";
+  import Pannel from "../Pannel.svelte";
+
+  function resumeClick() {
+    $isPaused = false;
+    $showPauseMenu = false;
+  }
+  function saveClick() { Controller.saveGame(true); }
+  function loadClick() { Controller.loadGame(true); }
+  function optionsClick() { $showOptionsMenu = true; }
+  function mainMenuClick() { $showMainMenu = true; }
+</script>
+
+
+<Pannel width="auto">
+  <div class="pause-menu">
+    <Button text="Resume" width={"100%"} onClick={resumeClick} />
+    <Button text="Save" width={"100%"} onClick={saveClick} />
+    <Button text="Load" width={"100%"} onClick={loadClick} />
+    <Button text="Options" width={"100%"} onClick={optionsClick} />
+    <Button text="Main Menu" width={"100%"} onClick={mainMenuClick} />
+  </div>
+</Pannel>
+
+<style>
+  @import "/theme.css";
+  
+  .pause-menu {
+    pointer-events: all;
+
+    display: grid;
+    row-gap: 7px;
+  }
+</style>

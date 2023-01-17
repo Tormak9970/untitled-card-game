@@ -18,7 +18,7 @@
     <div>{text}</div>
   </button>
 {:else}
-  <button class="button" on:click={onClick}>
+  <button class="button" style="width: {width};" on:click={onClick}>
     <div>{text}</div>
   </button>
 {/if}
@@ -27,7 +27,7 @@
   @import "/theme.css";
 
   .button {
-    padding: 3px 6px;
+    padding: 6px 12px;
     min-width: 40px;
     
     background-color: var(--background);
@@ -42,6 +42,9 @@
     cursor: pointer;
 
     color: rgb(231, 231, 231);
+    
+    font-family: 'PixelOperatorMono', sans-serif;
+    font-size: 22px;
   }
 
   .button:hover {

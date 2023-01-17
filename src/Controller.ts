@@ -128,17 +128,79 @@ export class Controller {
     Controller.gameController.playCurrentCard();
   }
 
-  static scoreDiscardToBoard(): void { score.update(val => val + 5); }
-  static scoreCardToAcePile(): void { score.update(val => val + 10); }
-  static scoreCardReveal(): void { score.update(val => val + 5); }
-  static scorePileToBoard(): void { score.update(val => Math.max(val - 15, 0)); }
-  static scoreBeginnerRecycle(): void { score.update(val => Math.max(val - 100, 0)); }
-  static scoreTimePass(): void { score.update(val => Math.max(val - 2, 0)); }
-  static scoreTime(): void { score.update(val => val + (700000 / get(gameTime))); }
+  /**
+   * Scores moving a card from discard to board.
+   */
+  static scoreDiscardToBoard(): void {
+    score.update(val => val + 5);
+  }
 
-  static redoMove(): void { Controller.movesController.redo(); Controller.gameController.updateFromStores(); }
-  static undoMove(): void { Controller.movesController.undo(); Controller.gameController.updateFromStores(); }
-  static getLastPosition(id:string): {left:number, top:number} { return Controller.movesController.getLastPosition(id, Controller.UNCOVERED_PERCENT, Controller.CARD_SCALE); }
+  /**
+   * Scores moving a card to an ace pile.
+   */
+  static scoreCardToAcePile(): void {
+    score.update(val => val + 10);
+  }
+
+  /**
+   * Scores turning a card face up.
+   */
+  static scoreCardReveal(): void {
+    score.update(val => val + 5);
+  }
+
+  /**
+   * Scores moving a card from ace to board.
+   */
+  static scorePileToBoard(): void {
+    score.update(val => Math.max(val - 15, 0));
+  }
+
+  /**
+   * Scores recycling the deck in beginner difficulty.
+   */
+  static scoreBeginnerRecycle(): void {
+    score.update(val => Math.max(val - 100, 0));
+  }
+
+  /**
+   * Scores time progression.
+   */
+  static scoreTimePass(): void {
+    score.update(val => Math.max(val - 2, 0));
+  }
+
+  /**
+   * Scores time when game ends.
+   */
+  static scoreTime(): void {
+    score.update(val => val + (700000 / get(gameTime)));
+  }
+
+  /**
+   * Redoes the last move that was undone.
+   */
+  static redoMove(): void {
+    Controller.movesController.redo();
+    Controller.gameController.updateFromStores();
+  }
+
+  /**
+   * Undoes the last move.
+   */
+  static undoMove(): void {
+    Controller.movesController.undo();
+    Controller.gameController.updateFromStores();
+  }
+
+  /**
+   * Gets the absolute position of the target card before it was moved.
+   * @param id The target id.
+   * @returns The absolute position of the target card before it was moved.
+   */
+  static getLastPosition(id:string): {left:number, top:number} {
+    return Controller.movesController.getLastPosition(id, Controller.UNCOVERED_PERCENT, Controller.CARD_SCALE);
+  }
 
   /**
    * Shows a hint.
