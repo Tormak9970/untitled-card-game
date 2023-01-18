@@ -33,6 +33,7 @@ import { roundArrow } from "tippy.js";
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/dist/svg-arrow.css';
 import 'tippy.js/animations/scale-subtle.css';
+import { KeyBindingController } from "./lib/controllers/KeyBindingController";
 
 /**
  * The main controller for the game.
@@ -57,6 +58,7 @@ export class Controller {
   private static spriteLoader = new SpriteLoader();
   private static gameController = new GameController();
   private static movesController = new MovesController();
+  private static keyBindingController = new KeyBindingController();
 
   /**
    * Initializes the controller.
@@ -71,6 +73,7 @@ export class Controller {
   static cleanUp(): void {
     Controller.movesController.onDestroy();
     Controller.saveController.onDestroy();
+    Controller.keyBindingController.onDestroy();
   }
 
   /**
@@ -240,7 +243,7 @@ export class Controller {
       gameWasWon.set(true);
       isPaused.set(true);
       showGameOverModal.set(true);
-      console.log("You won!")
+      console.log("You won!");
     }
   }
 
