@@ -18,7 +18,7 @@
     <div>{text}</div>
   </button>
 {:else}
-  <button class="button" style="width: {width};" on:click={onClick}>
+  <button class="button" class:disabled={disabled} style="width: {width};" on:click={onClick}>
     <div>{text}</div>
   </button>
 {/if}

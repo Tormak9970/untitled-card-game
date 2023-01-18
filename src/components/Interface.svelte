@@ -7,6 +7,7 @@
   import PauseMenu from "./interface/menu/PauseMenu.svelte";
   import FilePicker from "./interface/FilePicker.svelte";
   import { Controller } from "../Controller";
+  import OptionsMenu from "./interface/menu/options/OptionsMenu.svelte";
 
   function saveGameToFile() {
     Controller.saveGame(true);
@@ -48,7 +49,7 @@
 
   <!-- Options Menu Modal -->
   <Modal showing={$showOptionsMenu}>
-    <!-- <PauseMenu /> -->
+    <OptionsMenu />
   </Modal>
 
   <!-- Save Game Modal -->
