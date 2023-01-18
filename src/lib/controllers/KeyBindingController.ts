@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>
  */
 
-import { isPaused, showLoadSaveModal, showPauseMenu, showSaveToFileModal } from "../../Stores";
+import { isPaused, showLoadGameFromFile, showPauseMenu, showSaveGameToFile } from "../../Stores";
 
 /**
  * Class that handles keybindings.
@@ -29,19 +29,22 @@ export class KeyBindingController {
   private registerBindings(e:KeyboardEvent) {
     switch(e.code) {
       case 'Escape': {
+        e.preventDefault();
         isPaused.set(true);
         showPauseMenu.set(true);
         break;
       }
       case 'KeyS': {
+        e.preventDefault();
         if (e.ctrlKey) {
-          showSaveToFileModal.set(true);
+          showSaveGameToFile.set(true);
         }
         break;
       }
       case 'KeyL': {
+        e.preventDefault();
         if (e.ctrlKey) {
-          showLoadSaveModal.set(true);
+          showLoadGameFromFile.set(true);
         }
         break;
       }

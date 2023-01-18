@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { Controller } from "../../../Controller";
-  import { isPaused, showMainMenu, showOptionsMenu, showPauseMenu } from "../../../Stores";
+  import { isPaused, showLoadGameFromFile, showMainMenu, showOptionsMenu, showPauseMenu, showSaveGameToFile } from "../../../Stores";
   import Button from "../interactables/Button.svelte";
   import Pannel from "../Pannel.svelte";
 
@@ -8,8 +7,8 @@
     $isPaused = false;
     $showPauseMenu = false;
   }
-  function saveClick() { Controller.saveGame(true); }
-  function loadClick() { Controller.loadGame(true); }
+  function saveClick() { $showSaveGameToFile = true; }
+  function loadClick() { $showLoadGameFromFile = true; }
   function optionsClick() { $showOptionsMenu = true; }
   function mainMenuClick() { $showMainMenu = true; }
 </script>

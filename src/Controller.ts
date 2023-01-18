@@ -23,7 +23,7 @@ import { GameController } from "./lib/controllers/GameController";
 import { ToastController } from "./lib/controllers/ToastController";
 import { SaveController } from "./lib/controllers/SaveController";
 import { SettingsController } from "./lib/controllers/SettingsController";
-import { clubsPileList, diamondsPileList, gameTime, gameWasWon, heartsPileList, isPaused, score, showGameOverModal, spadesPileList } from "./Stores";
+import { clubsPileList, diamondsPileList, gameTime, gameWasWon, heartsPileList, isPaused, score, showGameOverModal, showSaveGameToFile, spadesPileList } from "./Stores";
 import { MovesController } from "./lib/controllers/MovesController";
 import type { PlayingCard } from "./lib/models/PlayingCard";
 import { ToastType } from "./lib/models/ToastType";
