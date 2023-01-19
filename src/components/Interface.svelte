@@ -3,11 +3,14 @@
   import GameControls from "./interface/board/game-controls/GameControls.svelte";
   import Logo from "./interface/board/Logo.svelte";
   import Modal from "./interface/Modal.svelte";
-  import { gameWasWon, showGameStartModal, showGameOverModal, showLoadGameFromFile, showLoadSettingsFromFile, showMainMenu, showOptionsMenu, showPauseMenu, showSaveGameToFile, showSaveSettingsToFile } from "../Stores";
+  import { showGameStartModal, showGameOverModal, showLoadGameFromFile, showLoadSettingsFromFile, showMainMenu, showOptionsMenu, showPauseMenu, showSaveGameToFile, showSaveSettingsToFile } from "../Stores";
   import PauseMenu from "./interface/menu/PauseMenu.svelte";
   import FilePicker from "./interface/FilePicker.svelte";
   import { Controller } from "../Controller";
   import OptionsMenu from "./interface/menu/options/OptionsMenu.svelte";
+  import GameOverModal from "./interface/GameOverModal.svelte";
+  import GameStartModal from "./interface/GameStartModal.svelte";
+  import MainMenu from "./interface/menu/main/MainMenu.svelte";
 
   function saveGameToFile() {
     Controller.saveGame(true);
@@ -19,10 +22,12 @@
   }
 
   function saveSettingsToFile() {
-
+    Controller.saveSettings(true);
+    $showSaveSettingsToFile = false;
   }
   function loadSettingsFromFile() {
-
+    Controller.loadSettings(true);
+    $showLoadSettingsFromFile = false;
   }
 </script>
 
@@ -34,16 +39,16 @@
 
   <!-- Main Menu Modal -->
   <Modal showing={$showMainMenu}>
-    <!-- <PauseMenu /> -->
+    <MainMenu />
   </Modal>
 
   <!-- Game Start Modal -->
   <Modal showing={$showGameStartModal}>
-    <!-- <PauseMenu /> -->
+    <GameStartModal />
   </Modal>
 
   <!-- Pause Menu Modal -->
-  <Modal showing={$showPauseMenu}>
+  <Modal showing={$showPauseMenu && !$showMainMenu}>
     <PauseMenu />
   </Modal>
 
@@ -74,11 +79,7 @@
 
   <!-- Game End Modal -->
   <Modal showing={$showGameOverModal}>
-    {#if $gameWasWon}
-
-    {:else}
-
-    {/if}
+    <GameOverModal />
   </Modal>
 </div>
 

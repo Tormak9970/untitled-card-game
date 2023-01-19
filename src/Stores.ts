@@ -12,7 +12,7 @@ export const draggingMoreThenOne = writable(false);
 export const gameWasWon = writable(false);
 
 // UI stores
-export const showMainMenu = writable(false);
+export const showMainMenu = writable(true);
 export const showPauseMenu = writable(false);
 export const showOptionsMenu = writable(false);
 export const showGameStartModal = writable(false);
@@ -21,7 +21,7 @@ export const showSaveGameToFile = writable(false);
 export const showLoadGameFromFile = writable(false);
 export const showSaveSettingsToFile = writable(false);
 export const showLoadSettingsFromFile = writable(false);
-export const isPaused = writable(false);
+export const isPaused = writable(true);
 export const redoDisabled = writable(true);
 export const undoDisabled = writable(true);
 
