@@ -1,18 +1,12 @@
 <script lang="ts">
-  export let fieldName:string;
-  export let cVal:string;
-  export let width:number = 140;
-  export let handler:(e:Event, fieldName:string)=>void;
-
-  async function wrapper(e:Event) {
-    handler(e, fieldName.toLowerCase());
-  }
+  export let placeholder = "";
+  export let value:string|number;
+  export let width = "140px";
+  export let onChange:(e:Event)=>void = () => {};
 </script>
 
 <div class="input">
-  <!-- svelte-ignore a11y-label-has-associated-control -->
-  <label style="margin-right: 13px; font-size: 14px">{fieldName}:</label>
-  <input style="width: {width}px;" type="text" placeholder="{cVal}" value="{cVal}" on:change="{wrapper}">
+  <input style="width: {width};" type="text" placeholder="{placeholder}" bind:value={value} on:change="{onChange}">
 </div>
 
 <!-- svelte-ignore css-unused-selector -->

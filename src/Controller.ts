@@ -253,9 +253,9 @@ export class Controller {
    */
   static saveSettings(toFile:boolean): void {
     if (toFile) {
-      // Controller.settingsController.saveSettingsToFile();
+      Controller.settingsController.saveSettingsToFile();
     } else {
-      // Controller.settingsController.saveSettings();
+      Controller.settingsController.saveSettings();
     }
   }
 
@@ -265,9 +265,9 @@ export class Controller {
    */
   static loadSettings(fromFile:boolean): void {
     if (fromFile) {
-      // Controller.settingsController.loadSettingsFromFile();
+      Controller.settingsController.loadSettingsFromFile();
     } else {
-      // Controller.settingsController.loadSettings();
+      Controller.settingsController.loadSettings();
     }
   }
 

@@ -16,56 +16,48 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>
  */
 import type { Unsubscriber } from "svelte/store";
-import { cardColumns, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameTime, heartsPileList, moves, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
-import type { LinkedList } from "../data-structs/LinkedList";
-import type { Difficulty } from "./Difficulty";
-import type { PlayingCard } from "./PlayingCard";
+import { musicVolumeSetting, sfxVolumeSetting, timedSetting } from "../../Stores";
 
 /**
- * Class representing the game's save data
+ * Class representing the game settings.
  */
 export class GameSettings {
   // General data
-  difficulty:Difficulty;
-  difficultySub:Unsubscriber;
-  score:number;
-  scoreSub:Unsubscriber;
-  turns:number;
-  turnsSub:Unsubscriber;
-  gameTime:number;
-  gameTimeSub:Unsubscriber;
+  musicVolume:number;
+  musicVolumeSub:Unsubscriber;
+  sfxVolume:number;
+  sfxVolumeSub:Unsubscriber;
+  timed:boolean;
+  timedSub:Unsubscriber;
 
   constructor() {
     this.genSubs();
   }
 
   private genSubs(): void {
-    this.difficultySub = difficulty.subscribe((value) => { this.difficulty = value; });
-    this.scoreSub = score.subscribe((value) => { this.score = value; });
-    this.turnsSub = turns.subscribe((value) => { this.turns = value; });
-    this.gameTimeSub = gameTime.subscribe((value) => { this.gameTime = value; });
+    this.musicVolumeSub = musicVolumeSetting.subscribe((value) => { this.musicVolume = value; });
+    this.sfxVolumeSub = sfxVolumeSetting.subscribe((value) => { this.sfxVolume = value; });
+    this.timedSub = timedSetting.subscribe((value) => { this.timed = value; });
   }
 
   /**
-   * Removes all subscriptions registed by this game save.
+   * Removes all subscriptions registed by the game settings.
    */
   destroySubs(): void {
-    if(this.difficultySub) this.difficultySub();
-    if(this.scoreSub) this.scoreSub();
-    if(this.turnsSub) this.turnsSub();
-    if(this.gameTimeSub) this.gameTimeSub();
+    if(this.musicVolumeSub) this.musicVolumeSub();
+    if(this.sfxVolumeSub) this.sfxVolumeSub();
+    if(this.timedSub) this.timedSub();
   }
 
   /**
-   * Gets a cleaned up json representation of this game save.
-   * @returns A clean json representation of this game save.
+   * Gets a cleaned up json representation of the game settings.
+   * @returns A clean json representation of the game settings.
    */
   toJSON() {
     return {
-      "difficulty": this.difficulty,
-      "score": this.score,
-      "turns": this.turns,
-      "gameTime": this.gameTime
+      "musicVolume": this.musicVolume,
+      "sfxVolume": this.sfxVolume,
+      "timed": this.timed
     }
   }
 }

@@ -94,6 +94,9 @@ export const clubsPileList:Writable<PlayingCard[]> = writable([]);
 export const diamondsPileList:Writable<PlayingCard[]> = writable([]);
 
 // Settings stores
+export const musicVolumeSetting = writable(100);
+export const sfxVolumeSetting = writable(100);
+export const timedSetting = writable(true);
 
 
 export const dropZoneStyle = {
