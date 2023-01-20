@@ -20,7 +20,7 @@
  * Possible difficulty options.
  */
 export enum Difficulty {
-  BEGINNER,
-  INTERMEDIATE,
-  EXPERT
+  BEGINNER="Beginner",
+  INTERMEDIATE="Intermediate",
+  EXPERT="Expert"
 }

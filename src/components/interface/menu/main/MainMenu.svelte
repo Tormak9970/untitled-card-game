@@ -1,11 +1,18 @@
 <script lang="ts">
-  import { isPaused, showGameStartModal, showLoadGameFromFile, showMainMenu, showOptionsMenu } from "../../../../Stores";
+  import { afterUpdate, onMount } from "svelte";
+  import { Difficulty } from "../../../../lib/models/Difficulty";
+  import { difficulty, isPaused, showGameStartModal, showLoadGameFromFile, showMainMenu, showOptionsMenu, showPauseMenu } from "../../../../Stores";
   import Button from "../../interactables/Button.svelte";
+  import DropDown from "../../interactables/DropDown.svelte";
   import Pannel from "../../Pannel.svelte";
+
+  let currDiff: string = "";
+  let options = [];
 
   function resumeClick() {
     $isPaused = false;
     $showMainMenu = false;
+    $showPauseMenu = false;
   }
   function newGameClick() {
     $showMainMenu = false;
@@ -13,19 +20,33 @@
   }
   function loadClick() { $showLoadGameFromFile = true; }
   function optionsClick() { $showOptionsMenu = true; }
+
+  afterUpdate(() => {
+    if (currDiff != $difficulty) {
+      $difficulty = currDiff as Difficulty;
+    }
+  });
+
+  onMount(() => {
+    options = Object.values(Difficulty);
+    currDiff = $difficulty;
+  });
 </script>
 
 <div class="main-menu">
-  <!-- Title -->
-  <Pannel width="auto">
-    <div class="main-menu-cont">
-      <!-- Difficulty Selector -->
-      <Button text="Resume" width={"100%"} onClick={resumeClick} />
-      <Button text="New Game" width={"100%"} onClick={newGameClick} />
-      <Button text="Load" width={"100%"} onClick={loadClick} />
-      <Button text="Options" width={"100%"} onClick={optionsClick} />
-    </div>
-  </Pannel>
+  <div class="title">Untitled Card Game</div>
+  <div class="sub-title">A Solitaire Game</div>
+  <div class="buttons">
+    <Pannel width="auto">
+      <div class="main-menu-cont">
+        <DropDown bind:value={currDiff} options={options} />
+        <Button text="Resume" width={"100%"} onClick={resumeClick} />
+        <Button text="New Game" width={"100%"} onClick={newGameClick} />
+        <Button text="Load" width={"100%"} onClick={loadClick} />
+        <Button text="Options" width={"100%"} onClick={optionsClick} />
+      </div>
+    </Pannel>
+  </div>
 </div>
 
 <style>
@@ -36,6 +57,24 @@
     height: 100%;
 
     background-color: var(--background);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .title {
+    font-size: 34px;
+    margin-bottom: 10px;
+  }
+
+  .sub-title {
+    margin-bottom: 24px;
+  }
+
+  .buttons {
+    width: 220px;
   }
   
   .main-menu-cont {
