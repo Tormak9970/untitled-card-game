@@ -15,6 +15,7 @@
     $showPauseMenu = false;
   }
   function newGameClick() {
+    // reset all stores/saved game for this difficulty
     $showMainMenu = false;
     $showGameStartModal = true;
   }
