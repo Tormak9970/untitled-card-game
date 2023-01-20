@@ -10,7 +10,7 @@
   function saveClick() { $showSaveGameToFile = true; }
   function loadClick() { $showLoadGameFromFile = true; }
   function optionsClick() { $showOptionsMenu = true; }
-  function mainMenuClick() { $showMainMenu = true; }
+  function mainMenuClick() { $showMainMenu = true; $showPauseMenu = false; }
 </script>
 
 

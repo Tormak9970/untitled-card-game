@@ -10,9 +10,9 @@
   let options = [];
 
   function resumeClick() {
+    // load save with the selected difficulty
     $isPaused = false;
     $showMainMenu = false;
-    $showPauseMenu = false;
   }
   function newGameClick() {
     // reset all stores/saved game for this difficulty

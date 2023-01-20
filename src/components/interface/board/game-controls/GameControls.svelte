@@ -30,9 +30,9 @@
         <div class="github-icon" />
       </IconButton>
       
-      <IconButton onClick={hintClick} tooltip={true} tooltipText={"Show Hint"}>
+      <!-- <IconButton onClick={hintClick} tooltip={true} tooltipText={"Show Hint"}>
         <div class="hint-icon" />
-      </IconButton>
+      </IconButton> -->
       
       <IconButton onClick={settingsClick} tooltip={true} tooltipText={"Settings"}>
         <div class="setting-icon" />
@@ -45,7 +45,7 @@
   @import "/theme.css";
   
   .game-controls {
-    width: 400px;
+    width: 330px;
     position: absolute;
     pointer-events: auto;
 
