@@ -5,6 +5,7 @@ import { CardLocation } from "../models/CardLocation";
 import { MoveStates } from "../models/MoveStates";
 import { PlayingCard } from "../models/PlayingCard";
 import { CARD_HEIGHT, CARD_WIDTH } from "../SpriteLUT";
+import type { SaveController } from "./SaveController";
 
 /**
  * Controls undo and redo actions
@@ -13,12 +14,14 @@ export class MovesController {
   private movesSub:Unsubscriber;
   private preRedoSub:Unsubscriber;
 
-  constructor() {
+  constructor(saveController:SaveController) {
     this.movesSub = moves.subscribe((values:string[]) => {
       undoDisabled.set(values.length == 0);
+      saveController.saveGame();
     });
     this.preRedoSub = preRedoMoves.subscribe((values:string[]) => {
       redoDisabled.set(values.length == 0);
+      saveController.saveGame();
     });
   }
 

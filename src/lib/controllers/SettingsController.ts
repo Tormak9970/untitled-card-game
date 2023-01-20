@@ -98,7 +98,7 @@ export class SettingsController {
   async loadSettings() {
     const data = await this.getData([`settings`])[0];
 
-    this.loadGameFromData(data);
+    this.loadSettingsFromData(data);
   }
 
   /**
@@ -118,7 +118,7 @@ export class SettingsController {
         const data = JSON.parse(readerEvent.target.result as string);
 
         if (data._version == __APP_VERSION__) {
-          this.loadGameFromData(data);
+          this.loadSettingsFromData(data);
 
           Controller.showToast("Load Successful!", ToastType.SUCCESS);
         } else {
@@ -130,7 +130,7 @@ export class SettingsController {
     input.click();
   }
 
-  private loadGameFromData(data:any) {
+  private loadSettingsFromData(data:any) {
     console.log(data);
 
     musicVolumeSetting.set(data.musicVolume);

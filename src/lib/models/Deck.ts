@@ -22,6 +22,7 @@ import { cardPositionLUT, difficulty, discardPileList, drawPileList } from "../.
 import { get } from "svelte/store";
 import { Difficulty } from "./Difficulty";
 import { CardLocation } from "./CardLocation";
+import seedrandom from "seedrandom";
 
 /**
  * Class representing a deck of cards.
@@ -39,9 +40,11 @@ export class Deck {
 
   /**
    * Deals the nessesary cards.
+   * @param seed The seed to shuffle with.
+   * @param gameBoard The gameboard to use.
    */
-  dealCards(gameBoard:GameBoard) {
-    this.shuffleDeck();
+  dealCards(seed:string, gameBoard:GameBoard) {
+    this.shuffleDeck(seed);
     const cards = this._drawPile.toArray();
     const topCards = cards.slice(0, 28);
     this._drawPile = new Stack<PlayingCard>(cards.slice(28));
@@ -106,12 +109,14 @@ export class Deck {
 
   /**
    * Shuffles the draw pile.
+   * @param seed The seed to shuffle with.
    */
-  shuffleDeck() {
+  shuffleDeck(seed:string) {
+    const seededRand = seedrandom(seed);
     const cards = this._drawPile.toArray();
 
     for (let i = cards.length-1; i >= 0; i--) {
-      const j = Math.floor(Math.random() * i);
+      const j = Math.floor(seededRand() * i);
       const tmp = cards[j];
       cards[j] = cards[i];
       cards[i] = tmp;

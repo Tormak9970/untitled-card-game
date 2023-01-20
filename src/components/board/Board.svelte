@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cardColumns } from "../../Stores";
+  import { cardColumns, refreshColumns } from "../../Stores";
   import CardColumn from "./CardColumn.svelte";
 
   export let scale:number;
@@ -9,9 +9,11 @@
 
 <div class="board">
   <div class="column-container">
-    {#each columns as cards, idx (`${cards.size}|${idx}`)}
-      <CardColumn playingCards={cards} column={idx} scale={scale} />
-    {/each}
+    {#key $refreshColumns}
+      {#each columns as cards, idx (`${cards.size}|${idx}`)}
+        <CardColumn playingCards={cards} column={idx} scale={scale} />
+      {/each}
+    {/key}
   </div>
 </div>
 

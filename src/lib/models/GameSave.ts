@@ -16,9 +16,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>
  */
 import type { Unsubscriber } from "svelte/store";
-import { cardColumns, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameTime, heartsPileList, moves, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
+import { cardColumns, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameSeed, gameTime, heartsPileList, moves, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
 import type { LinkedList } from "../data-structs/LinkedList";
-import type { Difficulty } from "./Difficulty";
+import { Difficulty } from "./Difficulty";
 import type { PlayingCard } from "./PlayingCard";
 
 /**
@@ -26,6 +26,8 @@ import type { PlayingCard } from "./PlayingCard";
  */
 export class GameSave {
   // General data
+  seed:string;
+  seedSub:Unsubscriber;
   difficulty:Difficulty;
   difficultySub:Unsubscriber;
   score:number;
@@ -62,6 +64,7 @@ export class GameSave {
   }
 
   private genSubs(): void {
+    this.seedSub = gameSeed.subscribe((value) => { this.seed = value; });
     this.difficultySub = difficulty.subscribe((value) => { this.difficulty = value; });
     this.scoreSub = score.subscribe((value) => { this.score = value; });
     this.turnsSub = turns.subscribe((value) => { this.turns = value; });
@@ -83,6 +86,7 @@ export class GameSave {
    * Removes all subscriptions registed by this game save.
    */
   destroySubs(): void {
+    if(this.seedSub) this.seedSub();
     if(this.difficultySub) this.difficultySub();
     if(this.scoreSub) this.scoreSub();
     if(this.turnsSub) this.turnsSub();
@@ -100,12 +104,32 @@ export class GameSave {
     if(this.diamondsPileListSub) this.diamondsPileListSub();
   }
 
+  resetSave(): void {
+    gameSeed.set("");
+    difficulty.set(Difficulty.INTERMEDIATE);
+    score.set(0);
+    turns.set(0);
+    gameTime.set(0);
+    moves.set([]);
+    preRedoMoves.set([]);
+
+    renderedList.set({});
+    cardColumns.set([]);
+    drawPileList.set([]);
+    discardPileList.set([]);
+    spadesPileList.set([]);
+    heartsPileList.set([]);
+    clubsPileList.set([]);
+    diamondsPileList.set([]);
+  }
+
   /**
    * Gets a cleaned up json representation of this game save.
    * @returns A clean json representation of this game save.
    */
   toJSON() {
     return {
+      "seed": this.seed,
       "difficulty": this.difficulty,
       "score": this.score,
       "turns": this.turns,

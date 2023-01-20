@@ -37,7 +37,7 @@ export class GameController {
   /**
    * Deals the cards.
    */
-  deal(): void { this.deck.dealCards(this.gameBoard); }
+  deal(seed:string): void { this.deck.dealCards(seed, this.gameBoard); }
 
   /**
    * Draws the card(s).

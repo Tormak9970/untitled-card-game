@@ -1,5 +1,6 @@
 <script lang="ts">
   import { afterUpdate, onMount } from "svelte";
+  import { Controller } from "../../../../Controller";
   import { Difficulty } from "../../../../lib/models/Difficulty";
   import { difficulty, isPaused, showGameStartModal, showLoadGameFromFile, showMainMenu, showOptionsMenu, showPauseMenu } from "../../../../Stores";
   import Button from "../../interactables/Button.svelte";
@@ -11,11 +12,13 @@
 
   function resumeClick() {
     // load save with the selected difficulty
+    Controller.loadGame(false);
     $isPaused = false;
     $showMainMenu = false;
   }
   function newGameClick() {
-    // reset all stores/saved game for this difficulty
+    // Controller.clearSavedGame($difficulty, false);
+    // Controller.init();
     $showMainMenu = false;
     $showGameStartModal = true;
   }

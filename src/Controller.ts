@@ -23,7 +23,7 @@ import { GameController } from "./lib/controllers/GameController";
 import { ToastController } from "./lib/controllers/ToastController";
 import { SaveController } from "./lib/controllers/SaveController";
 import { SettingsController } from "./lib/controllers/SettingsController";
-import { clubsPileList, diamondsPileList, gameTime, gameWasWon, heartsPileList, isPaused, score, showGameOverModal, showSaveGameToFile, spadesPileList } from "./Stores";
+import { clubsPileList, diamondsPileList, difficulty, gameSeed, gameTime, gameWasWon, heartsPileList, isPaused, refreshColumns, score, showGameOverModal, showMainMenu, showSaveGameToFile, spadesPileList } from "./Stores";
 import { MovesController } from "./lib/controllers/MovesController";
 import type { PlayingCard } from "./lib/models/PlayingCard";
 import { ToastType } from "./lib/models/ToastType";
@@ -34,6 +34,8 @@ import 'tippy.js/dist/tippy.css';
 import 'tippy.js/dist/svg-arrow.css';
 import 'tippy.js/animations/scale-subtle.css';
 import { KeyBindingController } from "./lib/controllers/KeyBindingController";
+import { v4 as uuidv4 } from 'uuid';
+import type { Difficulty } from "./lib/models/Difficulty";
 
 /**
  * The main controller for the game.
@@ -57,14 +59,51 @@ export class Controller {
   private static settingsController = new SettingsController();
   private static spriteLoader = new SpriteLoader();
   private static gameController = new GameController();
-  private static movesController = new MovesController();
+  private static movesController = new MovesController(Controller.saveController);
   private static keyBindingController = new KeyBindingController();
 
   /**
    * Initializes the controller.
    */
   static init(): void {
-    Controller.gameController.deal();
+    const seed = uuidv4().substring(0,8);
+    gameSeed.set(seed);
+    Controller.gameController.deal(seed);
+    // setTimeout(() => {
+    //   Controller.saveGame(false);
+    // });
+  }
+
+  static retry(): void {
+    const seed = get(gameSeed);
+    const diff = get(difficulty);
+    
+    Controller.saveController.deleteSave(diff);
+    Controller.saveController.resetSave();
+
+    gameSeed.set(seed);
+    difficulty.set(diff);
+
+    Controller.gameController = new GameController();
+    Controller.gameController.deal(seed);
+
+    refreshColumns.set(true);
+    setTimeout(() => {
+      refreshColumns.set(false)
+    });
+
+    showMainMenu.set(false);
+    isPaused.set(false);
+  }
+
+  /**
+   * Clears a saved game.
+   * @param difficulty The target difficulty.
+   * @param resetStores Whether to reset the stores.
+   */
+  static clearSavedGame(difficulty:Difficulty, resetStores = true): void {
+    Controller.saveController.deleteSave(difficulty);
+    if (resetStores) Controller.saveController.resetSave();
   }
 
   /**

@@ -5,6 +5,8 @@ import { Difficulty } from "./lib/models/Difficulty";
 import type { PlayingCard } from "./lib/models/PlayingCard";
 
 // Universal stores
+export const refreshColumns = writable(false);
+export const gameSeed = writable("");
 export const highScore = writable(0);
 export const draggingType = writable(null);
 export const draggingSuit = writable(null);

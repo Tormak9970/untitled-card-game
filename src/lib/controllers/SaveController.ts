@@ -15,12 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>
  */
-import { getMany, setMany } from 'idb-keyval';
+import { getMany, setMany, delMany } from 'idb-keyval';
 import { get } from "svelte/store";
 import { Controller } from "../../Controller";
-import { cardColumns, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameTime, heartsPileList, moves, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
+import { cardColumns, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameSeed, gameTime, heartsPileList, moves, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
 import { GameSave } from "../models/GameSave";
 import { ToastType } from "../models/ToastType";
+import type { Difficulty } from "../models/Difficulty";
 
 /**
  * Manages saving and loading game data
@@ -53,10 +54,21 @@ export class SaveController {
   }
 
   /**
+   * Deletes a list of values from indexDB.
+   * @param keys list of key value pairs to delete.
+   * @returns a promise of wether or not the removal was successful.
+   */
+  async delData(data:string[][]): Promise<boolean> {
+    let success = false;
+    await delMany(data).then(() => { success = true; });
+    return success;
+  }
+
+  /**
    * Saves the current game to indexDB.
    */
   saveGame() {
-    this.setData([[`difficulty:${get(difficulty)}`, JSON.stringify({ "_version": __APP_VERSION__, ...this.gameSave.toJSON() })]]);
+    this.setData([[`difficulty: ${get(difficulty)}`, JSON.stringify({ "_version": __APP_VERSION__, ...this.gameSave.toJSON() })]]);
   }
 
   private getFileName(pretext:string):string {
@@ -94,9 +106,10 @@ export class SaveController {
 
   /**
    * Loads a saved game from indexDB.
+   * @param diff The target difficulty.
    */
-  async loadGame() {
-    const data = await this.getData([`difficutly: ${get(difficulty)}`])[0];
+  async loadGame(diff = get(difficulty)) {
+    const data = await this.getData([`difficutly: ${diff}`])[0];
 
     this.loadGameFromData(data);
   }
@@ -133,6 +146,7 @@ export class SaveController {
   private loadGameFromData(data:any) {
     console.log(data);
 
+    gameSeed.set(data.seed);
     difficulty.set(data.difficulty);
     score.set(data.score);
     turns.set(data.turns);
@@ -148,6 +162,22 @@ export class SaveController {
     heartsPileList.set(data.heartsPileList);
     clubsPileList.set(data.clubsPileList);
     diamondsPileList.set(data.diamondsPileList);
+  }
+
+  /**
+   * Deletes the specified game save.
+   * @param difficulty The target difficulty.
+   */
+  async deleteSave(difficulty:Difficulty): Promise<void> {
+    // clear indexdb
+    await this.delData([[`difficulty: ${difficulty}`]]);
+  }
+
+  /**
+   * Resets the board to its original state.
+   */
+  resetSave() {
+    this.gameSave.resetSave();
   }
 
   /**
