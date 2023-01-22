@@ -18,10 +18,12 @@
 import { getMany, setMany, delMany } from 'idb-keyval';
 import { get } from "svelte/store";
 import { Controller } from "../../Controller";
-import { cardColumns, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameSeed, gameTime, heartsPileList, moves, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
+import { cardColumns, cardPositionLUT, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameSeed, gameTime, heartsPileList, moves, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
 import { GameSave } from "../models/GameSave";
 import { ToastType } from "../models/ToastType";
 import type { Difficulty } from "../models/Difficulty";
+import { PlayingCard } from "../models/PlayingCard";
+import { LinkedList, LinkedNode } from "../data-structs/LinkedList";
 
 /**
  * Manages saving and loading game data
@@ -144,8 +146,6 @@ export class SaveController {
   }
 
   private loadGameFromData(data:any) {
-    console.log(data);
-
     gameSeed.set(data.seed);
     difficulty.set(data.difficulty);
     score.set(data.score);
@@ -153,15 +153,16 @@ export class SaveController {
     gameTime.set(data.gameTime);
     moves.set(data.moves);
     preRedoMoves.set(data.preRedoMoves);
+    Object.assign(cardPositionLUT, data.cardPositionLUT);
 
     renderedList.set(data.renderedList);
-    cardColumns.set(data.cardColumns);
-    drawPileList.set(data.drawPileList);
-    discardPileList.set(data.discardPileList);
-    spadesPileList.set(data.spadesPileList);
-    heartsPileList.set(data.heartsPileList);
-    clubsPileList.set(data.clubsPileList);
-    diamondsPileList.set(data.diamondsPileList);
+    cardColumns.set(data.cardColumns.map((val:any) => new LinkedList<PlayingCard>(val.first ? LinkedNode.fromJSON<PlayingCard>(val.first) : null)));
+    drawPileList.set(data.drawPileList.map((val:any) => PlayingCard.fromJson(val)));
+    discardPileList.set(data.discardPileList.map((val:any) => PlayingCard.fromJson(val)));
+    spadesPileList.set(data.spadesPileList.map((val:any) => PlayingCard.fromJson(val)));
+    heartsPileList.set(data.heartsPileList.map((val:any) => PlayingCard.fromJson(val)));
+    clubsPileList.set(data.clubsPileList.map((val:any) => PlayingCard.fromJson(val)));
+    diamondsPileList.set(data.diamondsPileList.map((val:any) => PlayingCard.fromJson(val)));
   }
 
   /**

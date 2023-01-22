@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { getMany } from "idb-keyval";
+  import { getMany } from "idb-keyval";
   import { afterUpdate, onMount } from "svelte";
   import { Controller } from "../../../../Controller";
   import { Difficulty } from "../../../../lib/models/Difficulty";

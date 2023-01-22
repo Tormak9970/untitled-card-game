@@ -23,7 +23,7 @@ import { GameController } from "./lib/controllers/GameController";
 import { ToastController } from "./lib/controllers/ToastController";
 import { SaveController } from "./lib/controllers/SaveController";
 import { SettingsController } from "./lib/controllers/SettingsController";
-import { clubsPileList, diamondsPileList, difficulty, gameSeed, gameTime, gameWasWon, heartsPileList, isPaused, refreshColumns, score, showGameOverModal, showMainMenu, showSaveGameToFile, spadesPileList } from "./Stores";
+import { clubsPileList, diamondsPileList, difficulty, gameSeed, gameTime, gameWasWon, heartsPileList, isPaused, loaded, refreshColumns, score, showGameOverModal, showMainMenu, showSaveGameToFile, spadesPileList } from "./Stores";
 import { MovesController } from "./lib/controllers/MovesController";
 import type { PlayingCard } from "./lib/models/PlayingCard";
 import { ToastType } from "./lib/models/ToastType";
@@ -75,6 +75,7 @@ export class Controller {
     const seed = uuidv4().substring(0,8);
     gameSeed.set(seed);
     Controller.gameController.deal(seed);
+    loaded.set(true);
     setTimeout(() => {
       Controller.saveGame(false);
     }, 300);
@@ -333,11 +334,13 @@ export class Controller {
    * @param fromFile Whether to load from a file.
    */
   static async loadGame(fromFile:boolean): Promise<void> {
+    loaded.set(false);
     if (fromFile) {
       Controller.saveController.loadGameFromFile();
     } else {
       await Controller.saveController.loadGame();
     }
+    loaded.set(true);
   }
 
   /**

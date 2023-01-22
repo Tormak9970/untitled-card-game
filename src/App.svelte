@@ -4,7 +4,7 @@
   import { Controller } from "./Controller";
   import GameBoard from "./components/GameBoard.svelte";
   import Interface from "./components/Interface.svelte";
-  import { columnBoundingRectFuncs, columnBoundingRects, showMainMenu, suitPileBoundingRectFuncs, suitPileBoundingRects } from "./Stores";
+  import { columnBoundingRectFuncs, columnBoundingRects, loaded, showMainMenu, suitPileBoundingRectFuncs, suitPileBoundingRects } from "./Stores";
 
   const debounce = (fn: Function, ms = 300) => {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -34,13 +34,13 @@
 
   onMount(() => {
     Controller.init();
-    showMainMenu.subscribe((val) => {
-      if (!val) {
+    loaded.subscribe((val) => {
+      if (val) {
         setTimeout(() => {
           onResize();
         }, 100);
       }
-    })
+    });
   });
 
   onDestroy(() => {
@@ -51,7 +51,7 @@
 <svelte:window on:resize={debouncedResize}/>
 <main>
   <div class="board-cont">
-    {#if !$showMainMenu}
+    {#if !$showMainMenu && $loaded}
       <GameBoard />
     {/if}
   </div>

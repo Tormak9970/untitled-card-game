@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>
  */
 import { get, type Unsubscriber } from "svelte/store";
-import { cardColumns, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameSeed, gameTime, heartsPileList, moves, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
+import { cardColumns, cardPositionLUT, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameSeed, gameTime, heartsPileList, moves, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
 import type { LinkedList } from "../data-structs/LinkedList";
 import { Difficulty } from "./Difficulty";
 import type { PlayingCard } from "./PlayingCard";
@@ -136,6 +136,7 @@ export class GameSave {
       "gameTime": this.gameTime,
       "moves": this.moves,
       "preRedoMoves": this.preRedoMoves,
+      "cardPositionLUT": cardPositionLUT,
     
       "renderedList": get(renderedList),
       "cardColumns": this.cardColumns,
