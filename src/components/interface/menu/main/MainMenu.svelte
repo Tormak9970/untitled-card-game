@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { getMany } from "idb-keyval";
   import { afterUpdate, onMount } from "svelte";
   import { Controller } from "../../../../Controller";
   import { Difficulty } from "../../../../lib/models/Difficulty";
@@ -7,18 +8,18 @@
   import DropDown from "../../interactables/DropDown.svelte";
   import Pannel from "../../Pannel.svelte";
 
+  let savedDiffs:string[] = [];
   let currDiff: string = "";
   let options = [];
 
-  function resumeClick() {
-    // load save with the selected difficulty
-    Controller.loadGame(false);
+  async function resumeClick() {
+    await Controller.loadGame(false);
     $isPaused = false;
     $showMainMenu = false;
   }
   function newGameClick() {
-    // Controller.clearSavedGame($difficulty, false);
-    // Controller.init();
+    Controller.clearSavedGame($difficulty, false);
+    Controller.startGame();
     $showMainMenu = false;
     $showGameStartModal = true;
   }
@@ -31,9 +32,20 @@
     }
   });
 
-  onMount(() => {
+  onMount(async () => {
     options = Object.values(Difficulty);
     currDiff = $difficulty;
+
+    const diffs = Object.values(Difficulty);
+    const results = await getMany(diffs.map((diff:Difficulty) => `difficulty: ${diff}`));
+
+    results.forEach((val:string, i:number) => {
+      if (val) {
+        savedDiffs.push(diffs[i]);
+      }
+    });
+
+    savedDiffs = [...savedDiffs];
   });
 </script>
 
@@ -44,7 +56,9 @@
     <Pannel width="auto">
       <div class="main-menu-cont">
         <DropDown bind:value={currDiff} options={options} />
-        <Button text="Resume" width={"100%"} onClick={resumeClick} />
+        {#if savedDiffs.includes(currDiff)}
+          <Button text="Resume" width={"100%"} onClick={resumeClick} />
+        {/if}
         <Button text="New Game" width={"100%"} onClick={newGameClick} />
         <Button text="Load" width={"100%"} onClick={loadClick} />
         <Button text="Options" width={"100%"} onClick={optionsClick} />

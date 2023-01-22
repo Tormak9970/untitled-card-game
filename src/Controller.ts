@@ -66,12 +66,18 @@ export class Controller {
    * Initializes the controller.
    */
   static init(): void {
+  }
+
+  /**
+   * Sets up the next game.
+   */
+  static startGame() {
     const seed = uuidv4().substring(0,8);
     gameSeed.set(seed);
     Controller.gameController.deal(seed);
-    // setTimeout(() => {
-    //   Controller.saveGame(false);
-    // });
+    setTimeout(() => {
+      Controller.saveGame(false);
+    }, 300);
   }
 
   static retry(): void {
@@ -89,7 +95,7 @@ export class Controller {
 
     refreshColumns.set(true);
     setTimeout(() => {
-      refreshColumns.set(false)
+      refreshColumns.set(false);
     });
 
     showMainMenu.set(false);
@@ -326,11 +332,11 @@ export class Controller {
    * Loads the saved game.
    * @param fromFile Whether to load from a file.
    */
-  static loadGame(fromFile:boolean): void {
+  static async loadGame(fromFile:boolean): Promise<void> {
     if (fromFile) {
       Controller.saveController.loadGameFromFile();
     } else {
-      Controller.saveController.loadGame();
+      await Controller.saveController.loadGame();
     }
   }
 

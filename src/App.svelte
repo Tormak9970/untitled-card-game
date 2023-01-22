@@ -4,7 +4,7 @@
   import { Controller } from "./Controller";
   import GameBoard from "./components/GameBoard.svelte";
   import Interface from "./components/Interface.svelte";
-  import { columnBoundingRectFuncs, columnBoundingRects, suitPileBoundingRectFuncs, suitPileBoundingRects } from "./Stores";
+  import { columnBoundingRectFuncs, columnBoundingRects, showMainMenu, suitPileBoundingRectFuncs, suitPileBoundingRects } from "./Stores";
 
   const debounce = (fn: Function, ms = 300) => {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -15,14 +15,18 @@
   };
 
   function onResize() {
-    // update column bounding rects
-    for (const key of Object.keys(columnBoundingRectFuncs)) {
-      columnBoundingRects[key] = columnBoundingRectFuncs[key]();
-    }
-    
-    // update suit bounding rects
-    for (const key of Object.keys(suitPileBoundingRectFuncs)) {
-      suitPileBoundingRects[key] = suitPileBoundingRectFuncs[key]();
+    try {
+      // update column bounding rects
+      for (const key of Object.keys(columnBoundingRectFuncs)) {
+        columnBoundingRects[key] = columnBoundingRectFuncs[key]();
+      }
+      
+      // update suit bounding rects
+      for (const key of Object.keys(suitPileBoundingRectFuncs)) {
+        suitPileBoundingRects[key] = suitPileBoundingRectFuncs[key]();
+      }
+    } catch (e:any) {
+      console.log(e);
     }
   }
 
@@ -30,9 +34,13 @@
 
   onMount(() => {
     Controller.init();
-    setTimeout(() => {
-      onResize();
-    }, 100);
+    showMainMenu.subscribe((val) => {
+      if (!val) {
+        setTimeout(() => {
+          onResize();
+        }, 100);
+      }
+    })
   });
 
   onDestroy(() => {
@@ -43,7 +51,9 @@
 <svelte:window on:resize={debouncedResize}/>
 <main>
   <div class="board-cont">
-    <GameBoard />
+    {#if !$showMainMenu}
+      <GameBoard />
+    {/if}
   </div>
   <div class="ui">
     <Interface />

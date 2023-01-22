@@ -17,11 +17,15 @@ export class MovesController {
   constructor(saveController:SaveController) {
     this.movesSub = moves.subscribe((values:string[]) => {
       undoDisabled.set(values.length == 0);
-      saveController.saveGame();
+      if (values.length > 0 || get(preRedoMoves).length > 0) {
+        saveController.saveGame();
+      }
     });
     this.preRedoSub = preRedoMoves.subscribe((values:string[]) => {
       redoDisabled.set(values.length == 0);
-      saveController.saveGame();
+      if (get(moves).length > 0 || values.length > 0) {
+        saveController.saveGame();
+      }
     });
   }
 

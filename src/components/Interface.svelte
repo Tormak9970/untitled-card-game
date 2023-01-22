@@ -16,8 +16,8 @@
     Controller.saveGame(true);
     $showSaveGameToFile = false;
   }
-  function loadGameFromFile() {
-    Controller.loadGame(true);
+  async function loadGameFromFile() {
+    await Controller.loadGame(true);
     $showLoadGameFromFile = false;
   }
 

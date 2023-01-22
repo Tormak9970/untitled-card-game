@@ -44,7 +44,7 @@ export class SaveController {
 
   /**
    * Saves a list of values from indexDB.
-   * @param keys list of key value pairs to saves.
+   * @param data list of key value pairs to saves.
    * @returns a promise of wether or not the save was successful.
    */
   async setData(data:[string, string][]): Promise<boolean> {
@@ -55,7 +55,7 @@ export class SaveController {
 
   /**
    * Deletes a list of values from indexDB.
-   * @param keys list of key value pairs to delete.
+   * @param data list of key value pairs to delete.
    * @returns a promise of wether or not the removal was successful.
    */
   async delData(data:string[][]): Promise<boolean> {
@@ -109,9 +109,9 @@ export class SaveController {
    * @param diff The target difficulty.
    */
   async loadGame(diff = get(difficulty)) {
-    const data = await this.getData([`difficutly: ${diff}`])[0];
+    const data = await this.getData([`difficulty: ${diff}`]);
 
-    this.loadGameFromData(data);
+    this.loadGameFromData(JSON.parse(data[0]));
   }
 
   /**
@@ -169,7 +169,6 @@ export class SaveController {
    * @param difficulty The target difficulty.
    */
   async deleteSave(difficulty:Difficulty): Promise<void> {
-    // clear indexdb
     await this.delData([[`difficulty: ${difficulty}`]]);
   }
 

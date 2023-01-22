@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>
  */
-import type { Unsubscriber } from "svelte/store";
+import { get, type Unsubscriber } from "svelte/store";
 import { cardColumns, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameSeed, gameTime, heartsPileList, moves, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
 import type { LinkedList } from "../data-structs/LinkedList";
 import { Difficulty } from "./Difficulty";
@@ -137,7 +137,7 @@ export class GameSave {
       "moves": this.moves,
       "preRedoMoves": this.preRedoMoves,
     
-      "renderedList": this.renderedList,
+      "renderedList": get(renderedList),
       "cardColumns": this.cardColumns,
       "drawPileList": this.drawPileList,
       "discardPileList": this.discardPileList,
