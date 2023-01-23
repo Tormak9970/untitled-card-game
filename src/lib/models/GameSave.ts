@@ -16,7 +16,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>
  */
 import { get, type Unsubscriber } from "svelte/store";
-import { cardColumns, cardPositionLUT, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameSeed, gameTime, heartsPileList, moves, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
+import { cardColumns, cardPositionLUT, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameSeed, gameTime, heartsPileList, moves, numRecycles, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
 import type { LinkedList } from "../data-structs/LinkedList";
 import { Difficulty } from "./Difficulty";
 import type { PlayingCard } from "./PlayingCard";
@@ -28,6 +28,8 @@ export class GameSave {
   // General data
   seed:string;
   seedSub:Unsubscriber;
+  numRecycles:number;
+  numRecyclesSub:Unsubscriber;
   difficulty:Difficulty;
   difficultySub:Unsubscriber;
   score:number;
@@ -65,6 +67,7 @@ export class GameSave {
 
   private genSubs(): void {
     this.seedSub = gameSeed.subscribe((value) => { this.seed = value; });
+    this.numRecyclesSub = numRecycles.subscribe((value) => { this.numRecycles = value; })
     this.difficultySub = difficulty.subscribe((value) => { this.difficulty = value; });
     this.scoreSub = score.subscribe((value) => { this.score = value; });
     this.turnsSub = turns.subscribe((value) => { this.turns = value; });
@@ -87,6 +90,7 @@ export class GameSave {
    */
   destroySubs(): void {
     if(this.seedSub) this.seedSub();
+    if(this.numRecyclesSub) this.numRecyclesSub();
     if(this.difficultySub) this.difficultySub();
     if(this.scoreSub) this.scoreSub();
     if(this.turnsSub) this.turnsSub();
@@ -106,6 +110,7 @@ export class GameSave {
 
   resetSave(): void {
     gameSeed.set("");
+    numRecycles.set(0);
     difficulty.set(Difficulty.INTERMEDIATE);
     score.set(0);
     turns.set(0);
@@ -130,6 +135,7 @@ export class GameSave {
   toJSON() {
     return {
       "seed": this.seed,
+      "numRecycles": this.numRecycles,
       "difficulty": this.difficulty,
       "score": this.score,
       "turns": this.turns,

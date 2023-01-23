@@ -18,7 +18,7 @@
 import { getMany, setMany, delMany } from 'idb-keyval';
 import { get } from "svelte/store";
 import { Controller } from "../../Controller";
-import { cardColumns, cardPositionLUT, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameSeed, gameTime, heartsPileList, moves, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
+import { cardColumns, cardPositionLUT, clubsPileList, diamondsPileList, difficulty, discardPileList, drawPileList, gameSeed, gameTime, heartsPileList, moves, numRecycles, preRedoMoves, renderedList, score, spadesPileList, turns } from "../../Stores";
 import { GameSave } from "../models/GameSave";
 import { ToastType } from "../models/ToastType";
 import type { Difficulty } from "../models/Difficulty";
@@ -147,6 +147,7 @@ export class SaveController {
 
   private loadGameFromData(data:any) {
     gameSeed.set(data.seed);
+    numRecycles.set(data.numRecycles ? data.numRecycles : 0);
     difficulty.set(data.difficulty);
     score.set(data.score);
     turns.set(data.turns);

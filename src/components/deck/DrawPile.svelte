@@ -2,12 +2,13 @@
   import { onMount, afterUpdate, onDestroy } from "svelte";
 
   import { Controller } from "../../Controller";
-  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty, moves, discardPileList, preRedoMoves, shouldPlayUndoAnim, shouldPlayRedoAnim, shouldAnimateDrawPile } from "../../Stores";
+  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty, moves, discardPileList, preRedoMoves, shouldPlayUndoAnim, shouldPlayRedoAnim, shouldAnimateDrawPile, numRecycles } from "../../Stores";
   
   import Card from "../cards/Card.svelte";
   import CardContainer from "./CardContainer.svelte";
   import { Difficulty } from "../../lib/models/Difficulty";
   import type { Unsubscriber } from "svelte/store";
+    import { ToastType } from "../../lib/models/ToastType";
 
   export let scale:number;
   export let shouldAnimate = false;
@@ -58,17 +59,22 @@
   }
   function recycleDiscard(): void {
     if ($drawPileList.length == 0) {
-      shouldRecycle = true;
-      $moves = [...$moves, JSON.stringify({
-        "drawPile": $drawPileList,
-        "discardPile": $discardPileList
-      })];
-      $preRedoMoves = [];
+      if (!($difficulty == Difficulty.EXPERT && $numRecycles == 3)) {
+        shouldRecycle = true;
+        $moves = [...$moves, JSON.stringify({
+          "drawPile": $drawPileList,
+          "discardPile": $discardPileList
+        })];
+        $preRedoMoves = [];
 
-      shouldAnimate = true;
-      Controller.recycleDeck();
-      if ($difficulty == Difficulty.BEGINNER) Controller.scoreBeginnerRecycle();
-      $discardId = 0;
+        shouldAnimate = true;
+        Controller.recycleDeck();
+        if ($difficulty == Difficulty.BEGINNER) Controller.scoreBeginnerRecycle();
+        $discardId = 0;
+        $numRecycles += 1;
+      } else {
+        Controller.showToast("You have already Recycled 3 times!", ToastType.INFO);
+      }
     }
   }
 
@@ -103,7 +109,7 @@
           {/each}
         {/key}
       {:else}
-        <div class="bg-icon"/>
+        <div class="bg-icon" class:disabled={$difficulty == Difficulty.EXPERT && $numRecycles == 3}/>
       {/if}
     </div>
   </CardContainer>
@@ -159,6 +165,11 @@
   .bg-icon:hover {
     filter: hue-rotate(0deg);
     cursor: pointer;
+  }
+
+  .disabled {
+    opacity: 0.5;
+    pointer-events: none;
   }
 
   :global(.empty-inner > .icon) { color: var(--highlight); }

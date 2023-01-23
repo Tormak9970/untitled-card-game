@@ -48,6 +48,7 @@ export const discardPileList:Writable<PlayingCard[]> = writable([]);
 
 // Draw/Discard pile stores
 export const discardId = writable(0);
+export const numRecycles = writable(0);
 
 // Layout stores
 export const drawPileBoundingRect:Writable<() => DOMRect> = writable(null);
