@@ -36,6 +36,7 @@ import 'tippy.js/animations/scale-subtle.css';
 import { KeyBindingController } from "./lib/controllers/KeyBindingController";
 import { v4 as uuidv4 } from 'uuid';
 import type { Difficulty } from "./lib/models/Difficulty";
+import { AudioController, type SoundEffect } from "./lib/controllers/AudioController";
 
 /**
  * The main controller for the game.
@@ -61,11 +62,27 @@ export class Controller {
   private static gameController = new GameController();
   private static movesController = new MovesController(Controller.saveController);
   private static keyBindingController = new KeyBindingController();
+  private static audioController = new AudioController();
 
   /**
    * Initializes the controller.
    */
   static init(): void {
+  }
+
+  /**
+   * Plays a sound effect.
+   * @param sound The sound to play.
+   */
+  static playSound(sound:SoundEffect): void {
+    Controller.audioController.playSound(sound);
+  }
+
+  /**
+   * Plays a random music track.
+   */
+  static playMusic(): void {
+    Controller.audioController.playMusic();
   }
 
   /**
@@ -81,6 +98,9 @@ export class Controller {
     }, 300);
   }
 
+  /**
+   * Resets the game so the player can retry the same seed.
+   */
   static retry(): void {
     const seed = get(gameSeed);
     const diff = get(difficulty);
