@@ -163,7 +163,7 @@
       </div>
     </CardContainer>
   {:else}
-    <CardContainer scale={scale} width={(CARD_WIDTH * scale * uncoveredPercent * 2) + (CARD_WIDTH * scale) + 8}>
+    <CardContainer scale={scale} width={(CARD_WIDTH * scale * uncoveredPercent * 2) + (CARD_WIDTH * scale) + Math.floor(8 * (1 / 0.4) * scale)}>
       <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px; --previousLeft: {previousLeft}px; --previousTop: {previousTop}px;" bind:this={cardContainer}>
         <div class="blocker" style="position: absolute; z-index: 100; width: {CARD_WIDTH * scale * uncoveredPercent * ((items.length - 1) % 3)}px; height: 100%" on:mousedown|stopPropagation />
         <div
