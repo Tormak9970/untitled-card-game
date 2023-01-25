@@ -243,7 +243,7 @@
     </div>
   </div>
   <div class="icon-cont" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px;">
-    <img src="/assets/pixel-crown.png" alt="king-slot">
+    <img src="/assets/pixel-crown.png" alt="king-slot" width="{(110 * (1 / 0.4)) * scale}px" height="{(110 * (1 / 0.4)) * scale}px">
   </div>
 </div>
 

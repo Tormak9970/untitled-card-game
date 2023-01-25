@@ -14,6 +14,8 @@
     };
   };
 
+  let rerender = false;
+
   function onResize() {
     try {
       // update column bounding rects
@@ -25,6 +27,13 @@
       for (const key of Object.keys(suitPileBoundingRectFuncs)) {
         suitPileBoundingRects[key] = suitPileBoundingRectFuncs[key]();
       }
+
+      Controller.CARD_SCALE = 0.4 * (screen.height / 1290);
+      
+      rerender = true;
+      setTimeout(() => {
+        rerender = false;
+      });
     } catch (e:any) {
       console.log(e);
     }
@@ -51,7 +60,7 @@
 <svelte:window on:resize={debouncedResize}/>
 <main>
   <div class="board-cont">
-    {#if !$showMainMenu && $loaded}
+    {#if !$showMainMenu && $loaded && !rerender}
       <GameBoard />
     {/if}
   </div>

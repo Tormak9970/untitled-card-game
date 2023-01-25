@@ -26,8 +26,8 @@ type BaseCardLUT = {
 
 export const CARD_WIDTH = 360;
 export const CARD_HEIGHT = 504;
-
 export const SUIT_ICON_SIZE = 110;
+
 export const SUIT_ICON_SPRITE_SHEET_HEIGHT = SUIT_ICON_SIZE * 4;
 
 export const BASE_CARD_LUT: BaseCardLUT = {
