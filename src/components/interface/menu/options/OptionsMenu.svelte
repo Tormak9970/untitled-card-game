@@ -39,7 +39,7 @@
 <Pannel width="auto">
   <div class="options-menu">
     <div class="options">
-      <Option name="Music Volume">
+      <!-- <Option name="Music Volume">
         <div class="slider-pos">
           <Slider bind:value={musicVolume} width="90%"/>
           <div class="value-cont">
@@ -54,7 +54,7 @@
             <InputField bind:value={sfxVolume} width={"21px"}/>
           </div>
         </div>
-      </Option>
+      </Option> -->
       <Option name="Enable Timer">
         <div class="slider-pos">
           <Checkbox bind:checked={timed}/>
