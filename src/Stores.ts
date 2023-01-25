@@ -51,8 +51,14 @@ export const discardId = writable(0);
 export const numRecycles = writable(0);
 
 // Layout stores
-export const drawPileBoundingRect:Writable<() => DOMRect> = writable(null);
-export const discardPileBoundingRect:Writable<() => DOMRect> = writable(null);
+export const deckBoundingRectFuncs:{[key:string]: () => DOMRect} = {
+  "drawPile": null,
+  "discardPile": null
+};
+export const deckBoundingRects:{[key:string]: DOMRect} = {
+  "drawPile": null,
+  "discardPile": null
+};
 
 export const frontColumn = writable(-1);
 export const movingToDiscard = writable(false);

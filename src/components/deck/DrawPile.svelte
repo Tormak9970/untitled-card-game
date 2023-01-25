@@ -2,7 +2,7 @@
   import { onMount, afterUpdate, onDestroy } from "svelte";
 
   import { Controller } from "../../Controller";
-  import { discardId, drawPileList, drawPileBoundingRect, discardPileBoundingRect, difficulty, moves, discardPileList, preRedoMoves, shouldPlayUndoAnim, shouldPlayRedoAnim, shouldAnimateDrawPile, numRecycles } from "../../Stores";
+  import { discardId, drawPileList, difficulty, moves, discardPileList, preRedoMoves, shouldPlayUndoAnim, shouldPlayRedoAnim, shouldAnimateDrawPile, numRecycles, deckBoundingRectFuncs, deckBoundingRects } from "../../Stores";
   
   import Card from "../cards/Card.svelte";
   import CardContainer from "./CardContainer.svelte";
@@ -23,7 +23,7 @@
   let cardContainer:HTMLDivElement;
   
   function setPilePositions() {
-    const discardPileInfo = $discardPileBoundingRect();
+    const discardPileInfo = deckBoundingRects.discardPile;
     const cardContBoundingRect = cardContainer.getBoundingClientRect();
     discardPileLeft = discardPileInfo.left - cardContBoundingRect.left;
     discardPileTop = discardPileInfo.top - cardContBoundingRect.top;
@@ -83,9 +83,9 @@
   });
 
   onMount(() => {
-    $drawPileBoundingRect = cardContainer.getBoundingClientRect.bind(cardContainer);
+    deckBoundingRectFuncs.drawPile = cardContainer.getBoundingClientRect.bind(cardContainer);
     drawPileListSub = drawPileList.subscribe((values) => {
-      if ($discardPileBoundingRect) setPilePositions();
+      if (deckBoundingRects.discardPile) setPilePositions();
     });
   });
 

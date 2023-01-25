@@ -4,7 +4,7 @@
   import { Controller } from "./Controller";
   import GameBoard from "./components/GameBoard.svelte";
   import Interface from "./components/Interface.svelte";
-  import { columnBoundingRectFuncs, columnBoundingRects, loaded, showMainMenu, suitPileBoundingRectFuncs, suitPileBoundingRects } from "./Stores";
+  import { columnBoundingRectFuncs, columnBoundingRects, deckBoundingRectFuncs, deckBoundingRects, loaded, showMainMenu, suitPileBoundingRectFuncs, suitPileBoundingRects } from "./Stores";
 
   const debounce = (fn: Function, ms = 300) => {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -17,29 +17,38 @@
   let rerender = false;
 
   function onResize() {
-    try {
-      // update column bounding rects
-      for (const key of Object.keys(columnBoundingRectFuncs)) {
-        columnBoundingRects[key] = columnBoundingRectFuncs[key]();
-      }
-      
-      // update suit bounding rects
-      for (const key of Object.keys(suitPileBoundingRectFuncs)) {
-        suitPileBoundingRects[key] = suitPileBoundingRectFuncs[key]();
-      }
+    if ($loaded) {
+      try {
+        // update column bounding rects
+        for (const key of Object.keys(columnBoundingRectFuncs)) {
+          columnBoundingRects[key] = columnBoundingRectFuncs[key]();
+        }
+        
+        // update suit bounding rects
+        for (const key of Object.keys(suitPileBoundingRectFuncs)) {
+          suitPileBoundingRects[key] = suitPileBoundingRectFuncs[key]();
+        }
+        
+        // update deck bounding rects
+        for (const key of Object.keys(deckBoundingRectFuncs)) {
+          deckBoundingRects[key] = deckBoundingRectFuncs[key]();
+        }
 
-      Controller.CARD_SCALE = 0.4 * (screen.height / 1290);
-      
-      rerender = true;
-      setTimeout(() => {
-        rerender = false;
-      });
-    } catch (e:any) {
-      console.log(e);
+        Controller.CARD_SCALE = 0.4 * (screen.height / 1290);
+        
+        rerender = true;
+        setTimeout(() => {
+          rerender = false;
+        });
+      } catch (e:any) {
+        console.log(e);
+      }
+    } else {
+      console.log("not loaded yet");
     }
   }
 
-  const debouncedResize = debounce(onResize, 500);
+  const debouncedResize = debounce(onResize, 300);
 
   onMount(() => {
     Controller.init();

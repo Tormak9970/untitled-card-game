@@ -3,7 +3,7 @@
   import type { Unsubscriber } from "svelte/store";
   import { dndzone, SHADOW_PLACEHOLDER_ITEM_ID, TRIGGERS } from "svelte-dnd-action";
   
-  import { discardPileList, discardId, discardPileBoundingRect, discardZoneStyle, drawPileBoundingRect, draggingSuit, draggingMoreThenOne, draggingType, difficulty, shouldPlayUndoAnim, drawPileList, cardPositionLUT, shouldPlayRedoAnim, movingToDiscard } from "../../Stores";
+  import { discardPileList, discardId, discardZoneStyle, draggingSuit, draggingMoreThenOne, draggingType, difficulty, shouldPlayUndoAnim, drawPileList, cardPositionLUT, shouldPlayRedoAnim, movingToDiscard, deckBoundingRectFuncs, deckBoundingRects } from "../../Stores";
   import { getCurrentCardZoneType } from "../../UiLogic";
   import { LinkedNode } from "../../lib/data-structs/LinkedList";
   import type { PlayingCard } from "../../lib/models/PlayingCard";
@@ -48,7 +48,7 @@
   function handleDndFinalize(e:any) { items = e.detail.items.filter((e: { id: string; }) => e.id != SHADOW_PLACEHOLDER_ITEM_ID).sort(sortById); }
 
   function setPilePositions() {
-    const drawPileInfo = $drawPileBoundingRect();
+    const drawPileInfo = deckBoundingRects.drawPile;
     const cardContBoundingRect = cardContainer.getBoundingClientRect();
     drawPileLeft = -(cardContBoundingRect.left - drawPileInfo.left);
     drawPileTop = -(cardContBoundingRect.top - drawPileInfo.top);
@@ -112,7 +112,7 @@
   });
 
   onMount(() => {
-    $discardPileBoundingRect = cardContainer.getBoundingClientRect.bind(cardContainer);
+    deckBoundingRectFuncs.discardPile = cardContainer.getBoundingClientRect.bind(cardContainer);
     discardPileListSub = discardPileList.subscribe((values) => {
       if (values.length > 0) {
         for (const val of values) {
@@ -140,7 +140,7 @@
       }
       type = values.length > 0 ? getCurrentCardZoneType(values[values.length - 1]) : "none";
       
-      setPilePositions();
+      if (deckBoundingRects.drawPile) setPilePositions();
     });
   });
 
