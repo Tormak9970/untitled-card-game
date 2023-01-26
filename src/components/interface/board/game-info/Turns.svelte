@@ -9,8 +9,4 @@
 
 <style>
   @import "/theme.css";
-  
-  /* .turn-tracker {
-    
-  } */
 </style>

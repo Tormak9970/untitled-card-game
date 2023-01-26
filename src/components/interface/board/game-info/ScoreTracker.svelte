@@ -9,8 +9,4 @@
 
 <style>
   @import "/theme.css";
-  
-  /* .score-tracker {
-    
-  } */
 </style>

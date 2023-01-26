@@ -45,8 +45,4 @@
 
 <style>
   @import "/theme.css";
-  
-  /* .game-timer {
-    
-  } */
 </style>

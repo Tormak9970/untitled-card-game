@@ -32,9 +32,9 @@
 </script>
 
 <div class="game-ui">
-  <!-- <Logo />
+  <Logo />
   <GameInfo />
-  <GameControls /> -->
+  <GameControls />
 	<div class="rights">© Travis Lane {new Date().getFullYear()}</div>
 
   <!-- Main Menu Modal -->
