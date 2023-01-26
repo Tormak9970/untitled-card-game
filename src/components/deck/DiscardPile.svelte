@@ -1,3 +1,6 @@
+<script lang="ts" context="module">
+  let wasMount = true;
+</script>
 <script lang="ts">
   import { onDestroy, onMount, afterUpdate } from "svelte";
   import type { Unsubscriber } from "svelte/store";
@@ -112,6 +115,9 @@
   });
 
   onMount(() => {
+    setTimeout(() => {
+      wasMount = false;
+    }, 500);
     deckBoundingRectFuncs.discardPile = cardContainer.getBoundingClientRect.bind(cardContainer);
     discardPileListSub = discardPileList.subscribe((values) => {
       if (values.length > 0) {
@@ -145,6 +151,7 @@
   });
 
   onDestroy(() => {
+    wasMount = true;
     if (discardPileListSub) discardPileListSub();
   });
 </script>
@@ -174,7 +181,12 @@
             >
             {#each items as playingCard, i (`${i}|${playingCard.id}`)}
               <div
-                class="card-wrapper{(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location == CardLocation.BOARD || checkIfSuitLocation(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location)) ? ((playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID&& i == items.length - 1) ? (cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column ? " transition-from-other" : "") : "") : ((i >= items.length-3 && shouldAnimate) || ($drawPileList.length == 0 && $shouldPlayUndoAnim) ? " transition-from-draw": "")}"
+                class="card-wrapper{(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location == CardLocation.BOARD || checkIfSuitLocation(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location)) ?
+                  ((playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && i == items.length - 1) ?
+                    (cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column ? " transition-from-other" : "") :
+                    "") :
+                    //! this is the problematic check
+                  ((i >= items.length-3 && shouldAnimate && !wasMount) || ($drawPileList.length == 0 && $shouldPlayUndoAnim) ? " transition-from-draw": "")}"
                 style="--base-left: {(CARD_WIDTH * scale * uncoveredPercent * 2) - (i >= $discardPileList.length - 3 ? (CARD_WIDTH * scale * uncoveredPercent * (($discardPileList.length - 1 - i) % 3)) : (CARD_WIDTH * scale * uncoveredPercent * 2))}px;"
                 >
                 <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
