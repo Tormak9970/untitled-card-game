@@ -21,17 +21,34 @@
 <style>
   @import "/theme.css";
 
-  .deck {
-    margin-top:7px;
+  @media (orientation: landscape) {
+    .deck {
+      margin-top:7px;
 
-    display: flex;
+      display: flex;
+    }
+
+    .draw-cont {
+      margin-right: 7px;
+    }
+
+    .discard-cont {
+      margin-left: 7px;
+    }
   }
 
-  .draw-cont {
-    margin-right: 7px;
-  }
+  @media (orientation: portrait) {
+    .deck {
+      display: flex;
+      margin-left: 0.556vw;
+    }
 
-  .discard-cont {
-    margin-left: 7px;
+    .draw-cont {
+      margin-right: 1.111vw;
+    }
+
+    /* .discard-cont {
+      
+    } */
   }
 </style>

@@ -42,6 +42,7 @@ import { AudioController, type SoundEffect } from "./lib/controllers/AudioContro
  * The main controller for the game.
  */
 export class Controller {
+  private static _ORIENTATION_QUERY = "(orientation:landscape)";
   static ANIM_SPEED = 150;
   static ANIM_PAUSE_LENGTH = 0;
   static DRAW_ANIM_DELAY = 50;
@@ -69,6 +70,10 @@ export class Controller {
    * Initializes the controller.
    */
   static init(): void {
+  }
+
+  static get ORIENTATION_QUERY() {
+    return Controller._ORIENTATION_QUERY;
   }
 
   /**

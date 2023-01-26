@@ -16,9 +16,20 @@
 <style>
   @import "/theme.css";
 
-  .piles {
-    display: grid;
-    grid-template-rows: repeat(1fr, 4);
-    row-gap: 14px;
+  @media (orientation: landscape) {
+    .piles {
+      display: grid;
+      grid-template-rows: repeat(1fr, 4);
+      row-gap: 14px;
+    }
+  }
+
+  @media (orientation: portrait) {
+    .piles {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      column-gap: 1.306vw;
+      margin-right: 0.417vw;
+    }
   }
 </style>

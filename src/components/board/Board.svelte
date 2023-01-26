@@ -20,15 +20,24 @@
 <style>
   @import "/theme.css";
 
-  .board { perspective: 1000px; }
+  @media (orientation: landscape) {
+    .column-container {
+      display: flex;
+      flex-direction: row;
 
-  .column-container {
-    display: flex;
-    flex-direction: row;
+      width: 100%;
+      height: 100%;
+    }
+  }
 
-    width: 100%;
-    height: 100%;
-    /* transition: transform 0.8s; */
-    /* transform: rotateX(3deg) rotateY(0deg) rotateZ(0deg); */
+  @media (orientation: portrait) {
+    .column-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+
+      width: 100%;
+      height: 100%;
+    }
   }
 </style>

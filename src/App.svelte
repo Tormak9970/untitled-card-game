@@ -34,7 +34,8 @@
           deckBoundingRects[key] = deckBoundingRectFuncs[key]();
         }
 
-        Controller.CARD_SCALE = 0.4 * (screen.height / 1290);
+        //! this scaling is very off in portait mode. need to find a better way to calculate it
+        Controller.CARD_SCALE = ((window.screen.orientation.type.indexOf("landscape") == 0) ? 0.4 * screen.height / 1290 : 0.12 * screen.width / 360);
         
         rerender = true;
         setTimeout(() => {
@@ -82,33 +83,67 @@
 <style>
   @import "/theme.css";
 
-  main {
-    width: 100%;
-    height: 100%;
+  @media (orientation: landscape) {
+    main {
+      width: 100%;
+      height: 100%;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
 
-    color: var(--font-color);
+      color: var(--font-color);
+    }
+
+    .board-cont {
+      width: calc(100% - 15vh);
+      height: calc(100% - 15vh);
+
+      border-radius: 8px;
+    }
+
+    .ui {
+      width: 100%;
+      height: 100%;
+
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      
+      pointer-events: none;
+    }
   }
 
-  .board-cont {
-    width: calc(100% - 15vh);
-    height: calc(100% - 15vh);
+  @media (orientation: portrait) {
+    main {
+      width: 100%;
+      height: 100%;
 
-    border-radius: 8px;
-  }
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
 
-  .ui {
-    width: 100%;
-    height: 100%;
+      color: var(--font-color);
+    }
 
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    
-    pointer-events: none;
+    .board-cont {
+      width: calc(100% - 14px);
+      height: calc(100% - 15vw);
+
+      border-radius: 8px;
+    }
+
+    .ui {
+      width: 100%;
+      height: 100%;
+
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      
+      pointer-events: none;
+    }
   }
 </style>

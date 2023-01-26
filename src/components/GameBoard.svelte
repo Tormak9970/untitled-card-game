@@ -6,47 +6,83 @@
   import { difficulty, frontColumn, movingToDiscard } from "../Stores";
   import { Difficulty } from "../lib/models/Difficulty";
   import { Controller } from "../Controller";
+  import MediaQuery from "./interface/MediaQuery.svelte";
 
   const CARD_SCALE = Controller.CARD_SCALE;
   
   const DISCARD_UNCOVERED_PERCENT = 0.3;
 </script>
 
-<div class="game-board">
-  <div class="deck-cont" style="{($movingToDiscard) ? "z-index:100; " : ""}margin-right: {CARD_SCALE * CARD_WIDTH * 2 - ($difficulty == Difficulty.BEGINNER ? 0 : (CARD_WIDTH * CARD_SCALE * DISCARD_UNCOVERED_PERCENT * 2))}px;">
-    <Deck scale={CARD_SCALE} uncoveredPercent={DISCARD_UNCOVERED_PERCENT}/>
-  </div>
-  <div class="board-cont" style="{($frontColumn != -1) ? "z-index:100;" : ""}">
-    <Board scale={CARD_SCALE} />
-  </div>
-  <div class="piles-cont" style="margin-left: {CARD_SCALE * CARD_WIDTH}px;">
-    <Piles scale={CARD_SCALE} />
-  </div>
-</div>
+<MediaQuery query="{Controller.ORIENTATION_QUERY}" let:matches>
+  {#if matches}
+    <div class="game-board">
+      <div class="deck-cont" style="{($movingToDiscard) ? "z-index:100; " : ""}margin-right: {CARD_SCALE * CARD_WIDTH * 2 - ($difficulty == Difficulty.BEGINNER ? 0 : (CARD_WIDTH * CARD_SCALE * DISCARD_UNCOVERED_PERCENT * 2))}px;">
+        <Deck scale={CARD_SCALE} uncoveredPercent={DISCARD_UNCOVERED_PERCENT}/>
+      </div>
+      <div class="board-cont" style="{($frontColumn != -1) ? "z-index:100;" : ""}">
+        <Board scale={CARD_SCALE} />
+      </div>
+      <div class="piles-cont" style="margin-left: {CARD_SCALE * CARD_WIDTH}px;">
+        <Piles scale={CARD_SCALE} />
+      </div>
+    </div>
+  {:else}
+    <div class="game-board">
+      <div class="top">
+        <div class="deck-cont" style="{($movingToDiscard) ? "z-index:100; " : ""}">
+          <Deck scale={CARD_SCALE} uncoveredPercent={DISCARD_UNCOVERED_PERCENT}/>
+        </div>
+        <div class="piles-cont">
+          <Piles scale={CARD_SCALE} />
+        </div>
+      </div>
+      <div class="board-cont" style="{($frontColumn != -1) ? "z-index:100;" : ""}">
+        <Board scale={CARD_SCALE} />
+      </div>
+    </div>
+  {/if}
+</MediaQuery>
 
 <style>
   @import "/theme.css";
 
-  .game-board {
-    width: 100%;
-    height: 100%;
+  @media (orientation: landscape) {
+    .game-board {
+      width: 100%;
+      height: 100%;
 
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
 
-    color: var(--font-color);
+      color: var(--font-color);
+    }
+
+    .board-cont { height: 100%; }
   }
 
-  /* .deck-cont {
+  @media (orientation: portrait) {
+    .game-board {
+      width: 100%;
+      height: 100%;
 
-  } */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
-  .board-cont {
-    height: 100%;
+      color: var(--font-color);
+    }
+
+    .top {
+      width: 100%;
+      padding: 0vw 1.944vw;
+
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .board-cont { width: 100%; }
   }
-
-  /* .piles-cont {
-    
-  } */
 </style>
