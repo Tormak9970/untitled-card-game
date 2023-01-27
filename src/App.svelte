@@ -122,7 +122,7 @@
 
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
 
       color: var(--font-color);
@@ -130,9 +130,10 @@
 
     .board-cont {
       width: calc(100% - 14px);
-      height: calc(100% - 15vw);
-
+      height: calc(100% - 61px);
       border-radius: 8px;
+      padding: 7px;
+      margin-top: 25px;
     }
 
     .ui {

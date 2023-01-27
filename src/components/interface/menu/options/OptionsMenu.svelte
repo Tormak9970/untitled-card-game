@@ -74,7 +74,7 @@
   .options-menu {
     pointer-events: all;
 
-    width: 400px;
+    width: 340px;
 
     display: grid;
     row-gap: 7px;
@@ -88,13 +88,11 @@
   }
 
   .slider-pos {
-    width: 60%;
+    width: 50%;
 
     display: flex;
     justify-content: space-between;
   }
 
-  .value-cont {
-    margin-left: 14px;
-  }
+  /* .value-cont { margin-left: 14px; } */
 </style>
