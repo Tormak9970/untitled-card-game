@@ -16,13 +16,13 @@
 <MediaQuery query="{Controller.ORIENTATION_QUERY}" let:matches>
   {#if matches}
     <div class="game-board">
-      <div class="deck-cont" style="{($movingToDiscard) ? "z-index:100; " : ""}margin-right: {CARD_SCALE * CARD_WIDTH * 2 - ($difficulty == Difficulty.BEGINNER ? 0 : (CARD_WIDTH * CARD_SCALE * DISCARD_UNCOVERED_PERCENT * 2))}px;">
+      <div class="deck-cont" style="{($movingToDiscard) ? "z-index:100; " : ""}">
         <Deck scale={CARD_SCALE} uncoveredPercent={DISCARD_UNCOVERED_PERCENT}/>
       </div>
       <div class="board-cont" style="{($frontColumn != -1) ? "z-index:100;" : ""}">
         <Board scale={CARD_SCALE} />
       </div>
-      <div class="piles-cont" style="margin-left: {CARD_SCALE * CARD_WIDTH}px;">
+      <div class="piles-cont">
         <Piles scale={CARD_SCALE} />
       </div>
     </div>
@@ -53,12 +53,21 @@
 
       display: flex;
       flex-direction: row;
-      justify-content: center;
+      justify-content: space-around;
 
       color: var(--font-color);
     }
 
-    .board-cont { height: 100%; }
+    .board-cont { height: 100%; margin-top: 3.5px; }
+
+    .piles-cont {
+      margin-top: 7px;
+      margin-left: 7px;
+    }
+
+    .deck-cont {
+      margin-right: 7px;
+    }
   }
 
   @media (orientation: portrait) {

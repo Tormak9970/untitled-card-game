@@ -8,15 +8,17 @@ import Pannel from "../Pannel.svelte";
 <div class="game-logo">
   <MediaQuery query="{Controller.ORIENTATION_QUERY}" let:matches>
     {#if matches}
-      <Pannel padding="0px 14px">
+      <Pannel padding="0px 14px" height="51px">
         <div class="wrapper">
           <img src="/assets/pixel-crown.png" alt="logo" height="53px">
+          <!-- svelte-ignore missing-declaration -->
           <div style="margin-left: 20px;">Utitled Card Game - v{__APP_VERSION__}</div>
         </div>
       </Pannel>
     {:else}
-      <Pannel padding="0px 0px" width="53px">
+      <Pannel padding="0px 0px" width="51px" height="51px">
         <div class="wrapper">
+          <!-- svelte-ignore missing-declaration -->
           <img src="/assets/pixel-crown.png" alt="logo" height="53px" use:Controller.tippy={{content: `Utitled Card Game - v${__APP_VERSION__}`, placement: "right"}}>
         </div>
       </Pannel>
@@ -29,7 +31,6 @@ import Pannel from "../Pannel.svelte";
 
   @media (orientation:landscape) {
     .game-logo {
-      width: 500px;
       position: absolute;
       pointer-events: auto;
 
@@ -48,6 +49,8 @@ import Pannel from "../Pannel.svelte";
       flex-direction: row;
       align-items: center;
       justify-content: flex-start;
+
+      padding-right: 1vw;
     }
   }
 
@@ -65,8 +68,8 @@ import Pannel from "../Pannel.svelte";
     }
     
     .wrapper {
-      width: 53px;
-      height: 53px;
+      width: 51px;
+      height: 51px;
 
       display: flex;
       flex-direction: row;

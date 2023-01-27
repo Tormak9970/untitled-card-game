@@ -35,7 +35,7 @@ import Pannel from "../../Pannel.svelte";
 
   @media (orientation:landscape) {
     .game-info {
-      width: 500px;
+      max-width: 500px;
       position: absolute;
       pointer-events: auto;
 
@@ -47,13 +47,14 @@ import Pannel from "../../Pannel.svelte";
     }
     
     .wrapper {
-      width: 100%;
+      width: calc(100% - 2vw);
       height: 100%;
 
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-around;
+      display: grid;
+      grid-template-columns: repeat(3, auto);
+      column-gap: 4vw;
+      
+      padding: 0px 1vw;
     }
   }
 
@@ -72,12 +73,14 @@ import Pannel from "../../Pannel.svelte";
     }
     
     .wrapper {
-      width: 100%;
+      width: calc(100% - 2vw);
       height: 100%;
 
       display: grid;
-      grid-template-columns: repeat(4, auto);
+      grid-template-columns: repeat(3, auto);
       column-gap: 4vw;
+      
+      padding: 0px 1vw;
 
       font-size: 80%;
     }
