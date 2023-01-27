@@ -1,11 +1,15 @@
 <script lang="ts">
-  import { isPaused, showLoadGameFromFile, showMainMenu, showOptionsMenu, showPauseMenu, showSaveGameToFile } from "../../../Stores";
+  import { isPaused, showGameOverModal, showLoadGameFromFile, showMainMenu, showOptionsMenu, showPauseMenu, showSaveGameToFile } from "../../../Stores";
   import Button from "../interactables/Button.svelte";
   import Pannel from "../Pannel.svelte";
 
   function resumeClick() {
     $isPaused = false;
     $showPauseMenu = false;
+  }
+  function giveUpClick() {
+    $showPauseMenu = false;
+    $showGameOverModal = true;
   }
   function saveClick() { $showSaveGameToFile = true; }
   function loadClick() { $showLoadGameFromFile = true; }
@@ -17,6 +21,7 @@
 <Pannel width="auto">
   <div class="pause-menu">
     <Button text="Resume" width={"100%"} onClick={resumeClick} />
+    <Button text="Give Up" width={"100%"} onClick={giveUpClick} />
     <Button text="Save" width={"100%"} onClick={saveClick} />
     <Button text="Load" width={"100%"} onClick={loadClick} />
     <Button text="Options" width={"100%"} onClick={optionsClick} />

@@ -95,9 +95,9 @@ export class Controller {
    * Sets up the next game.
    */
   static startGame() {
+    Controller.clearSavedGame(get(difficulty));
     const seed = uuidv4().substring(0,8);
     gameSeed.set(seed);
-    Controller.clearSavedGame(get(difficulty));
     Controller.gameController = new GameController();
     Controller.gameController.deal(seed);
     loaded.set(true);
@@ -111,10 +111,10 @@ export class Controller {
    */
   static retry(): void {
     const seed = get(gameSeed);
+    console.log(seed);
     const diff = get(difficulty);
     
-    Controller.saveController.deleteSave(diff);
-    Controller.saveController.resetSave();
+    Controller.clearSavedGame(diff);
 
     gameSeed.set(seed);
     difficulty.set(diff);
@@ -122,12 +122,16 @@ export class Controller {
     Controller.gameController = new GameController();
     Controller.gameController.deal(seed);
 
-    refreshColumns.set(true);
+    loaded.set(false);
     setTimeout(() => {
-      refreshColumns.set(false);
+      loaded.set(true);
     });
+    setTimeout(() => {
+      Controller.saveGame(false);
+    }, 300);
 
     showMainMenu.set(false);
+    showGameOverModal.set(false);
     isPaused.set(false);
   }
 
