@@ -15,7 +15,7 @@
 <div class="game-controls">
   <MediaQuery query="{Controller.ORIENTATION_QUERY}" let:matches>
     {#if matches}
-      <Pannel>
+      <Pannel padding="1vh">
         <div class="wrapper">
           <div class="undo-redo" class:disabled={$undoDisabled}>
             <IconButton onClick={undoClick} tooltip={true} tooltipText={"Undo"}>
@@ -43,7 +43,7 @@
         </div>
       </Pannel>
     {:else}
-      <Pannel padding="10px">
+      <Pannel padding="1.5vw" width="auto">
         <div class="wrapper">
           <div class="undo-redo" class:disabled={$undoDisabled}>
             <IconButton onClick={undoClick} tooltip={true} tooltipText={"Undo"}>
@@ -77,104 +77,56 @@
 <style>
   @import "/theme.css";
 
+  .game-controls {
+    position: absolute;
+    pointer-events: auto;
+
+    right: 0px;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .wrapper {
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
   @media (orientation:landscape) {
-    .game-controls {
-      width: 330px;
-      position: absolute;
-      pointer-events: auto;
-
-      right: 0px;
-      bottom: 0px;
-
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
-    
-    .wrapper {
-      width: 100%;
-      height: 100%;
-
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-around;
-    }
-
-    .github-icon {
-      background-image: url("/assets/ui/pixel-github.png");
-      background-size: 120px;
-      background-position: top -40px left -36px;
-      width: 40px;
-      height: 40px;
-    }
-
-    .setting-icon {
-      background-image: url("/assets/ui/pixel-cog.png");
-      background-size: 40px;
-      background-position: top -39px left -39px;
-      width: 40px;
-      height: 40px;
-    }
-
-    .undo-redo .redo-icon, .undo-redo .undo-icon { background-image: url("/assets/ui/pixel-undo-redo.png"); background-size: 80px; width: 40px; height: 40px; }
-    .undo-redo:hover .redo-icon, .undo-redo:hover .undo-icon { background-image: url("/assets/ui/pixel-undo-redo-hover.png"); }
-
-    .redo-icon { background-position: top -40px left -40px; }
-    .undo-icon { background-position: top -40px left 0px; }
-    .disabled { pointer-events: none; opacity: 0.6; }
+    .game-controls { bottom: 0px; }
+    .wrapper { column-gap: 1.5vh; }
   }
 
   @media (orientation:portrait) {
-    .game-controls {
-      position: absolute;
-      pointer-events: auto;
-
-      right: 0px;
-      top: 0px;
-
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
-    
-    .wrapper {
-      width: 100%;
-      height: 100%;
-
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      column-gap: 2vw;
-    }
-
-    .github-icon {
-      background-image: url("/assets/ui/pixel-github.png");
-      background-size: 60px;
-      background-position: top -20px left -18px;
-      width: 20px;
-      height: 20px;
-    }
-
-    .setting-icon {
-      background-image: url("/assets/ui/pixel-cog.png");
-      background-size: 20px;
-      background-position: top -19px left -19px;
-      width: 20px;
-      height: 20px;
-    }
-
-    .undo-redo .redo-icon, .undo-redo .undo-icon {
-      background-image: url("/assets/ui/pixel-undo-redo.png");
-      background-size: 40px;
-      width: 20px;
-      height: 20px;
-    }
-    .undo-redo:hover .redo-icon, .undo-redo:hover .undo-icon {
-      background-image: url("/assets/ui/pixel-undo-redo-hover.png");
-    }
-
-    .redo-icon { background-position: top -20px left -20px; }
-    .undo-icon { background-position: top -20px left 0px; }
-    .disabled { pointer-events: none; opacity: 0.6; }
+    .game-controls { top: 0px; }
+    .wrapper { column-gap: 1.5vw; }
   }
+
+  .github-icon {
+    background-image: url("/assets/ui/pixel-github.png");
+    background-size: 90px;
+    background-position: top -30px left -27px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .setting-icon {
+    background-image: url("/assets/ui/pixel-cog.png");
+    background-size: 30px;
+    background-position: top -29px left -29px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .undo-redo .redo-icon, .undo-redo .undo-icon { background-image: url("/assets/ui/pixel-undo-redo.png"); background-size: 60px; width: 30px; height: 30px; }
+  .undo-redo:hover .redo-icon, .undo-redo:hover .undo-icon { background-image: url("/assets/ui/pixel-undo-redo-hover.png"); }
+
+  .redo-icon { background-position: top -30px left -30px; }
+  .undo-icon { background-position: top -30px left 0px; }
+  
+  .disabled { pointer-events: none; opacity: 0.6; }
 </style>

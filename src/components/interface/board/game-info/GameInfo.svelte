@@ -78,6 +78,8 @@ import Pannel from "../../Pannel.svelte";
       display: grid;
       grid-template-columns: repeat(4, auto);
       column-gap: 4vw;
+
+      font-size: 80%;
     }
   }
 </style>

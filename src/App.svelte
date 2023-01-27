@@ -52,6 +52,7 @@
   const debouncedResize = debounce(onResize, 300);
 
   onMount(() => {
+    screen.orientation.lock("natural");
     Controller.init();
     loaded.subscribe((val) => {
       if (val) {
