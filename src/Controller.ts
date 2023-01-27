@@ -97,6 +97,8 @@ export class Controller {
   static startGame() {
     const seed = uuidv4().substring(0,8);
     gameSeed.set(seed);
+    Controller.clearSavedGame(get(difficulty));
+    Controller.gameController = new GameController();
     Controller.gameController.deal(seed);
     loaded.set(true);
     setTimeout(() => {

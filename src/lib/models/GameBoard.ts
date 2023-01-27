@@ -40,7 +40,7 @@ export class GameBoard {
     for (let i = 0; i < 7; i++) {
       board[i] = new LinkedList<PlayingCard>();
 
-      for (let j = 0; j < i+1; j++) {
+      for (let j = 0; j <= i; j++) {
         const card = cards[cardIdx];
 
         if (i == j) card.revealed = true;
