@@ -35,7 +35,7 @@
         }
 
         //! this scaling is very off in portait mode. need to find a better way to calculate it
-        Controller.CARD_SCALE = ((window.screen.orientation.type.indexOf("landscape") == 0) ? 0.4 * screen.height / 1290 : 0.12 * screen.width / 360);
+        Controller.CARD_SCALE = ((window.screen.orientation.type.indexOf("landscape") == 0) ? 0.4 * Math.min(screen.width / 1825, 1) : 0.12 * screen.width / 360);
         
         rerender = true;
         setTimeout(() => {
@@ -98,7 +98,7 @@
     }
 
     .board-cont {
-      width: calc(100% - 15vh);
+      width: 100%;
       height: calc(100% - 15vh);
 
       border-radius: 8px;

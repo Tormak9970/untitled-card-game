@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { Controller } from "../../../../Controller";
+  import { Controller } from "../../../../Controller";
   import MediaQuery from "../../MediaQuery.svelte";
-import Pannel from "../../Pannel.svelte";
+  import Pannel from "../../Pannel.svelte";
   import ScoreTracker from "./ScoreTracker.svelte";
   import Timer from "./Timer.svelte";
   import Turns from "./Turns.svelte";
@@ -11,7 +11,7 @@ import Pannel from "../../Pannel.svelte";
 <div class="game-info">
   <MediaQuery query="{Controller.ORIENTATION_QUERY}" let:matches>
     {#if matches}
-      <Pannel>
+      <Pannel width="auto">
         <div class="wrapper">
           <Timer />
           <ScoreTracker />
@@ -35,7 +35,6 @@ import Pannel from "../../Pannel.svelte";
 
   @media (orientation:landscape) {
     .game-info {
-      max-width: 500px;
       position: absolute;
       pointer-events: auto;
 
@@ -47,7 +46,7 @@ import Pannel from "../../Pannel.svelte";
     }
     
     .wrapper {
-      width: calc(100% - 2vw);
+      min-width: calc(100% - 2vw);
       height: 100%;
 
       display: grid;
