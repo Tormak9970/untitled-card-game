@@ -44,8 +44,10 @@
 
   function triggerAnimation() {
     setTimeout(() => {
-      const elems = cardContainer.getElementsByClassName("transition-out");
-      recursiveAnimate(elems, 0);
+      if (cardContainer) {
+        const elems = cardContainer.getElementsByClassName("transition-out");
+        recursiveAnimate(elems, 0);
+      }
     }, 0);
   }
 
@@ -79,7 +81,7 @@
   }
 
   afterUpdate(() => {
-    triggerAnimation();
+    if (cardContainer) triggerAnimation();
   });
 
   onMount(() => {

@@ -69,8 +69,10 @@
 
   function triggerAnimationFromDraw() {
     setTimeout(() => {
-      const elems = cardContainer.getElementsByClassName("transition-from-draw");
-      recursiveAnimateIn(elems, 0);
+      if (cardContainer) {
+        const elems = cardContainer.getElementsByClassName("transition-from-draw");
+        recursiveAnimateIn(elems, 0);
+      }
     }, 0);
   }
 
@@ -94,8 +96,8 @@
   }
 
   afterUpdate(() => {
-    triggerAnimationFromDraw();
     if (cardContainer) {
+      triggerAnimationFromDraw();
       if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
         if (shouldPlayAnim) {
           if (items.length > 0 && cardPositionLUT[`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`].column != items[items.length - 1].column) {
