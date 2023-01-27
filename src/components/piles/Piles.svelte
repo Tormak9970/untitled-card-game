@@ -16,11 +16,20 @@
 <style>
   @import "/theme.css";
 
-  @media (orientation: landscape) {
+  @media (orientation: landscape) and (min-height: 810px) {
     .piles {
       display: grid;
-      grid-template-rows: repeat(1fr, 4);
       row-gap: 14px;
+    }
+  }
+
+  @media (orientation: landscape) and (max-height: 809px) {
+    .piles {
+      display: grid;
+      grid-template-rows: repeat(2, 1fr);
+      grid-template-columns: repeat(2, 63px);
+      row-gap: 7px;
+      column-gap: 7px;
     }
   }
 

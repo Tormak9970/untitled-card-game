@@ -36,6 +36,7 @@
 
         //! this scaling is very off in portait mode. need to find a better way to calculate it
         Controller.CARD_SCALE = ((window.screen.orientation.type.indexOf("landscape") == 0) ? 0.4 * Math.min(screen.width / 1825, 1) : 0.12 * screen.width / 360);
+        Controller.UNCOVERED_PERCENT = (Controller.isSmallDevice) ? 0.1 : 0.2;
         
         rerender = true;
         setTimeout(() => {
@@ -52,7 +53,6 @@
   const debouncedResize = debounce(onResize, 300);
 
   onMount(() => {
-    screen.orientation.lock("natural");
     Controller.init();
     loaded.subscribe((val) => {
       if (val) {

@@ -47,7 +47,7 @@ export class Controller {
   static ANIM_PAUSE_LENGTH = 0;
   static DRAW_ANIM_DELAY = 50;
   
-  static UNCOVERED_PERCENT = 0.3;
+  static UNCOVERED_PERCENT = 0.2;
   static CARD_SCALE = 0.4;
 
   static tippy = createTippy({
@@ -74,6 +74,10 @@ export class Controller {
 
   static get ORIENTATION_QUERY() {
     return Controller._ORIENTATION_QUERY;
+  }
+
+  static get isSmallDevice() {
+    return screen.height < 810 && screen.orientation.type.indexOf("landscape") == 0;
   }
 
   /**

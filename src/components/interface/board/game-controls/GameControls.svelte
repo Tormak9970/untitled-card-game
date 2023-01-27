@@ -15,7 +15,7 @@
 <div class="game-controls">
   <MediaQuery query="{Controller.ORIENTATION_QUERY}" let:matches>
     {#if matches}
-      <Pannel padding="1vh">
+      <Pannel padding="5px" width="auto">
         <div class="wrapper">
           <div class="undo-redo" class:disabled={$undoDisabled}>
             <IconButton onClick={undoClick} tooltip={true} tooltipText={"Undo"}>
@@ -43,7 +43,7 @@
         </div>
       </Pannel>
     {:else}
-      <Pannel padding="1.5vw" width="auto">
+      <Pannel padding="5px" width="auto">
         <div class="wrapper">
           <div class="undo-redo" class:disabled={$undoDisabled}>
             <IconButton onClick={undoClick} tooltip={true} tooltipText={"Undo"}>
@@ -98,13 +98,13 @@
 
   @media (orientation:landscape) {
     .game-controls { bottom: 0px; }
-    .wrapper { column-gap: 1.5vh; }
   }
 
   @media (orientation:portrait) {
     .game-controls { top: 0px; }
-    .wrapper { column-gap: 1.5vw; }
   }
+  
+  .wrapper { column-gap: 7px; }
 
   .github-icon {
     background-image: url("/assets/ui/pixel-github.png");

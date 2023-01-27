@@ -32,7 +32,9 @@
 </script>
 
 <div class="game-ui">
-  <Logo />
+  {#if !Controller.isSmallDevice}
+    <Logo />
+  {/if}
   <GameInfo />
   <GameControls />
 	<div class="rights">© Travis Lane {new Date().getFullYear()}</div>
