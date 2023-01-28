@@ -162,9 +162,18 @@
   {#if $difficulty == Difficulty.BEGINNER}
     <CardContainer scale={scale}>
       <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px; --previousLeft: {previousLeft}px; --previousTop: {previousTop}px;" bind:this={cardContainer}>
-        <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;">
+        <div 
+          use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}"
+          on:consider="{handleDndConsider}"
+          on:finalize="{handleDndFinalize}"
+          style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px;"
+          >
           {#each items as playingCard, i (playingCard.id)}
-            <div class="card-wrapper{(i == items.length-1 && shouldAnimate) ? " transition-out": ""}{(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location == CardLocation.BOARD || checkIfSuitLocation(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location)) ? ((playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID&& i == items.length - 1) ? (cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column ? " transition-from-other" : "") : "") : ((i == items.length-1 && shouldAnimate) ? " transition-from-draw": "")}">
+            <div class="card-wrapper{(i == items.length-1 && shouldAnimate) ? " transition-out": ""}{(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location == CardLocation.BOARD || checkIfSuitLocation(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location)) ? 
+              ((playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && i == items.length - 1) ? 
+                (cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column ? " transition-from-other" : "") : "") : 
+              ((i >= items.length-3 && shouldAnimate && !wasMount) || ($drawPileList.length == 0 && $shouldPlayUndoAnim) ? " transition-from-draw": "")}"
+              >
               <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
             </div>
           {/each}
@@ -176,25 +185,24 @@
       <div class="empty-inner" style="--drawPileLeft: {drawPileLeft}px; --drawPileTop: {drawPileTop}px; --previousLeft: {previousLeft}px; --previousTop: {previousTop}px;" bind:this={cardContainer}>
         <div class="blocker" style="position: absolute; z-index: 100; width: {CARD_WIDTH * scale * uncoveredPercent * ((items.length - 1) % 3)}px; height: 100%" on:mousedown|stopPropagation />
         <div
-            use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}"
-            on:consider="{handleDndConsider}"
-            on:finalize="{handleDndFinalize}"
-            style="width: {(CARD_WIDTH * scale * uncoveredPercent * 2) + (CARD_WIDTH * scale)}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px; left: 0px;"
-            >
-            {#each items as playingCard, i (`${i}|${playingCard.id}`)}
-              <div
-                class="card-wrapper{(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location == CardLocation.BOARD || checkIfSuitLocation(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location)) ?
-                  ((playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && i == items.length - 1) ?
-                    (cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column ? " transition-from-other" : "") :
-                    "") :
-                    //! this is the problematic check
-                  ((i >= items.length-3 && shouldAnimate && !wasMount) || ($drawPileList.length == 0 && $shouldPlayUndoAnim) ? " transition-from-draw": "")}"
-                style="--base-left: {(CARD_WIDTH * scale * uncoveredPercent * 2) - (i >= $discardPileList.length - 3 ? (CARD_WIDTH * scale * uncoveredPercent * (($discardPileList.length - 1 - i) % 3)) : (CARD_WIDTH * scale * uncoveredPercent * 2))}px;"
-                >
-                <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
-              </div>
-            {/each}
-          </div>
+          use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}"
+          on:consider="{handleDndConsider}"
+          on:finalize="{handleDndFinalize}"
+          style="width: {(CARD_WIDTH * scale * uncoveredPercent * 2) + (CARD_WIDTH * scale)}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px; left: 0px;"
+          >
+          {#each items as playingCard, i (`${i}|${playingCard.id}`)}
+            <div
+              class="card-wrapper{(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location == CardLocation.BOARD || checkIfSuitLocation(cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].location)) ?
+                ((playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && i == items.length - 1) ?
+                  (cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column ? " transition-from-other" : "") : "") :
+                  //! this is the problematic check
+                ((i >= items.length-3 && shouldAnimate && !wasMount) || ($drawPileList.length == 0 && $shouldPlayUndoAnim) ? " transition-from-draw": "")}"
+              style="--base-left: {(CARD_WIDTH * scale * uncoveredPercent * 2) - (i >= $discardPileList.length - 3 ? (CARD_WIDTH * scale * uncoveredPercent * (($discardPileList.length - 1 - i) % 3)) : (CARD_WIDTH * scale * uncoveredPercent * 2))}px;"
+              >
+              <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
+            </div>
+          {/each}
+        </div>
       </div>
     </CardContainer>
   {/if}

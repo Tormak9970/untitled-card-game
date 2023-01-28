@@ -6,9 +6,9 @@
   export let width = CARD_WIDTH * scale + Math.floor(8 * (1 / 0.4) * scale);
 </script>
 
-<div class="discard-pile">
-  <div class="empty-pile" style="width: {width}px; height: {height}px;">
-    <div class="empty-inner" style="width: calc(100% - {Math.floor(8 * (1 / 0.4) * scale)}px); height: calc(100% - {Math.floor(8 * (1 / 0.4) * scale)}px);">
+<div class="card-container">
+  <div class="border-edge" style="width: {width}px; height: {height}px;">
+    <div class="card-inner" style="width: calc(100% - {Math.floor(8 * (1 / 0.4) * scale)}px); height: calc(100% - {Math.floor(8 * (1 / 0.4) * scale)}px);">
       <slot />
     </div>
   </div>
@@ -17,7 +17,7 @@
 <style>
   @import "/theme.css";
 
-  .empty-pile {
+  .border-edge {
     background-color: var(--highlight);
     border-radius: 4px;
 
@@ -27,7 +27,7 @@
     align-items: center;
   }
 
-  .empty-inner {
+  .card-inner {
     background-color: var(--foreground);
     border-radius: 4px;
 

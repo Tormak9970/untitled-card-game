@@ -38,7 +38,7 @@
 <div
   class="card"
   class:draggable-source="{revealed && isDraggable}"
-  style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; top: {(row) * (CARD_HEIGHT * scale) * uncoveredPercent}px;"
+  style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px;"
   class:face-down={!revealed}
   bind:this={cardElem}
   >

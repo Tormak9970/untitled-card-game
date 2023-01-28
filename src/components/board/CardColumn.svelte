@@ -237,7 +237,7 @@
     <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: 100%; height: {CARD_HEIGHT * scale}px;">
       {#each items.slice(0, 1) as playingCard (playingCard.id)}
         <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID) ? ((cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].row != playingCard.row || cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column) ? " transition-in" : "") : ""}">
-          <CardNode card={playingCard.data} column={column} row={0} scale={scale} uncoveredPercenet={Controller.UNCOVERED_PERCENT} />
+          <CardNode card={playingCard.data} column={column} row={0} scale={scale} uncoveredPercent={Controller.UNCOVERED_PERCENT} />
         </div>
       {/each}
     </div>

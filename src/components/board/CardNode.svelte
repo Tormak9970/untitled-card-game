@@ -19,7 +19,7 @@
   export let column:number;
   export let row:number
   export let scale:number;
-  export let uncoveredPercenet:number;
+  export let uncoveredPercent:number;
 
   let cardContainer:HTMLDivElement;
   let previousLeft = 0;
@@ -247,13 +247,13 @@
   });
 </script>
 
-<div class="card-node" style="width: {CARD_WIDTH * scale}px; height: {(CARD_HEIGHT * scale) * uncoveredPercenet + (CARD_HEIGHT * scale)}px; --previousLeft: {previousLeft}px; --previousTop: {previousTop}px;">
-  <Card card={card.data.card} suit={card.data.suit} revealed={revealed} scale={scale} uncoveredPercent={uncoveredPercenet} column={column} row={row} />
+<div class="card-node" style="width: {CARD_WIDTH * scale}px; height: {(CARD_HEIGHT * scale) * uncoveredPercent + (CARD_HEIGHT * scale)}px; --previousLeft: {previousLeft}px; --previousTop: {previousTop}px;">
+  <Card card={card.data.card} suit={card.data.suit} revealed={revealed} scale={scale} uncoveredPercent={uncoveredPercent} column={column} row={row} />
 
-  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {uncoveredPercenet * CARD_HEIGHT * scale}px;" bind:this={cardContainer}>
+  <div use:dndzone="{{items, flipDurationMs, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: {(!revealed ? uncoveredPercent / 2 : uncoveredPercent) * CARD_HEIGHT * scale}px;" bind:this={cardContainer}>
     {#each items.slice(0, 1) as playingCard (playingCard.id)}
       <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID) ? ((cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].row != playingCard.row || cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column) ? " transition-in" : "") : ""}">
-        <svelte:self {...{card:playingCard.data, column, row:playingCard.row, scale, uncoveredPercenet}} />
+        <svelte:self {...{card:playingCard.data, column, row:playingCard.row, scale, uncoveredPercent}} />
       </div>
     {/each}
   </div>

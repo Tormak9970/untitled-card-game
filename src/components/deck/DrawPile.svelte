@@ -111,7 +111,7 @@
           {/each}
         {/key}
       {:else}
-        <div class="bg-icon" class:disabled={$difficulty == Difficulty.EXPERT && $numRecycles == 3}/>
+        <div class="bg-icon" class:disabled={$difficulty == Difficulty.EXPERT && $numRecycles == 3} style="background-size: {90 * (1 / 0.4) * scale}px {90 * (1 / 0.4) * scale}px; width: {90 * (1 / 0.4) * scale}px; height: {90 * (1 / 0.4) * scale}px;"/>
       {/if}
     </div>
   </CardContainer>
@@ -159,9 +159,6 @@
   .bg-icon {
     background-image: url("/assets/ui/Pixel Refresh.png");
     filter: hue-rotate(12deg);
-    background-size: 90px 90px;
-    width: 90px;
-    height: 90px;
   }
 
   .bg-icon:hover {

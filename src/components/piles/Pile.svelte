@@ -102,8 +102,7 @@
         e.detail.items[e.detail.items.length - 1] = {
           "id": `${card.card}|${card.suit}`,
           "data": nodes,
-          "column": `pile-${suit}`,
-          "row": 0
+          "column": `pile-${suit}`
         };
         
         $suitPileList.push(card);
@@ -142,8 +141,7 @@
               e.detail.items[tarElemIdx] = {
                 "id": `${card.card}|${card.suit}`,
                 "data": cardNode,
-                "column": `pile-${suit}`,
-                "row": 0
+                "column": `pile-${suit}`
               };
               
               $suitPileList.push(card);
@@ -182,7 +180,7 @@
     if (cardContainer) {
       if ($shouldPlayUndoAnim || $shouldPlayRedoAnim) {
         if (shouldPlayAnim) {
-          if (items.length > 0 && (cardPositionLUT[`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`].row != items[items.length - 1].row || cardPositionLUT[`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`].column != items[items.length - 1].column)) {
+          if (items.length > 0 && (cardPositionLUT[`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`].location == CardLocation.BOARD || cardPositionLUT[`${items[items.length - 1].data.data.card}|${items[items.length - 1].data.data.suit}`].location == CardLocation.DISCARD_PILE)) {
             shouldPlayAnim = false;
             setPositions();
             triggerAnimationIn();
@@ -213,8 +211,7 @@
             const newElem = {
               "id": `${val.card}|${val.suit}`,
               "data": new LinkedNode<PlayingCard>(val),
-              "column": `pile-${suit}`,
-              "row": 0
+              "column": `pile-${suit}`
             };
 
             items.push(newElem);
@@ -247,7 +244,7 @@
     <div class="empty-inner" style="--previousLeft: {previousLeft}px; --previousTop: {previousTop}px;" bind:this={cardContainer}>
       <div use:dndzone="{{items, flipDurationMs: 300, dropFromOthersDisabled, dragDisabled, dropTargetStyle:discardZoneStyle, morphDisabled:true}}" on:consider="{handleDndConsider}" on:finalize="{handleDndFinalize}" style="width: {CARD_WIDTH * scale}px; height: {CARD_HEIGHT * scale}px; position:absolute; top: 0px; left: 0px">
         {#each items as playingCard, i (playingCard.id)}
-          <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && i == items.length - 1) ? ((cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].row != playingCard.row || cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column) ? " transition-in" : "") : ""}">
+          <div class="card-wrapper{(playingCard.id && playingCard.id != SHADOW_PLACEHOLDER_ITEM_ID && i == items.length - 1) ? ((cardPositionLUT[`${playingCard.data.data.card}|${playingCard.data.data.suit}`].column != playingCard.column) ? " transition-in" : "") : ""}">
             <Card card={playingCard.data.data.card} suit={playingCard.data.data.suit} revealed={true} scale={scale} uncoveredPercent={1.0} column={0} row={0} />
           </div>
         {/each}
