@@ -4,7 +4,7 @@
   import { Controller } from "./Controller";
   import GameBoard from "./components/GameBoard.svelte";
   import Interface from "./components/Interface.svelte";
-  import { columnBoundingRectFuncs, columnBoundingRects, deckBoundingRectFuncs, deckBoundingRects, loaded, showMainMenu, suitPileBoundingRectFuncs, suitPileBoundingRects } from "./Stores";
+  import { columnBoundingRectFuncs, columnBoundingRects, deckBoundingRectFuncs, deckBoundingRects, isSmallDevice, loaded, showMainMenu, suitPileBoundingRectFuncs, suitPileBoundingRects } from "./Stores";
 
   const debounce = (fn: Function, ms = 300) => {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -36,6 +36,7 @@
 
         //! this scaling is very off in portait mode. need to find a better way to calculate it
         Controller.CARD_SCALE = ((window.screen.orientation.type.indexOf("landscape") == 0) ? 0.4 * Math.min(screen.width / 1825, 1) : 0.12 * screen.width / 360);
+        $isSmallDevice = Controller.isSmallDevice;
         rerender = true;
         setTimeout(() => {
           rerender = false;

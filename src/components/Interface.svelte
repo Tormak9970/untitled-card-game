@@ -3,7 +3,7 @@
   import GameControls from "./interface/board/game-controls/GameControls.svelte";
   import Logo from "./interface/board/Logo.svelte";
   import Modal from "./interface/Modal.svelte";
-  import { showGameStartModal, showGameOverModal, showLoadGameFromFile, showLoadSettingsFromFile, showMainMenu, showOptionsMenu, showPauseMenu, showSaveGameToFile, showSaveSettingsToFile } from "../Stores";
+  import { showGameStartModal, showGameOverModal, showLoadGameFromFile, showLoadSettingsFromFile, showMainMenu, showOptionsMenu, showPauseMenu, showSaveGameToFile, showSaveSettingsToFile, isSmallDevice } from "../Stores";
   import PauseMenu from "./interface/menu/PauseMenu.svelte";
   import FilePicker from "./interface/FilePicker.svelte";
   import { Controller } from "../Controller";
@@ -32,7 +32,7 @@
 </script>
 
 <div class="game-ui">
-  {#if !Controller.isSmallDevice}
+  {#if !$isSmallDevice}
     <Logo />
   {/if}
   <GameInfo />

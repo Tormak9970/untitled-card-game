@@ -1,10 +1,8 @@
 <script lang="ts">
   import Board from "./board/Board.svelte";
   import Deck from "./deck/Deck.svelte";
-  import { CARD_WIDTH } from "../lib/SpriteLUT";
   import Piles from "./piles/Piles.svelte";
-  import { difficulty, frontColumn, movingToDiscard } from "../Stores";
-  import { Difficulty } from "../lib/models/Difficulty";
+  import { frontColumn, isSmallDevice, movingToDiscard } from "../Stores";
   import { Controller } from "../Controller";
   import MediaQuery from "./interface/MediaQuery.svelte";
 
@@ -15,7 +13,7 @@
 
 <MediaQuery query="{Controller.ORIENTATION_QUERY}" let:matches>
   {#if matches}
-    {#if Controller.isSmallDevice}
+    {#if $isSmallDevice}
       <div class="game-board">
         <div class="left">
           <div class="deck-cont" style="{($movingToDiscard) ? "z-index:100; " : ""}">

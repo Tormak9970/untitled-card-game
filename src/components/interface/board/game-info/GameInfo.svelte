@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Controller } from "../../../../Controller";
+  import { isSmallDevice } from "../../../../Stores";
   import MediaQuery from "../../MediaQuery.svelte";
   import Pannel from "../../Pannel.svelte";
   import ScoreTracker from "./ScoreTracker.svelte";
@@ -15,7 +16,7 @@
         <div class="wrapper">
           <Timer />
           <ScoreTracker />
-          {#if !Controller.isSmallDevice}
+          {#if !$isSmallDevice}
             <Turns />
           {/if}
         </div>

@@ -1,13 +1,14 @@
 <script lang="ts">
-    import { Controller } from "../../../Controller";
+  import { Controller } from "../../../Controller";
+  import { isSmallDevice } from "../../../Stores";
   import MediaQuery from "../MediaQuery.svelte";
-import Pannel from "../Pannel.svelte";
+  import Pannel from "../Pannel.svelte";
 
 </script>
 
 <div class="game-logo">
   <MediaQuery query="{Controller.ORIENTATION_QUERY}" let:matches>
-    {#if matches && !Controller.isSmallDevice}
+    {#if matches && !$isSmallDevice}
       <Pannel padding="0px 14px" height="51px">
         <div class="wrapper">
           <img src="/assets/pixel-crown.png" alt="logo" height="53px">
